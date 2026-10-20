@@ -47,11 +47,20 @@ Lean starter extracted from the Engiora admin dashboard structure.
 
 ```bash
 npm install
-# or: yarn
-# or: pnpm install
-
 npm run dev
 ```
+
+The dev server runs on http://localhost:3002.
+
+## Production
+
+```bash
+npm ci
+npm run build
+PORT=3002 npm run start
+```
+
+`npm run start` serves the built app from `.output/server/index.mjs`.
 
 4. Open the app — unauthenticated users go to `/auth/login`. After login, they land on `/dashboards`.
 

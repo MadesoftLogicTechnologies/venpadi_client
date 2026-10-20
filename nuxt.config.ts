@@ -38,6 +38,10 @@ export default defineNuxtConfig({
     },
   },
 
+  devServer: {
+    port: 3002,
+  },
+
   devtools: { enabled: true },
   ssr: false,
 });
