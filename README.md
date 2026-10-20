@@ -50,19 +50,35 @@ npm install
 npm run dev
 ```
 
-The dev server runs on http://localhost:3002.
+4. Open http://localhost:3002 — unauthenticated users go to `/auth/login`. After login, they land on `/dashboards`.
 
 ## Production
 
+The app runs with `ssr: false`, so it is deployed as static files served by nginx (no Node process). Requires Node 22.12+.
+
 ```bash
 npm ci
-npm run build
-PORT=3002 npm run start
+npm run generate   # outputs to .output/public
 ```
 
-`npm run start` serves the built app from `.output/server/index.mjs`.
+`API_URL` is baked in at build time, so set it in `.env` before running `npm run generate`.
 
-4. Open the app — unauthenticated users go to `/auth/login`. After login, they land on `/dashboards`.
+nginx serves `.output/public` and falls back to `index.html` for client-side routes:
+
+```nginx
+root /home/ploi/client.venpadi.com/.output/public;
+index index.html;
+
+location /_nuxt/ {
+    expires 1y;
+    add_header Cache-Control "public, immutable";
+    try_files $uri =404;
+}
+
+location / {
+    try_files $uri $uri/ /index.html;
+}
+```
 
 ## Suggested next steps
 
