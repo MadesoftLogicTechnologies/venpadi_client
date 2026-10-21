@@ -35,7 +35,7 @@
           Sign In
         </NuxtLink>
         <NuxtLink
-          to="/auth/signup"
+          :to="signedIn ? '/discover' : '/auth/signup'"
           class="inline-flex items-center gap-1.5 px-4 sm:px-5 py-2.5 rounded-full bg-brand-gradient-soft text-white text-sm font-semibold shadow-sm hover:opacity-95 transition-opacity"
         >
           Create Booking
@@ -83,7 +83,7 @@
           List Your Venue
         </NuxtLink>
         <NuxtLink
-          to="/auth/signup"
+          :to="signedIn ? '/discover' : '/auth/signup'"
           class="block text-center text-sm font-semibold text-white py-2.5 rounded-full bg-brand-gradient-soft"
           @click="menuOpen = false"
         >
@@ -95,7 +95,11 @@
 </template>
 
 <script setup>
+import { useAuthStore } from "~/store/auth";
+
 const route = useRoute();
+const auth = useAuthStore();
+const signedIn = computed(() => auth.isAuthenticated);
 const menuOpen = ref(false);
 
 const links = computed(() => {

@@ -98,7 +98,7 @@
         <p class="mt-6 text-sm text-bodytext">
           Don't have an account?
           <NuxtLink
-            to="/auth/signup"
+            :to="{ path: '/auth/signup', query: route.query.redirect ? { redirect: route.query.redirect } : {} }"
             class="font-bold text-header hover:text-primary"
           >
             Create an account
@@ -143,6 +143,8 @@
 </template>
 
 <script setup>
+import { loginUser } from "~/services/auth";
+
 definePageMeta({
   layout: "plain",
 });
@@ -157,6 +159,7 @@ useHead({
   ],
 });
 
+const route = useRoute();
 const submitting = ref(false);
 
 const form = reactive({
@@ -167,17 +170,25 @@ const form = reactive({
 
 const heroImage = "/images/login-hero.jpg";
 
+/** Only same-site paths, so ?redirect= cannot bounce the user off-site. */
+function safeRedirect(value) {
+  const v = Array.isArray(value) ? value[0] : value;
+  return typeof v === "string" && v.startsWith("/") && !v.startsWith("//") ? v : "/dashboards";
+}
+
 async function signIn() {
+  if (submitting.value) return;
   submitting.value = true;
   try {
-    await new Promise((r) => setTimeout(r, 600));
-    await navigateTo("/search");
+    const ok = await loginUser(form.email.trim(), form.password);
+    if (ok) await navigateTo(safeRedirect(route.query.redirect));
   } finally {
     submitting.value = false;
   }
 }
 
 function continueWithGoogle() {
-  // Placeholder for Google OAuth
+  // No toast outlet on the plain layout.
+  window.alert("Google sign-in is coming soon.");
 }
 </script>

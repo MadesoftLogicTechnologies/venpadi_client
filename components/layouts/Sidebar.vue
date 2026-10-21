@@ -71,6 +71,7 @@
         v-if="!collapsed && !isBooker"
         type="button"
         class="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-brand-gradient text-white text-sm font-semibold shadow-sm hover:opacity-95 transition-opacity"
+        @click="navigateTo('/help')"
       >
         <i class="pi pi-comments text-sm"></i>
         Quick Support
@@ -80,6 +81,7 @@
         type="button"
         class="w-full flex items-center justify-center py-2.5 rounded-xl bg-brand-gradient text-white"
         aria-label="Quick Support"
+        @click="navigateTo('/help')"
       >
         <i class="pi pi-comments text-sm"></i>
       </button>
@@ -116,8 +118,9 @@ defineEmits(["update:collapsed"]);
 const route = useRoute();
 const authStore = useAuthStore();
 
+// Master's switch: the booker menu for signed-in planners and on /discover.
 const isBooker = computed(
-  () => authStore.role === "booker" || route.path.startsWith("/discover")
+  () => (authStore.isAuthenticated && !!authStore.user) || authStore.role === "booker" || route.path.startsWith("/discover")
 );
 
 const ownerItems = [

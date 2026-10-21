@@ -34,10 +34,10 @@
               >
                 <option
                   v-for="opt in field.options"
-                  :key="opt"
-                  :value="opt"
+                  :key="opt.value"
+                  :value="opt.value"
                 >
-                  {{ opt }}
+                  {{ opt.label }}
                 </option>
               </select>
             </div>
@@ -104,25 +104,33 @@
 </template>
 
 <script setup>
-defineProps({
+/*
+ * The search form. Every select carries API values (catalog keys, bucket ids);
+ * the page maps buckets onto guestsMin/guestsMax and budget…Minor params.
+ */
+const props = defineProps({
   model: { type: Object, required: true },
   chips: { type: Array, default: () => [] },
   filterCount: { type: Number, default: 0 },
+  eventTypes: { type: Array, default: () => [] },
+  styles: { type: Array, default: () => [] },
+  guestOptions: { type: Array, default: () => [] },
+  budgetOptions: { type: Array, default: () => [] },
 });
 
 defineEmits(["search", "toggle-filters", "toggle-chip", "remove-chip", "clear-chips"]);
 
-const fields = [
+const fields = computed(() => [
   {
     key: "location",
     label: "Location",
-    placeholder: "Lekki & Victoria Island...",
+    placeholder: "Lekki, Victoria Island…",
     icon: "pi-map-marker",
   },
   {
     key: "city",
     label: "City",
-    placeholder: "Lagos, Nigeria",
+    placeholder: "Lagos",
     icon: "pi-globe",
   },
   {
@@ -130,33 +138,28 @@ const fields = [
     label: "Event Type",
     type: "select",
     icon: "pi-calendar",
-    options: [
-      "Weddings, Galas & Dinners",
-      "Conferences & Corporate",
-      "Birthdays & Celebrations",
-      "Workshops & Training",
-    ],
+    options: [{ value: "", label: "Any" }, ...props.eventTypes.map((t) => ({ value: t.key, label: t.label }))],
   },
   {
     key: "guests",
     label: "Guests",
     type: "select",
     icon: "pi-users",
-    options: ["Any", "1–50", "51–150", "151–300", "200–500", "500+"],
+    options: props.guestOptions,
   },
   {
     key: "budget",
     label: "Budget",
     type: "select",
     icon: "pi-wallet",
-    options: ["Any", "Under ₦500k", "₦500k – ₦1.5M", "₦1.5M – ₦3M", "₦3M+"],
+    options: props.budgetOptions,
   },
   {
     key: "style",
     label: "Venue Style",
     type: "select",
     icon: "pi-building",
-    options: ["Any", "Modern", "Classic", "Outdoor", "Immersive", "Industrial"],
+    options: [{ value: "", label: "Any" }, ...props.styles.map((s) => ({ value: s.key, label: s.label }))],
   },
-];
+]);
 </script>

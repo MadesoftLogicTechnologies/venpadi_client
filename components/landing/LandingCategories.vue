@@ -19,11 +19,12 @@
       <div class="grid sm:grid-cols-2 md2:grid-cols-3 gap-4 sm:gap-5">
         <article
           v-for="cat in categories"
-          :key="cat.title"
+          :key="cat.key"
           class="group relative rounded-2xl overflow-hidden aspect-[4/3] cursor-pointer"
+          @click="navigateTo({ path: '/search', query: { eventType: cat.key } })"
         >
           <img
-            :src="cat.image"
+            :src="cat.imageUrl"
             :alt="cat.title"
             class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
           />
@@ -34,7 +35,8 @@
           <span
             class="absolute top-4 left-4 px-3 py-1 rounded-full bg-white/95 text-[11px] font-semibold text-header"
           >
-            {{ cat.spaces }}
+            {{ Number(cat.spacesCount).toLocaleString("en-US") }}
+            {{ cat.spacesCount === 1 ? "Space" : "Spaces" }}
           </span>
 
           <div class="absolute bottom-0 left-0 right-0 p-5 text-white">
@@ -48,42 +50,8 @@
 </template>
 
 <script setup>
-const categories = [
-  {
-    title: "Weddings",
-    spaces: "3,600+ Spaces",
-    description: "Romantic gardens, historic manors & grand estates",
-    image: "/images/cat-wedding.jpg",
-  },
-  {
-    title: "Conferences & Corporate",
-    spaces: "2,800+ Spaces",
-    description: "Boardrooms, auditoriums & hybrid-ready halls",
-    image: "/images/cat-conference.jpg",
-  },
-  {
-    title: "Birthdays & Celebrations",
-    spaces: "4,100+ Spaces",
-    description: "Rooftops, lounges & private dining rooms",
-    image: "/images/cat-birthday.jpg",
-  },
-  {
-    title: "Outdoor & Garden",
-    spaces: "1,900+ Spaces",
-    description: "Lawns, tents & scenic open-air venues",
-    image: "/images/cat-outdoor.jpg",
-  },
-  {
-    title: "Training & Workshops",
-    spaces: "2,200+ Spaces",
-    description: "Bright studios & collaborative workspaces",
-    image: "/images/cat-workshop.jpg",
-  },
-  {
-    title: "Concerts & Performances",
-    spaces: "980+ Spaces",
-    description: "Theaters, stages & acoustic-ready rooms",
-    image: "/images/cat-concert.jpg",
-  },
-];
+defineProps({
+  categories: { type: Array, default: () => [] },
+  loading: { type: Boolean, default: false },
+});
 </script>

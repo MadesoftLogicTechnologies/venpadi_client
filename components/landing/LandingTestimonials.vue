@@ -6,14 +6,14 @@
           Trusted by professionals
         </p>
         <h2 class="text-2xl sm:text-3xl md2:text-[2.25rem] font-extrabold text-header tracking-tight max-w-xl">
-          Loved by 10,000+ planners and event hosts
+          Loved by{{ planners !== null ? ` ${Number(planners).toLocaleString("en-US")}` : "" }} planners and event hosts
         </h2>
       </div>
 
       <div class="grid md2:grid-cols-3 gap-5">
         <article
           v-for="item in testimonials"
-          :key="item.name"
+          :key="item.id"
           class="bg-white rounded-2xl border border-border p-6 shadow-sm"
         >
           <div class="flex gap-0.5 mb-4">
@@ -43,30 +43,8 @@
 </template>
 
 <script setup>
-const testimonials = [
-  {
-    quote:
-      "Venpadi cut our venue shortlist time from two weeks to an afternoon. Transparent pricing and verified photos meant zero surprises on the day.",
-    name: "Adaora Okeke",
-    role: "Lead Planner, Bloom Events · Lagos",
-    initials: "AO",
-    color: "#FF4D17",
-  },
-  {
-    quote:
-      "We booked a 400-guest corporate summit across three cities. Contracts, deposits, and vendor coordination all lived in one place — game changer.",
-    name: "James Whitmore",
-    role: "Events Director, Northline · London",
-    initials: "JW",
-    color: "#1E3A5F",
-  },
-  {
-    quote:
-      "As a first-time host I needed guidance. The walkthroughs and escrow payment gave me confidence I was booking a real, quality space.",
-    name: "Fatima Hassan",
-    role: "Private Host · Abuja",
-    initials: "FH",
-    color: "#FF8A00",
-  },
-];
+defineProps({
+  testimonials: { type: Array, default: () => [] },
+  planners: { type: Number, default: null },
+});
 </script>

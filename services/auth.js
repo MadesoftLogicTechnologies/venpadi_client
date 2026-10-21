@@ -1,74 +1,80 @@
-import { HTTP_METHODS } from "~/utils/constants";
-import {
-  useErrorHandler,
-  noError,
-  useSuccessHandler,
-} from "~/utils/handle-errors";
+/*
+ * Authentication calls. PORTAL is set per portal ("vendor" or "client"): the
+ * API refuses a client account on the vendor portal and vice versa.
+ */
 import { useAuthStore } from "~/store/auth";
 
-export async function requestResetPassword(email) {
-  const { error } = await useHttpRequest(
-    "/auth/reset-password",
-    HTTP_METHODS.POST,
-    { email }
-  );
-  if (noError(error)) {
-    useSuccessHandler(
-      "If an account exists, you will receive reset instructions."
-    );
-    return true;
-  }
-  useErrorHandler(error);
-  return false;
-}
+export const PORTAL = "client";
 
 export async function loginUser(email, password) {
-  const { error, data } = await useHttpRequest(
-    "/auth/login",
-    HTTP_METHODS.POST,
-    { email, password }
-  );
-
-  if (noError(error)) {
-    const response = data._rawValue.data;
-    const token = response.access_token;
-    const user = response.user;
-
-    // Adjust role checks for your API
-    if (user?.role && user.role !== "admin" && user.role !== "super") {
-      const { useToastStore } = await import("~/store/toast");
-      useToastStore().setMessage({ text: "Not authorized", type: "error" });
-      return false;
-    }
-
-    const authStore = useAuthStore();
-    const accessToken = useCookie("accessToken");
-    accessToken.value = token;
-
-    authStore.token = token;
-    authStore.isLoggedIn = true;
-    authStore.role = user?.role ?? null;
-    authStore.setUser(user);
-    if (import.meta.client) {
-      localStorage.setItem("token", token);
-    }
-    useSuccessHandler("Login successful");
+  try {
+    const data = await api.post("/auth/login", { email, password, portal: PORTAL });
+    useAuthStore().setSession(data);
+    notifySuccess("Login successful");
     return true;
+  } catch {
+    return false;
   }
+}
 
-  useErrorHandler(error);
-  return false;
+/** Client signup: { fullName, email, password, acceptTerms } */
+export async function registerClient(payload) {
+  const data = await api.post("/auth/register", payload);
+  useAuthStore().setSession(data);
+  return data;
+}
+
+/** Vendor signup: { fullName, email, password, acceptTerms, business: {...} } */
+export async function registerVendor(payload) {
+  const data = await api.post("/auth/register/vendor", payload);
+  useAuthStore().setSession(data);
+  return data;
+}
+
+export async function requestResetPassword(email) {
+  try {
+    await api.post("/auth/reset-password", { email });
+    notifySuccess("If an account exists, you will receive reset instructions.");
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+export async function confirmResetPassword(token, password) {
+  await api.post("/auth/reset-password/confirm", { token, password });
+  notifySuccess("Password updated. Please sign in.");
+}
+
+export async function changePassword(currentPassword, newPassword) {
+  const data = await api.post("/auth/change-password", { currentPassword, newPassword });
+  useAuthStore().setSession(data);
+  notifySuccess("Password changed");
+  return data;
 }
 
 export async function fetchUser() {
-  const { error, data } = await useHttpRequest("/auth/user", HTTP_METHODS.GET);
-
-  if (noError(error)) {
-    const authStore = useAuthStore();
-    authStore.setUser(data._rawValue.data.user);
-    return data;
+  try {
+    const data = await api.get("/auth/user", undefined, { toast: false });
+    useAuthStore().setUser(data.user);
+    return data.user;
+  } catch {
+    return null;
   }
+}
 
-  useErrorHandler(error);
-  return null;
+export async function logoutAll() {
+  await api.post("/auth/logout-all");
+  useAuthStore().clearSession();
+  navigateTo("/auth/login");
+}
+
+export function previewInvitation(token) {
+  return api.get(`/auth/invitations/${encodeURIComponent(token)}`, undefined, { toast: false });
+}
+
+export async function acceptInvitation(payload) {
+  const data = await api.post("/auth/invitations/accept", payload);
+  useAuthStore().setSession(data);
+  return data;
 }

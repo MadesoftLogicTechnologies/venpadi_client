@@ -11,6 +11,7 @@
           isBooker ? 'Search venues, bookings...' : 'Search venues, bookings, clients...'
         "
         class="w-full"
+        @keyup.enter="runSearch"
       />
     </div>
 
@@ -27,9 +28,11 @@
           type="button"
           class="relative w-9 h-9 rounded-full flex items-center justify-center text-bodytext hover:bg-greybg"
           aria-label="Notifications"
+          @click="navigateTo('/notifications')"
         >
           <i class="pi pi-bell text-sm"></i>
           <span
+            v-if="unreadNotifications"
             class="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-primary"
           ></span>
         </button>
@@ -37,12 +40,14 @@
           type="button"
           class="hidden sm:flex w-9 h-9 rounded-full items-center justify-center text-bodytext hover:bg-greybg"
           aria-label="Messages"
+          @click="navigateTo('/messages')"
         >
           <i class="pi pi-comment text-sm"></i>
         </button>
         <button
           type="button"
           class="hidden md2:inline-flex items-center px-2 text-sm font-medium text-header hover:text-primary"
+          @click="navigateTo('/help')"
         >
           Support
         </button>
@@ -50,6 +55,7 @@
           type="button"
           class="flex items-center gap-2 pl-1 pr-1.5 py-1 rounded-full hover:bg-greybg"
           aria-label="Profile"
+          @click="openProfile"
         >
           <span
             class="w-8 h-8 rounded-full bg-gradient-to-br from-orange-200 to-primary overflow-hidden shrink-0"
@@ -78,6 +84,7 @@
         <button
           type="button"
           class="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl border border-border bg-white text-sm font-medium text-header hover:bg-greybg transition-colors"
+          @click="navigateTo('/auth/signup/venue')"
         >
           <i class="pi pi-plus text-xs"></i>
           Venue
@@ -86,6 +93,7 @@
         <button
           type="button"
           class="hidden xs:inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-brand-gradient text-white text-sm font-semibold hover:opacity-95 transition-opacity"
+          @click="navigateTo('/discover')"
         >
           <i class="pi pi-calendar-plus text-xs"></i>
           Booking
@@ -96,6 +104,7 @@
             type="button"
             class="w-9 h-9 rounded-full flex items-center justify-center text-bodytext hover:bg-greybg"
             aria-label="Notifications sound"
+            @click="comingSoon"
           >
             <i class="pi pi-volume-up text-sm"></i>
           </button>
@@ -103,6 +112,7 @@
             type="button"
             class="w-9 h-9 rounded-full flex items-center justify-center text-bodytext hover:bg-greybg"
             aria-label="Inbox"
+            @click="navigateTo('/messages')"
           >
             <i class="pi pi-inbox text-sm"></i>
           </button>
@@ -110,9 +120,11 @@
             type="button"
             class="relative w-9 h-9 rounded-full flex items-center justify-center text-bodytext hover:bg-greybg"
             aria-label="Notifications"
+            @click="navigateTo('/notifications')"
           >
             <i class="pi pi-bell text-sm"></i>
             <span
+              v-if="unreadNotifications"
               class="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-primary"
             ></span>
           </button>
@@ -122,6 +134,7 @@
           type="button"
           class="w-9 h-9 rounded-full bg-gradient-to-br from-orange-200 to-primary overflow-hidden border-2 border-white shadow-sm shrink-0"
           aria-label="Profile"
+          @click="openProfile"
         >
           <img
             v-if="avatarUrl"
@@ -143,25 +156,60 @@
 
 <script setup>
 import { useAuthStore } from "~/store/auth";
+import { useToastStore } from "~/store/toast";
 
 const authStore = useAuthStore();
 const route = useRoute();
 const search = ref("");
 
+// Master's switch: the booker header for signed-in planners and on /discover.
 const isBooker = computed(
-  () => authStore.role === "booker" || route.path.startsWith("/discover")
+  () => (authStore.isAuthenticated && !!authStore.user) || authStore.role === "booker" || route.path.startsWith("/discover")
 );
 
-const displayName = computed(() => authStore.user?.name || "Emma");
-const avatarUrl = computed(() => authStore.user?.avatar || "");
+const displayName = computed(() => authStore.displayName || authStore.user?.email || "");
+const avatarUrl = computed(() => authStore.user?.avatarUrl || "");
 
-const initials = computed(() => {
-  const name = displayName.value;
-  return name
+const initials = computed(() =>
+  displayName.value
     .split(" ")
+    .filter(Boolean)
     .map((p) => p[0])
     .join("")
     .slice(0, 2)
-    .toUpperCase();
-});
+    .toUpperCase()
+);
+
+/* ── unread dot ──────────────────────────────────────────────────────────── */
+const unreadNotifications = ref(0);
+
+async function loadCounts() {
+  if (!authStore.isAuthenticated) {
+    unreadNotifications.value = 0;
+    return;
+  }
+  try {
+    const notes = await api.get("/notifications", { unread: true, limit: 1 }, { toast: false });
+    unreadNotifications.value = notes?.unreadCount ?? notes?.total ?? 0;
+  } catch {
+    /* the dot is decoration — never block the page */
+  }
+}
+
+onMounted(loadCounts);
+watch(() => route.path, loadCounts);
+watch(() => authStore.isAuthenticated, loadCounts);
+
+function runSearch() {
+  const q = search.value.trim();
+  return navigateTo({ path: "/search", query: q ? { location: q } : {} });
+}
+
+function openProfile() {
+  return navigateTo(authStore.isAuthenticated ? "/settings" : "/auth/login");
+}
+
+function comingSoon() {
+  useToastStore().setMessage({ text: "Coming soon.", type: "info" });
+}
 </script>

@@ -30,20 +30,21 @@
       <div class="grid sm:grid-cols-2 md2:grid-cols-4 gap-4 sm:gap-5">
         <article
           v-for="dest in filteredDestinations"
-          :key="dest.name"
+          :key="dest.city"
           class="group relative rounded-2xl overflow-hidden aspect-[3/4] cursor-pointer"
+          @click="navigateTo({ path: '/search', query: { city: dest.city } })"
         >
           <img
-            :src="dest.image"
-            :alt="dest.name"
+            :src="dest.imageUrl"
+            :alt="dest.city"
             class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
           />
           <div
             class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"
           ></div>
           <div class="absolute bottom-0 left-0 right-0 p-5 text-white">
-            <h3 class="text-xl font-bold">{{ dest.name }}</h3>
-            <p class="mt-1 text-sm text-white/80">{{ dest.meta }}</p>
+            <h3 class="text-xl font-bold">{{ dest.city }}</h3>
+            <p class="mt-1 text-sm text-white/80">{{ meta(dest) }}</p>
           </div>
         </article>
       </div>
@@ -52,43 +53,24 @@
 </template>
 
 <script setup>
-const cities = [
-  "All Cities",
-  "Lagos",
-  "Abuja",
-  "London",
-  "Dubai",
-  "Nairobi",
-  "Accra",
-];
+const props = defineProps({
+  destinations: { type: Array, default: () => [] },
+});
 
-const activeCity = ref("All Cities");
+const ALL = "All Cities";
+const activeCity = ref(ALL);
 
-const destinations = [
-  {
-    name: "Lagos",
-    meta: "4,200+ Spaces · $150/hr avg",
-    image: "/images/dest-lagos.jpg",
-  },
-  {
-    name: "Abuja",
-    meta: "1,800+ Spaces · $120/hr avg",
-    image: "/images/dest-abuja.jpg",
-  },
-  {
-    name: "London",
-    meta: "3,100+ Spaces · $220/hr avg",
-    image: "/images/dest-london.jpg",
-  },
-  {
-    name: "Dubai",
-    meta: "2,400+ Spaces · $280/hr avg",
-    image: "/images/dest-dubai.jpg",
-  },
-];
+const cities = computed(() => [ALL, ...props.destinations.map((d) => d.city)]);
 
 const filteredDestinations = computed(() => {
-  if (activeCity.value === "All Cities") return destinations;
-  return destinations.filter((d) => d.name === activeCity.value);
+  if (activeCity.value === ALL) return props.destinations;
+  return props.destinations.filter((d) => d.city === activeCity.value);
 });
+
+function meta(dest) {
+  const spaces = `${Number(dest.spacesCount).toLocaleString("en-US")} ${dest.spacesCount === 1 ? "Space" : "Spaces"}`;
+  return dest.avgHourlyMinor === null || dest.avgHourlyMinor === undefined
+    ? spaces
+    : `${spaces} · ${naira(dest.avgHourlyMinor)}/hr avg`;
+}
 </script>

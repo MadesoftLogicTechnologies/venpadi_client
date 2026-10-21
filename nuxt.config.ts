@@ -20,6 +20,8 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       API_URL: process.env.API_URL,
+      // Where venue owners sign up ("List your venue" links leave this portal).
+      VENDOR_PORTAL_URL: process.env.VENDOR_PORTAL_URL || "http://localhost:3001",
       ENVIRONMENT: process.env.ENVIRONMENT,
     },
   },

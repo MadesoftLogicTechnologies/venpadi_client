@@ -6,7 +6,7 @@
         <span class="text-bodytext2">›</span>
         <NuxtLink :to="venuePath" class="hover:text-header">{{ venue.name }}</NuxtLink>
         <span class="text-bodytext2">›</span>
-        <span class="text-header font-medium">Grand Ballroom</span>
+        <span class="text-header font-medium">{{ firstSpaceName }}</span>
       </nav>
 
       <div class="mt-5 md2:flex md2:items-start md2:gap-6">
@@ -26,7 +26,7 @@
               class="relative w-full h-[120px] md2:w-[132px] md2:h-[88px] rounded-xl overflow-hidden shrink-0 bg-greybg"
             >
               <img
-                src="/images/palm-court.jpg"
+                :src="coverImage"
                 :alt="venue.name"
                 class="absolute inset-0 w-full h-full object-cover"
               />
@@ -36,10 +36,10 @@
                 {{ venue.name }}
               </p>
               <h2 class="mt-1 text-[18px] font-extrabold text-header leading-snug">
-                {{ eventName }}
+                {{ draft.eventName || "—" }}
               </h2>
               <p class="mt-1 text-[13px] text-bodytext">
-                2 Days · Aug 24–25 · ~300 guests
+                {{ headerLine }}
               </p>
             </div>
             <div class="mt-3 md2:mt-0 flex items-center gap-3 shrink-0">
@@ -107,9 +107,9 @@
               </div>
               <div class="mt-3 md2:mt-0 text-right shrink-0">
                 <p class="text-[18px] font-extrabold text-header">
-                  {{ naira(day.spacePrice) }}
+                  {{ money(day.spacePrice) }}
                 </p>
-                <p class="text-[12px] text-bodytext">Full Day Rate</p>
+                <p class="text-[12px] text-bodytext">{{ day.rateLabel }}</p>
                 <p class="mt-1 text-[12px] text-bodytext">{{ day.guests }} guests</p>
               </div>
             </div>
@@ -131,7 +131,7 @@
               <div class="mt-4 flex items-center justify-between">
                 <span class="text-[13px] text-bodytext">{{ day.short }} Total</span>
                 <span class="text-[16px] font-extrabold text-header">
-                  {{ naira(day.total) }}+
+                  {{ money(day.total) }}+
                 </span>
               </div>
             </div>
@@ -143,40 +143,37 @@
         >
           <h2 class="text-[16px] font-bold text-header">Pricing Breakdown</h2>
           <div class="mt-4 space-y-3 text-[13px]">
-            <div class="flex justify-between gap-3">
-              <span class="text-bodytext">Day 1 (Spaces & Add-ons)</span>
-              <span class="font-semibold text-header">{{ naira(15960000) }}</span>
-            </div>
-            <div class="flex justify-between gap-3">
-              <span class="text-bodytext">Day 2 (Spaces & Add-ons)</span>
-              <span class="font-semibold text-header">{{ naira(11445000) }}</span>
+            <div v-for="(day, index) in days" :key="day.id" class="flex justify-between gap-3">
+              <span class="text-bodytext">Day {{ index + 1 }} (Spaces & Add-ons)</span>
+              <span class="font-semibold text-header">{{ money(day.total) }}</span>
             </div>
             <div class="flex justify-between gap-3">
               <span class="text-bodytext">Staff Gratuity (Est.)</span>
-              <span class="font-semibold text-header">{{ naira(1800000) }}</span>
+              <span class="font-semibold text-header">—</span>
             </div>
           </div>
 
           <div class="mt-5 pt-4 border-t border-border">
             <p class="text-[12px] text-bodytext">Proposed Total</p>
             <p class="mt-1 text-[26px] font-extrabold text-header leading-none">
-              {{ naira(23205000) }}+
+              {{ money(proposedTotal) }}+
             </p>
             <div class="mt-3 flex justify-between text-[12px]">
-              <span class="text-bodytext">VAT (7.5%)</span>
-              <span class="font-medium text-header">{{ naira(1740375) }}</span>
+              <span class="text-bodytext">VAT ({{ vatPct }})</span>
+              <span class="font-medium text-header">{{ money(quote?.totals?.vatMinor) }}</span>
             </div>
             <div class="mt-2 flex justify-between text-[13px]">
               <span class="font-semibold text-header">Total incl. VAT</span>
-              <span class="font-extrabold text-header">{{ naira(24945375) }}+</span>
+              <span class="font-extrabold text-header">{{ money(quote?.totals?.totalMinor) }}+</span>
             </div>
             <p class="mt-4 text-[22px] font-extrabold text-header">
-              {{ naira(12472688) }}
+              {{ money(quote?.totals?.depositDueMinor) }}
             </p>
             <button
               type="button"
               class="mt-4 w-full h-11 rounded-full bg-brand-gradient-soft text-white text-[13px] font-semibold inline-flex items-center justify-center gap-2"
-              @click="sent = true"
+              :disabled="submitting"
+              @click="submit"
             >
               Submit Booking Proposal
               <i class="pi pi-send text-[11px]"></i>
@@ -188,7 +185,7 @@
 
     <Teleport to="body">
       <div
-        v-if="sent"
+        v-if="booking"
         class="fixed z-[70] top-[64px] left-0 right-0 bottom-0 md2:left-[248px] bg-[#F3F4F6]/90 overflow-y-auto"
       >
         <div class="min-h-full px-4 py-8 flex justify-center">
@@ -239,14 +236,14 @@
                 <div class="flex gap-3">
                   <div class="w-14 h-14 rounded-xl overflow-hidden shrink-0 bg-greybg">
                     <img
-                      src="/images/grand-atrium.jpg"
+                      :src="booking.venue?.imageUrl || coverImage"
                       :alt="venue.name"
                       class="w-full h-full object-cover"
                     />
                   </div>
                   <div>
                     <p class="text-[14px] font-bold text-header">{{ venue.name }}</p>
-                    <p class="text-[12px] text-bodytext">Premium Event Space</p>
+                    <p class="text-[12px] text-bodytext">{{ venue.categoryLabel || "—" }}</p>
                   </div>
                 </div>
                 <div class="mt-4 grid grid-cols-2 gap-x-4 gap-y-3 text-[13px]">
@@ -256,23 +253,19 @@
                   </div>
                   <div>
                     <p class="text-[11px] text-bodytext2">Space</p>
-                    <p class="font-semibold text-header">2 days · Aug 24–25, 2024</p>
+                    <p class="font-semibold text-header">{{ sentDaysLabel }}</p>
                   </div>
-                  <div>
-                    <p class="text-[11px] text-bodytext2">Day 1</p>
-                    <p class="font-medium text-header">Grand Ballroom · 10AM–10PM</p>
-                  </div>
-                  <div>
-                    <p class="text-[11px] text-bodytext2">Day 2</p>
-                    <p class="font-medium text-header">Rooftop Terrace · 4PM–11PM</p>
+                  <div v-for="(seg, index) in booking.segments" :key="seg.id">
+                    <p class="text-[11px] text-bodytext2">Day {{ index + 1 }}</p>
+                    <p class="font-medium text-header">{{ seg.space?.name }} · {{ seg.timeLabel }}</p>
                   </div>
                   <div>
                     <p class="text-[11px] text-bodytext2">Add-ons</p>
-                    <p class="font-medium text-header">21 selections across both days</p>
+                    <p class="font-medium text-header">{{ addonCount }} selections across {{ acrossLabel }}</p>
                   </div>
                   <div>
                     <p class="text-[11px] text-bodytext2">Proposal Total</p>
-                    <p class="font-extrabold text-header">₦23,205,000+</p>
+                    <p class="font-extrabold text-header">{{ money(booking.totals?.totalMinor) }}+</p>
                   </div>
                 </div>
                 <div
@@ -283,10 +276,10 @@
                     class="inline-flex items-center gap-1.5 text-[12px] font-semibold text-header"
                     @click="copyRef"
                   >
-                    VEN-2024-PROP-00847
+                    {{ booking.reference }}
                     <i class="pi text-[11px]" :class="copied ? 'pi-check text-[#22C55E]' : 'pi-copy'"></i>
                   </button>
-                  <span class="text-[12px] text-bodytext2">Submitted 24 Aug 2024</span>
+                  <span class="text-[12px] text-bodytext2">Submitted {{ formatDate(booking.createdAt) }}</span>
                 </div>
               </div>
 
@@ -310,14 +303,14 @@
                       <div>
                         <p class="text-[14px] font-bold text-header">Owner Review</p>
                         <p class="mt-0.5 text-[13px] text-bodytext">
-                          The venue owner will review your 2-day proposal.
+                          The venue owner will review your {{ booking.segments?.length || 1 }}-day proposal.
                         </p>
                       </div>
                     </div>
                   </div>
                   <div class="flex gap-3">
                     <span class="shrink-0 w-[118px] text-[11px] text-bodytext leading-snug">
-                      50% deposit — ₦12,472,688 — due within 48 hours
+                      {{ booking.totals?.depositPercent ?? "—" }}% deposit — {{ money(booking.totals?.depositDueMinor) }} — due within 48 hours
                     </span>
                     <div class="flex gap-3 min-w-0">
                       <span
@@ -342,7 +335,7 @@
                       <div>
                         <p class="text-[14px] font-bold text-header">Booking Confirmed</p>
                         <p class="mt-0.5 text-[13px] text-bodytext">
-                          Both days lock in once deposit is processed.
+                          {{ lockInLabel }} lock in once deposit is processed.
                         </p>
                       </div>
                     </div>
@@ -373,49 +366,163 @@
 </template>
 
 <script setup>
-const route = useRoute();
-
-const venue = computed(() => ({
-  name: (route.query.venue && String(route.query.venue)) || "The Grand Pavilion",
-  location:
-    (route.query.location && String(route.query.location)) ||
-    "Victoria Island, Lagos",
-}));
-
-const eventName = computed(
-  () =>
-    (route.query.eventName && String(route.query.eventName)) ||
-    "Okonkwo-Adeyemi Wedding Celebration"
-);
-
-const query = computed(() => ({
-  venue: venue.value.name,
-  location: venue.value.location,
-  slug: route.query.slug || "the-grand-pavilion",
-  ...(route.query.eventName ? { eventName: route.query.eventName } : {}),
-}));
-
-const venuePath = computed(() => ({
-  path: `/discover/${query.value.slug}`,
-  query: {
-    venue: query.value.venue,
-    location: query.value.location,
-  },
-}));
-
-const setupPath = computed(() => ({
-  path: "/discover/setup",
-  query: query.value,
-}));
+/*
+ * Step 3: the full POST /quote breakdown of the draft, then POST /me/bookings.
+ * Submitting is the acceptance of the terms (acceptTerms: true is sent). A
+ * signed-out visitor goes through sign-up first and lands back here with the
+ * draft intact (it is kept in localStorage).
+ */
+import { useAuthStore } from "~/store/auth";
+import { useToastStore } from "~/store/toast";
 
 useHead({ title: "Review & Submit Proposal" });
 
-const sent = ref(false);
+const route = useRoute();
+const auth = useAuthStore();
+const { draft, startFor, quoteBody, bookingBody, quotable, reset } = useBookingDraft();
+const slug = computed(() => String(route.query.slug || draft.venueSlug || ""));
+const { venue: venueData, load, spaceById, coverImage } = useWizardVenue(slug);
+
+const venue = computed(() => venueData.value ?? { name: "—" });
+const venuePath = computed(() => ({ path: `/discover/${slug.value}` }));
+const setupPath = computed(() => ({ path: "/discover/setup", query: { slug: slug.value } }));
+const firstSpaceName = computed(() => spaceById(draft.days[0]?.spaceId)?.name || "—");
+
+const money = (minor) => (minor === null || minor === undefined ? "—" : naira(minor));
+
+const quote = ref(null);
+
+async function loadQuote() {
+  if (!quotable()) return;
+  try {
+    quote.value = await api.post("/quote", quoteBody());
+  } catch {
+    quote.value = null; // the toast carries the API's message
+  }
+}
+
+onMounted(async () => {
+  if (!slug.value) return navigateTo("/discover");
+  const v = await load();
+  if (!v) {
+    useToastStore().setMessage({ text: "We could not load this venue.", type: "error" });
+    return;
+  }
+  startFor(v);
+  loadQuote();
+});
+
+/* ── header & day cards ──────────────────────────────────────────────────── */
+const shortDate = (ymd) =>
+  ymd ? new Date(`${ymd}T12:00:00Z`).toLocaleDateString("en-US", { month: "short", day: "numeric", timeZone: "UTC" }) : "";
+
+const dateSpan = computed(() => {
+  const dates = draft.days.map((d) => d.date).filter(Boolean).sort();
+  if (!dates.length) return "—";
+  if (dates.length === 1) return shortDate(dates[0]);
+  return `${shortDate(dates[0])}–${shortDate(dates[dates.length - 1])}`;
+});
+
+const headerLine = computed(() => {
+  const n = draft.days.length;
+  return `${n} ${n === 1 ? "Day" : "Days"} · ${dateSpan.value} · ~${Number(draft.guests || 0).toLocaleString("en-US")} guests`;
+});
+
+const clock = (hhmm) => {
+  if (!hhmm) return "—";
+  const [h, m] = hhmm.split(":").map(Number);
+  const suffix = h >= 12 ? "PM" : "AM";
+  const h12 = h % 12 === 0 ? 12 : h % 12;
+  return `${h12}:${String(m).padStart(2, "0")} ${suffix}`;
+};
+
+const segmentOf = (i) => quote.value?.segments?.find((s) => s.index === i) ?? null;
+
+// Master's day card shape.
+const days = computed(() =>
+  draft.days.map((d, i) => {
+    const space = spaceById(d.spaceId);
+    const seg = segmentOf(i);
+    const addonLines = (quote.value?.lines ?? []).filter((l) => l.kind === "addon" && l.segmentIndex === i);
+    return {
+      id: `d${i + 1}`,
+      short: `Day ${i + 1}`,
+      title: `Day ${i + 1}: ${d.title || "Untitled"}`,
+      dateLabel: d.date ? formatDateFull(`${d.date}T12:00:00Z`) : "—",
+      time: `${clock(d.startTime)} – ${clock(d.endTime)}`,
+      image: space?.imageUrl || coverImage.value,
+      space: space?.name || "—",
+      capacity: space?.maxCapacity ? Number(space.maxCapacity).toLocaleString("en-US") : "—",
+      setting: space?.environment || space?.typeLabel || "—",
+      spacePrice: seg?.spaceAmountMinor ?? null,
+      rateLabel: seg?.tierLabel ? `${seg.tierLabel} Rate` : "Full Day Rate",
+      guests: Number(draft.guests || 0).toLocaleString("en-US"),
+      addons: addonLines.map((l) => ({
+        label: l.quantity > 1 ? `${l.name} ×${l.quantity}` : l.name,
+        price: nairaCompact(l.amountMinor),
+      })),
+      total: quote.value?.perDay?.find((p) => p.segmentIndex === i)?.subtotalMinor ?? null,
+    };
+  })
+);
+
+/* ── pricing breakdown ───────────────────────────────────────────────────── */
+const proposedTotal = computed(() => {
+  const t = quote.value?.totals;
+  return t ? t.totalMinor - t.vatMinor : null;
+});
+const vatPct = computed(() => {
+  const bps = quote.value?.totals?.vatBps;
+  return bps === null || bps === undefined ? "—" : pct(bps / 100, 1);
+});
+
+/* ── submit ──────────────────────────────────────────────────────────────── */
+const submitting = ref(false);
+const booking = ref(null);
 const copied = ref(false);
 
+async function submit() {
+  if (submitting.value) return;
+  if (!auth.isAuthenticated) {
+    const redirect = `/discover/review?slug=${encodeURIComponent(slug.value)}`;
+    return navigateTo({ path: "/auth/signup", query: { redirect, venue: slug.value } });
+  }
+  if (!draft.eventName.trim() || !draft.eventType) {
+    // Name and type are set on the setup step; send them back there.
+    useToastStore().setMessage({ text: "Add your event name and type first.", type: "error" });
+    return navigateTo(setupPath.value);
+  }
+  submitting.value = true;
+  try {
+    // Submitting is the acceptance of the booking terms: bookingBody() sends acceptTerms: true.
+    booking.value = await api.post("/me/bookings", bookingBody());
+    reset();
+  } catch {
+    /* the toast carries the API's message */
+  } finally {
+    submitting.value = false;
+  }
+}
+
+/* ── success modal ───────────────────────────────────────────────────────── */
 const shortEventName = computed(() => {
-  const name = eventName.value.replace(" Celebration", "");
-  return name.length > 28 ? `${name.slice(0, 26)}…` : name;
+  const name = String(booking.value?.eventName || "");
+  return name.length > 28 ? `${name.slice(0, 26)}…` : name || "—";
+});
+const sentDaysLabel = computed(() => {
+  const n = booking.value?.segments?.length || 1;
+  return `${n} ${n === 1 ? "day" : "days"} · ${booking.value?.dateLabel || "—"}`;
+});
+const addonCount = computed(() =>
+  (booking.value?.segments ?? []).reduce((n, s) => n + (s.addons?.length ?? 0), 0)
+);
+const acrossLabel = computed(() => {
+  const n = booking.value?.segments?.length || 1;
+  return n === 1 ? "your day" : n === 2 ? "both days" : `all ${n} days`;
+});
+const lockInLabel = computed(() => {
+  const n = booking.value?.segments?.length || 1;
+  return n === 1 ? "Your day will" : n === 2 ? "Both days" : `All ${n} days`;
 });
 
 const confetti = [
@@ -431,7 +538,7 @@ const confetti = [
 
 async function copyRef() {
   try {
-    await navigator.clipboard.writeText("VEN-2024-PROP-00847");
+    await navigator.clipboard.writeText(booking.value?.reference ?? "");
     copied.value = true;
     setTimeout(() => {
       copied.value = false;
@@ -439,50 +546,5 @@ async function copyRef() {
   } catch {
     copied.value = false;
   }
-}
-
-const days = [
-  {
-    id: "d1",
-    short: "Day 1",
-    title: "Day 1: Grand Celebration",
-    dateLabel: "Saturday, 24 August 2024",
-    time: "10:00 AM – 10:00 PM",
-    image: "/images/meridian-ballroom.jpg",
-    space: "Grand Ballroom",
-    capacity: 500,
-    setting: "Indoor",
-    spacePrice: 1200000,
-    guests: 300,
-    addons: [
-      { label: "Premium Seating", price: "₦150k" },
-      { label: "Stage Setup", price: "₦200k" },
-      { label: "AV Package", price: "₦150k" },
-    ],
-    total: 15960000,
-  },
-  {
-    id: "d2",
-    short: "Day 2",
-    title: "Day 2: Evening Reception",
-    dateLabel: "Sunday, 25 August 2024",
-    time: "4:00 PM – 12:00 AM",
-    image: "/images/grand-atrium.jpg",
-    space: "Grand Ballroom",
-    capacity: 500,
-    setting: "Indoor",
-    spacePrice: 1200000,
-    guests: 150,
-    addons: [
-      { label: "Premium Seating", price: "₦150k" },
-      { label: "Stage Setup", price: "₦200k" },
-      { label: "AV Package", price: "₦150k" },
-    ],
-    total: 11445000,
-  },
-];
-
-function naira(value) {
-  return `₦${Number(value).toLocaleString("en-NG")}`;
 }
 </script>

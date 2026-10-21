@@ -23,20 +23,22 @@
       <h3 class="text-sm font-bold text-header mb-3">Venue Category</h3>
       <div class="space-y-2.5">
         <label
-          v-for="cat in categories"
-          :key="cat.id"
+          v-for="cat in categoryList"
+          :key="cat.key"
           class="flex items-center justify-between gap-3 cursor-pointer text-sm text-header"
         >
           <span class="flex items-center gap-2.5 min-w-0">
             <input
               v-model="categoryModel"
               type="checkbox"
-              :value="cat.id"
+              :value="cat.key"
               class="accent-primary w-4 h-4 rounded"
             />
             <span class="truncate">{{ cat.label }}</span>
           </span>
-          <span class="text-xs text-bodytext2 shrink-0">{{ cat.count }}</span>
+          <span class="text-xs text-bodytext2 shrink-0">
+            {{ counts[cat.key] ?? "—" }}
+          </span>
         </label>
       </div>
     </div>
@@ -46,17 +48,17 @@
       <div class="flex flex-wrap gap-2">
         <button
           v-for="range in capacityRanges"
-          :key="range"
+          :key="range.value"
           type="button"
           class="px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors"
           :class="
-            capacityModel === range
+            capacityModel === range.value
               ? 'bg-primary text-white border-primary'
               : 'bg-white text-header border-border hover:bg-greybg'
           "
-          @click="capacityModel = capacityModel === range ? '' : range"
+          @click="capacityModel = capacityModel === range.value ? '' : range.value"
         >
-          {{ range }}
+          {{ range.label }}
         </button>
       </div>
     </div>
@@ -64,6 +66,13 @@
 </template>
 
 <script setup>
+const props = defineProps({
+  /** catalog.searchCategories: [{ key, label }] */
+  categoryOptions: { type: Array, default: () => [] },
+  /** search response categoryCounts: [{ key, label, count }] */
+  categoryCounts: { type: Array, default: () => [] },
+});
+
 const sortModel = defineModel("sort", { type: String, default: "recommended" });
 const categoryModel = defineModel("categories", { type: Array, default: () => [] });
 const capacityModel = defineModel("capacity", { type: String, default: "" });
@@ -76,15 +85,18 @@ const sortOptions = [
   { label: "Distance to Center", value: "distance" },
 ];
 
-const categories = [
-  { id: "hotel", label: "Hotel & Resorts", count: "752" },
-  { id: "rooftop", label: "Rooftop & Terraces", count: "418" },
-  { id: "conference", label: "Conference Center", count: "631" },
-  { id: "banquet", label: "Banquet & Ballroom", count: "894" },
-  { id: "garden", label: "Garden & Botanical", count: "326" },
-  { id: "warehouse", label: "Warehouse & Loft", count: "187" },
-  { id: "beach", label: "Beachfront", count: "142" },
-];
+const categoryList = computed(() => props.categoryOptions);
 
-const capacityRanges = ["1–50", "51–150", "151–300", "301–500", "500+"];
+const counts = computed(() =>
+  Object.fromEntries(props.categoryCounts.map((c) => [c.key, Number(c.count).toLocaleString("en-US")]))
+);
+
+// Sent as the API's `capacity` range ("200-500" / "500+").
+const capacityRanges = [
+  { value: "1-50", label: "1–50" },
+  { value: "51-150", label: "51–150" },
+  { value: "151-300", label: "151–300" },
+  { value: "301-500", label: "301–500" },
+  { value: "500+", label: "500+" },
+];
 </script>

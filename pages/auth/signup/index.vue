@@ -101,7 +101,7 @@
             <p class="mt-6 text-sm text-bodytext">
               Already have an account?
               <NuxtLink
-                to="/auth/login"
+                :to="{ path: '/auth/login', query: route.query.redirect ? { redirect: route.query.redirect } : {} }"
                 class="font-semibold text-primary hover:opacity-80"
               >
                 Sign In
@@ -147,7 +147,12 @@
 </template>
 
 <script setup>
-import { useAuthStore } from "~/store/auth";
+/*
+ * Client sign-up (POST /auth/register). With ?venue=<slug> the right-hand card
+ * shows the venue being booked; ?redirect= sends the new account back to the
+ * booking wizard, whose draft is kept in localStorage.
+ */
+import { registerClient } from "~/services/auth";
 
 definePageMeta({
   layout: "plain",
@@ -165,7 +170,6 @@ useHead({
 });
 
 const route = useRoute();
-const authStore = useAuthStore();
 const submitting = ref(false);
 
 const form = reactive({
@@ -174,59 +178,55 @@ const form = reactive({
   password: "",
 });
 
-const venue = computed(() => ({
-  name: (route.query.venue && String(route.query.venue)) || "The Grand Pavilion",
-  location:
-    (route.query.location && String(route.query.location)) ||
-    "Victoria Island, Lagos",
-  image: "/images/grand-atrium.jpg",
-}));
-
-function slugify(value) {
-  return String(value)
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/(^-|-$)/g, "");
-}
-
-async function continueAsBooker() {
-  const name = form.fullName.trim() || "Emma";
-  authStore.token = "booker-demo";
-  authStore.isLoggedIn = true;
-  authStore.role = "booker";
-  authStore.user = {
-    name,
-    email: form.email || "emma@example.com",
-    avatar: "",
+const venueSlug = computed(() => (route.query.venue ? String(route.query.venue) : ""));
+const { data: venueData } = useResource(
+  () =>
+    venueSlug.value
+      ? api.get(`/public/venues/${encodeURIComponent(venueSlug.value)}`, undefined, { toast: false })
+      : Promise.resolve(null),
+  { watch: [venueSlug] }
+);
+const venue = computed(() => {
+  const v = venueData.value;
+  return {
+    name: v?.name || "—",
+    location: v?.location?.label || "—",
+    image: v?.gallery?.[0]?.url || v?.spaces?.[0]?.imageUrl || "/images/grand-atrium.jpg",
   };
+});
 
-  await navigateTo({
-    path: `/discover/${slugify(venue.value.name)}`,
-    query: {
-      venue: venue.value.name,
-      location: venue.value.location,
-    },
-  });
+function safeRedirect(value) {
+  const v = Array.isArray(value) ? value[0] : value;
+  return typeof v === "string" && v.startsWith("/") && !v.startsWith("//") ? v : "/dashboards";
 }
+
+const FIELD_LABELS = { fullName: "Full name", email: "Email", password: "Password", acceptTerms: "Terms" };
 
 async function createAccount() {
+  if (submitting.value) return;
   submitting.value = true;
   try {
-    await new Promise((r) => setTimeout(r, 600));
-    await continueAsBooker();
+    await registerClient({
+      fullName: form.fullName.trim(),
+      email: form.email.trim(),
+      password: form.password,
+      acceptTerms: true,
+    });
+    notifySuccess("Account created — welcome to Venpadi!");
+    await navigateTo(safeRedirect(route.query.redirect));
+  } catch (err) {
+    // The plain layout has no toast outlet, so validation problems are shown in an alert.
+    const lines = err?.fields
+      ? Object.entries(err.fields).map(([k, v]) => `${FIELD_LABELS[k] ?? k}: ${v}`)
+      : [err?.message || "Could not create your account."];
+    if (import.meta.client) window.alert(lines.join("\n"));
   } finally {
     submitting.value = false;
   }
 }
 
-async function continueWithGoogle() {
-  submitting.value = true;
-  try {
-    await new Promise((r) => setTimeout(r, 400));
-    form.fullName = form.fullName || "Emma";
-    await continueAsBooker();
-  } finally {
-    submitting.value = false;
-  }
+function continueWithGoogle() {
+  // No toast outlet on the plain layout.
+  window.alert("Google sign-up is coming soon.");
 }
 </script>

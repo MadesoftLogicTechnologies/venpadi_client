@@ -6,7 +6,7 @@
       class="relative w-full h-[160px] md2:w-[196px] md2:h-[128px] rounded-xl overflow-hidden shrink-0 bg-greybg"
     >
       <img
-        :src="space.image"
+        :src="space.imageUrl"
         :alt="space.name"
         class="absolute inset-0 w-full h-full object-cover"
       />
@@ -14,7 +14,7 @@
         class="absolute top-2 left-2 inline-flex items-center gap-1 px-2 py-1 rounded-md bg-white text-[11px] font-semibold text-header shadow-sm"
       >
         <i class="pi pi-users text-[10px]"></i>
-        {{ space.guests }} guests
+        {{ Number(space.maxCapacity).toLocaleString("en-US") }} guests
       </span>
     </div>
 
@@ -33,7 +33,7 @@
         <div class="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-[13px]">
           <span class="text-bodytext">
             Full day
-            <span class="font-semibold text-header">{{ naira(space.fullDay) }}</span>
+            <span class="font-semibold text-header">{{ money(space.fullDayMinor) }}</span>
           </span>
           <button
             type="button"
@@ -52,7 +52,7 @@
         <div class="md2:text-right">
           <p class="text-[10px] uppercase tracking-[0.12em] text-bodytext2">From</p>
           <p class="text-[18px] font-extrabold text-header leading-tight">
-            {{ naira(space.fromHour)
+            {{ money(space.fromHourMinor)
             }}<span class="text-[13px] font-medium text-bodytext">/hr</span>
           </p>
         </div>
@@ -75,7 +75,5 @@ defineProps({
 
 defineEmits(["select"]);
 
-function naira(value) {
-  return `₦${Number(value).toLocaleString("en-NG")}`;
-}
+const money = (minor) => (minor === null || minor === undefined ? "—" : naira(minor));
 </script>
