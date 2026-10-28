@@ -1,6 +1,6 @@
 <template>
   <div class="px-4 md2:px-8 py-5 md2:py-7">
-    <div class="max-w-[1080px] space-y-10 md2:space-y-14 pb-6">
+    <div class="w-full space-y-10 md2:space-y-14 pb-6">
       <DiscoverVenueHeroSection :venue="view" :selected-space="selectedSpace" @select-date="startBooking" />
       <DiscoverVenueSpacesSection v-model:selected-id="selectedId" :venue="view" />
       <DiscoverVenueLocationSection :venue="view" />

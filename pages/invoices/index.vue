@@ -1,20 +1,219 @@
 <template>
   <div class="px-4 md2:px-8 py-5 md2:py-7">
-    <div class="max-w-[1180px]">
-      <h1 class="text-[26px] md2:text-[28px] font-extrabold text-header tracking-tight">Invoices & Payments</h1>
-      <p class="mt-1 text-[14px] text-bodytext">What you owe, what you’ve paid, and the invoices venues have sent you.</p>
+    <div class="w-full">
+      <h1 class="text-[26px] md2:text-[32px] font-extrabold text-header tracking-tight">Invoices</h1>
+      <p class="mt-1 text-[14px] text-bodytext">Manage and track your venue payments.</p>
 
       <p v-if="pending && !loaded" class="mt-6 text-sm text-bodytext">Loading…</p>
 
       <template v-else>
-        <!-- schedule -->
-        <section class="mt-6 bg-white rounded-2xl border border-border">
+        <!-- KPIs -->
+        <div class="mt-6 grid grid-cols-1 md2:grid-cols-3 gap-4">
+          <article class="bg-white rounded-[20px] border border-border p-5">
+            <p class="text-[13px] text-bodytext flex items-center gap-2">
+              <span class="w-8 h-8 rounded-lg bg-greybg text-header flex items-center justify-center">
+                <i class="pi pi-file text-[13px]"></i>
+              </span>
+              Total Spent (YTD)
+            </p>
+            <p class="mt-4 text-[32px] md2:text-[36px] font-extrabold text-header leading-[1.05] tracking-tight break-words">
+              {{ naira(ytdSpentMinor) }}
+            </p>
+            <p v-if="ytdTrendText" class="mt-3 text-[12px] font-medium" :class="ytdTrend >= 0 ? 'text-[#16A34A]' : 'text-[#DC2626]'">
+              {{ ytdTrendText }} vs last year
+            </p>
+          </article>
+
+          <article class="rounded-[20px] border border-[#FFD4C8] bg-[#FFF7F2] p-5">
+            <p class="text-[13px] text-bodytext flex items-center gap-2">
+              <span class="w-8 h-8 rounded-lg bg-white text-primary flex items-center justify-center">
+                <i class="pi pi-clock text-[13px]"></i>
+              </span>
+              Pending Payments
+            </p>
+            <p class="mt-4 text-[32px] md2:text-[36px] font-extrabold text-header leading-[1.05] tracking-tight break-words">
+              {{ naira(pendingMinor) }}
+            </p>
+            <NuxtLink
+              v-if="payNowTo"
+              :to="payNowTo"
+              class="mt-4 inline-flex h-9 px-4 items-center gap-1.5 rounded-lg bg-header text-white text-[12px] font-semibold"
+            >
+              Pay Now <i class="pi pi-arrow-right text-[10px]"></i>
+            </NuxtLink>
+          </article>
+
+          <article class="bg-white rounded-[20px] border border-border p-5">
+            <p class="text-[13px] text-bodytext flex items-center gap-2">
+              <span class="w-8 h-8 rounded-lg bg-greybg text-header flex items-center justify-center">
+                <i class="pi pi-lock text-[13px]"></i>
+              </span>
+              Active Deposits Held
+            </p>
+            <p class="mt-4 text-[32px] md2:text-[36px] font-extrabold text-header leading-[1.05] tracking-tight break-words">
+              {{ naira(depositsHeldMinor) }}
+            </p>
+            <p class="mt-3 text-[12px] text-bodytext">
+              {{
+                depositBookings
+                  ? `Across ${depositBookings} upcoming booking${depositBookings === 1 ? "" : "s"}`
+                  : "No deposits currently held"
+              }}
+            </p>
+          </article>
+        </div>
+
+        <!-- table -->
+        <section class="mt-6 bg-white rounded-[24px] border border-border overflow-hidden">
+          <div class="p-4 md2:p-5 flex flex-col md2:flex-row md2:items-center gap-3">
+            <div class="flex-1 min-w-0">
+              <Search v-model="search" kind="grey" placeholder="Search by Invoice ID or Venue..." />
+            </div>
+            <div class="flex flex-wrap gap-1.5">
+              <button
+                v-for="f in filters"
+                :key="f.key"
+                type="button"
+                class="h-8 px-3 rounded-full text-[12px] font-semibold border inline-flex items-center gap-1.5"
+                :class="statusFilter === f.key ? 'bg-white text-primary border-primary' : 'bg-white text-header border-border hover:bg-greybg'"
+                @click="statusFilter = f.key"
+              >
+                {{ f.label }}
+                <span
+                  v-if="f.key === 'pending' && pendingCount"
+                  class="min-w-[18px] h-[18px] px-1 rounded-full bg-primary text-white text-[10px] font-bold inline-flex items-center justify-center"
+                >
+                  {{ pendingCount }}
+                </span>
+              </button>
+            </div>
+          </div>
+
+          <p v-if="!visibleRows.length" class="px-5 py-10 text-center text-[13px] text-bodytext">
+            {{ emptyCopy }}
+          </p>
+          <div v-else class="overflow-x-auto">
+            <table class="w-full text-[13px]">
+              <thead>
+                <tr class="text-[11px] uppercase tracking-wide text-bodytext2 border-t border-border">
+                  <th class="text-left font-semibold px-5 py-3">Invoice ID</th>
+                  <th class="text-left font-semibold px-3 py-3">Venue Name</th>
+                  <th class="text-left font-semibold px-3 py-3">Event Date</th>
+                  <th class="text-left font-semibold px-3 py-3">Amount</th>
+                  <th class="text-left font-semibold px-3 py-3">Status</th>
+                  <th class="text-right font-semibold px-5 py-3">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr
+                  v-for="row in visibleRows"
+                  :key="row.key"
+                  class="border-t border-border"
+                  :class="row.kind === 'invoice' || row.bookingReference ? 'cursor-pointer hover:bg-greybg/70' : ''"
+                  @click="openRow(row)"
+                >
+                  <td class="px-5 py-3.5 font-semibold text-header whitespace-nowrap">{{ row.invoiceId }}</td>
+                  <td class="px-3 py-3.5">
+                    <span class="inline-flex items-center gap-2 min-w-0">
+                      <span class="w-7 h-7 rounded-lg bg-greybg text-bodytext flex items-center justify-center shrink-0">
+                        <i class="pi pi-building text-[11px]"></i>
+                      </span>
+                      <span class="min-w-0">
+                        <span class="block truncate text-header">{{ row.venueName }}</span>
+                        <span v-if="row.subtitle" class="block truncate text-[11px] text-bodytext2">{{ row.subtitle }}</span>
+                      </span>
+                    </span>
+                  </td>
+                  <td class="px-3 py-3.5 text-bodytext whitespace-nowrap">
+                    {{ row.eventDate }}
+                    <p v-if="row.dueLabel" class="text-[11px] text-bodytext2">Due {{ row.dueLabel }}</p>
+                  </td>
+                  <td class="px-3 py-3.5 font-semibold text-header whitespace-nowrap">
+                    {{ naira(row.amountMinor) }}
+                    <p v-if="row.balanceMinor" class="text-[11px] font-medium text-primary">Balance {{ naira(row.balanceMinor) }}</p>
+                  </td>
+                  <td class="px-3 py-3.5">
+                    <span class="inline-flex items-center gap-1.5 text-[12px] font-semibold" :class="rowStatusText(row.status)">
+                      <span class="w-1.5 h-1.5 rounded-full" :class="rowStatusDot(row.status)"></span>
+                      {{ row.statusLabel }}
+                    </span>
+                  </td>
+                  <td class="px-5 py-3.5">
+                    <div class="flex items-center justify-end gap-2 text-bodytext">
+                      <button
+                        v-if="row.kind === 'invoice'"
+                        type="button"
+                        class="w-8 h-8 rounded-lg hover:bg-greybg hover:text-header"
+                        aria-label="View invoice"
+                        @click.stop="openInvoice(row)"
+                      >
+                        <i class="pi pi-eye text-[13px]"></i>
+                      </button>
+                      <NuxtLink
+                        v-else-if="row.bookingReference"
+                        :to="`/bookings/${row.bookingReference}`"
+                        class="w-8 h-8 rounded-lg hover:bg-greybg hover:text-header inline-flex items-center justify-center"
+                        aria-label="View booking"
+                        @click.stop
+                      >
+                        <i class="pi pi-eye text-[13px]"></i>
+                      </NuxtLink>
+                      <button
+                        type="button"
+                        class="w-8 h-8 rounded-lg hover:bg-greybg hover:text-header"
+                        aria-label="Download"
+                        @click.stop="downloadRow(row)"
+                      >
+                        <i class="pi pi-download text-[13px]"></i>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="px-5 py-3 border-t border-border flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+            <p class="text-[12px] text-bodytext">
+              Showing {{ shownFrom }} to {{ shownTo }} of {{ tableTotal }} entries
+            </p>
+            <nav class="flex items-center gap-1 justify-end" aria-label="Invoice pages">
+              <button
+                type="button"
+                class="w-8 h-8 rounded-lg border border-border bg-white text-bodytext hover:bg-greybg disabled:opacity-40"
+                :disabled="invoicesPage <= 1"
+                aria-label="Previous page"
+                @click="invoicesPage -= 1"
+              >
+                <i class="pi pi-chevron-left text-[10px]"></i>
+              </button>
+              <button
+                v-for="n in invoicePageNumbers"
+                :key="n"
+                type="button"
+                class="w-8 h-8 rounded-lg text-[12px] font-semibold"
+                :class="n === invoicesPage ? 'bg-header text-white' : 'border border-border bg-white text-header hover:bg-greybg'"
+                @click="invoicesPage = n"
+              >
+                {{ n }}
+              </button>
+              <button
+                type="button"
+                class="w-8 h-8 rounded-lg border border-border bg-white text-bodytext hover:bg-greybg disabled:opacity-40"
+                :disabled="invoicesPage >= invoicePages"
+                aria-label="Next page"
+                @click="invoicesPage += 1"
+              >
+                <i class="pi pi-chevron-right text-[10px]"></i>
+              </button>
+            </nav>
+          </div>
+        </section>
+
+        <!-- leftover schedule detail that the table doesn’t list as invoices -->
+        <section v-if="data.schedule.length" class="mt-5 bg-white rounded-[24px] border border-border">
           <div class="px-5 py-4 border-b border-border">
             <h2 class="text-[16px] font-bold text-header">Payment schedule</h2>
           </div>
-          <p v-if="!data.schedule.length" class="px-5 py-8 text-center text-[13px] text-bodytext">
-            Nothing due — you’re all paid up.
-          </p>
           <div
             v-for="s in data.schedule"
             :key="s.bookingId"
@@ -49,7 +248,7 @@
               <NuxtLink
                 v-if="s.outstandingMinor > 0"
                 :to="`/bookings/${s.reference}`"
-                class="mt-2 inline-flex h-9 px-4 items-center rounded-full bg-primary text-white text-[12px] font-semibold"
+                class="mt-2 inline-flex h-9 px-4 items-center rounded-lg bg-header text-white text-[12px] font-semibold"
               >
                 Pay now
               </NuxtLink>
@@ -57,15 +256,15 @@
           </div>
         </section>
 
-        <!-- payments -->
-        <section class="mt-5 bg-white rounded-2xl border border-border overflow-hidden">
+        <!-- payment history -->
+        <section class="mt-5 bg-white rounded-[24px] border border-border overflow-hidden">
           <div class="px-5 py-4 border-b border-border">
             <h2 class="text-[16px] font-bold text-header">Payment history</h2>
           </div>
           <p v-if="!data.payments.rows.length" class="px-5 py-8 text-center text-[13px] text-bodytext">No payments yet.</p>
           <div v-else class="overflow-x-auto">
             <table class="w-full text-[13px]">
-              <thead class="bg-greybg text-[11px] uppercase tracking-wide text-bodytext2">
+              <thead class="text-[11px] uppercase tracking-wide text-bodytext2">
                 <tr>
                   <th class="text-left font-semibold px-5 py-2.5">Date</th>
                   <th class="text-left font-semibold px-3 py-2.5">Reference</th>
@@ -104,153 +303,8 @@
             :limit="data.payments.limit || 25"
           />
         </section>
-
-        <!-- invoices -->
-        <section class="mt-5 bg-white rounded-2xl border border-border overflow-hidden">
-          <div class="px-5 py-4 border-b border-border">
-            <h2 class="text-[16px] font-bold text-header">Invoices</h2>
-          </div>
-          <p v-if="!data.invoices.rows.length" class="px-5 py-8 text-center text-[13px] text-bodytext">
-            No invoices yet. Venues send invoices here when they bill you directly.
-          </p>
-          <button
-            v-for="inv in data.invoices.rows"
-            :key="inv.id"
-            type="button"
-            class="w-full text-left px-5 py-4 border-b border-border last:border-b-0 hover:bg-greybg md2:flex md2:items-center md2:gap-6"
-            @click="openInvoice(inv.id)"
-          >
-            <div class="flex-1 min-w-0">
-              <p class="text-[14px] font-bold text-header">{{ inv.number }}</p>
-              <p class="text-[12px] text-bodytext">
-                {{ inv.businessName }}<template v-if="inv.venueName"> · {{ inv.venueName }}</template>
-                <template v-if="inv.bookingReference"> · {{ inv.bookingReference }}</template>
-              </p>
-            </div>
-            <div class="text-[12px] text-bodytext md2:w-[200px]">
-              Issued {{ formatDate(`${inv.issueDate}T12:00:00Z`) }} · Due {{ formatDate(`${inv.dueDate}T12:00:00Z`) }}
-            </div>
-            <div class="md2:w-[160px] md2:text-right">
-              <p class="text-[14px] font-extrabold text-header">{{ naira(inv.totalMinor) }}</p>
-              <p v-if="inv.balanceMinor" class="text-[12px] text-primary">Balance {{ naira(inv.balanceMinor) }}</p>
-            </div>
-            <span class="inline-block mt-2 md2:mt-0 px-2 py-0.5 rounded-full text-[11px] font-semibold" :class="statusClass(inv.status)">
-              {{ inv.statusLabel }}
-            </span>
-          </button>
-          <AccountPager
-            v-model:page="invoicesPage"
-            class="px-5 py-3 border-t border-border"
-            :total="data.invoices.total"
-            :limit="data.invoices.limit || 25"
-          />
-        </section>
       </template>
     </div>
-
-    <Modal v-if="invoiceId" :max-width="700" @close="invoiceId = ''">
-      <div class="px-6 py-4">
-        <p v-if="invoiceLoading && !invoice" class="text-sm text-bodytext">Loading invoice…</p>
-        <template v-else-if="invoice">
-          <div class="flex items-start justify-between gap-4">
-            <div>
-              <p class="text-[11px] uppercase tracking-[0.14em] text-bodytext2">Invoice</p>
-              <h2 class="text-[22px] font-extrabold text-header">{{ invoice.number }}</h2>
-              <span class="inline-block mt-1 px-2 py-0.5 rounded-full text-[11px] font-semibold" :class="statusClass(invoice.status)">
-                {{ invoice.statusLabel }}
-              </span>
-            </div>
-            <button type="button" class="text-bodytext hover:text-header" aria-label="Close" @click="invoiceId = ''">
-              <i class="pi pi-times"></i>
-            </button>
-          </div>
-
-          <div class="mt-5 grid grid-cols-2 gap-4 text-[13px]">
-            <div>
-              <p class="text-[11px] uppercase tracking-wide text-bodytext2">From</p>
-              <p class="font-semibold text-header">{{ invoice.issuer?.name }}</p>
-              <p v-if="invoice.issuer?.address" class="text-bodytext">{{ invoice.issuer.address }}</p>
-              <p v-if="invoice.issuer?.vatNumber" class="text-bodytext">{{ invoice.issuer.vatNumber }}</p>
-            </div>
-            <div>
-              <p class="text-[11px] uppercase tracking-wide text-bodytext2">Bill to</p>
-              <p class="font-semibold text-header">{{ invoice.billTo?.name }}</p>
-              <p v-if="invoice.billTo?.company" class="text-bodytext">{{ invoice.billTo.company }}</p>
-              <p v-if="invoice.billTo?.email" class="text-bodytext">{{ invoice.billTo.email }}</p>
-            </div>
-            <div>
-              <p class="text-[11px] uppercase tracking-wide text-bodytext2">Issued</p>
-              <p class="text-header">{{ formatDate(`${invoice.issueDate}T12:00:00Z`) }}</p>
-            </div>
-            <div>
-              <p class="text-[11px] uppercase tracking-wide text-bodytext2">Due</p>
-              <p class="text-header">{{ formatDate(`${invoice.dueDate}T12:00:00Z`) }}</p>
-            </div>
-          </div>
-
-          <table class="mt-5 w-full text-[13px]">
-            <thead class="text-[11px] uppercase tracking-wide text-bodytext2 border-b border-border">
-              <tr>
-                <th class="text-left font-semibold py-2">Item</th>
-                <th class="text-left font-semibold py-2">Qty</th>
-                <th class="text-right font-semibold py-2">Amount</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="(item, i) in invoice.items" :key="i" class="border-b border-border">
-                <td class="py-2.5">
-                  <p class="text-header">{{ item.description }}</p>
-                  <p class="text-[11px] text-bodytext2">{{ [item.group, item.detail].filter(Boolean).join(" · ") }}</p>
-                </td>
-                <td class="py-2.5 text-bodytext">{{ item.unitLabel || item.quantity }}</td>
-                <td class="py-2.5 text-right font-medium text-header">{{ naira(item.amountMinor) }}</td>
-              </tr>
-            </tbody>
-          </table>
-
-          <dl class="mt-4 ml-auto max-w-[280px] space-y-1.5 text-[13px]">
-            <div class="flex justify-between"><dt class="text-bodytext">Subtotal</dt><dd class="text-header">{{ naira(invoice.subtotalMinor) }}</dd></div>
-            <div v-if="invoice.discountMinor" class="flex justify-between"><dt class="text-bodytext">Discount</dt><dd class="text-header">−{{ naira(invoice.discountMinor) }}</dd></div>
-            <div v-if="invoice.taxMinor" class="flex justify-between"><dt class="text-bodytext">Tax ({{ pct(invoice.taxBps / 100, 1) }})</dt><dd class="text-header">{{ naira(invoice.taxMinor) }}</dd></div>
-            <div class="flex justify-between pt-1.5 border-t border-border"><dt class="font-semibold text-header">Total</dt><dd class="font-extrabold text-header">{{ naira(invoice.totalMinor) }}</dd></div>
-            <div class="flex justify-between"><dt class="text-bodytext">Paid</dt><dd class="text-[#16A34A]">{{ naira(invoice.amountPaidMinor) }}</dd></div>
-            <div class="flex justify-between"><dt class="text-bodytext">Balance</dt><dd class="font-semibold text-header">{{ naira(invoice.balanceMinor) }}</dd></div>
-          </dl>
-
-          <div v-if="invoice.milestones?.length" class="mt-5">
-            <p class="text-[12px] font-semibold text-header">Payment milestones</p>
-            <div class="mt-2 space-y-2">
-              <div v-for="(m, i) in invoice.milestones" :key="i" class="flex items-start justify-between gap-3 rounded-xl bg-greybg px-3 py-2 text-[12px]">
-                <div>
-                  <p class="font-semibold text-header">{{ m.label }}</p>
-                  <p class="text-bodytext">{{ m.description }}<template v-if="m.dueDate"> · {{ formatDate(`${m.dueDate}T12:00:00Z`) }}</template></p>
-                </div>
-                <div class="text-right">
-                  <p class="font-semibold text-header">{{ naira(m.amountMinor) }}</p>
-                  <span class="text-[11px] capitalize" :class="m.status === 'paid' ? 'text-[#16A34A]' : 'text-bodytext'">{{ m.status }}</span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <p v-if="invoice.customNote" class="mt-4 text-[12px] text-bodytext">{{ invoice.customNote }}</p>
-          <p v-if="invoice.terms" class="mt-2 text-[11px] text-bodytext2">{{ invoice.terms }}</p>
-
-          <div class="mt-5 flex justify-end gap-2">
-            <button type="button" class="h-10 px-4 rounded-full border border-border text-[13px] font-semibold text-bodytext" title="Coming soon" @click="comingSoon">
-              <i class="pi pi-download text-[11px] mr-1"></i> Download PDF
-            </button>
-            <NuxtLink
-              v-if="invoice.bookingReference"
-              :to="`/bookings/${invoice.bookingReference}`"
-              class="h-10 px-4 rounded-full bg-primary text-white text-[13px] font-semibold inline-flex items-center"
-            >
-              View booking
-            </NuxtLink>
-          </div>
-        </template>
-      </div>
-    </Modal>
   </div>
 </template>
 
@@ -261,6 +315,15 @@ useHead({ title: "Invoices" });
 
 const paymentsPage = ref(1);
 const invoicesPage = ref(1);
+const search = ref("");
+const statusFilter = ref("all");
+
+const filters = [
+  { key: "all", label: "All" },
+  { key: "paid", label: "Paid" },
+  { key: "pending", label: "Pending" },
+  { key: "overdue", label: "Overdue" },
+];
 
 const EMPTY = {
   payments: { rows: [], total: 0, page: 1, limit: 25 },
@@ -277,24 +340,235 @@ watch(pending, (p) => {
   if (!p) loaded.value = true;
 });
 
-const invoiceId = ref("");
-const invoice = ref(null);
-const invoiceLoading = ref(false);
+const { stash } = useInvoicePreview();
 
-async function openInvoice(id) {
-  invoiceId.value = id;
-  invoice.value = null;
-  invoiceLoading.value = true;
-  try {
-    invoice.value = await api.get(`/me/invoices/${encodeURIComponent(id)}`);
-  } catch {
-    invoiceId.value = "";
-  } finally {
-    invoiceLoading.value = false;
-  }
+function relatedPayments(inv) {
+  return (data.value.payments.rows ?? []).filter((p) => {
+    if (inv.bookingReference && p.bookingReference === inv.bookingReference) return true;
+    if (inv.number && (p.invoiceNumber === inv.number || p.invoiceId === inv.id)) return true;
+    return false;
+  });
+}
+
+function openInvoice(row) {
+  const inv = (data.value.invoices.rows ?? []).find((i) => String(i.id) === String(row.id));
+  if (!inv) return;
+  stash({
+    id: inv.id,
+    invoice: inv,
+    schedule: inv.bookingReference ? scheduleByRef.value[inv.bookingReference] || null : null,
+    payments: relatedPayments(inv),
+  });
+  navigateTo(`/invoices/${encodeURIComponent(inv.id)}`);
+}
+
+function openRow(row) {
+  if (row.kind === "invoice") return openInvoice(row);
+  if (row.bookingReference) navigateTo(`/bookings/${row.bookingReference}`);
 }
 
 function comingSoon() {
   useToastStore().setMessage({ text: "PDF download is coming soon.", type: "info" });
+}
+
+function downloadRow(row) {
+  const url = row.pdfUrl || row.receiptUrl || row.invoiceUrl;
+  if (url) {
+    window.open(url, "_blank", "noopener");
+    return;
+  }
+  comingSoon();
+}
+
+function yearOf(iso) {
+  if (!iso) return null;
+  const d = new Date(iso);
+  return Number.isNaN(d.getTime()) ? null : d.getFullYear();
+}
+
+const ytdSpentMinor = computed(() => {
+  const year = new Date().getFullYear();
+  return (data.value.payments.rows ?? []).reduce((sum, p) => {
+    if (p.status !== "success" && p.status !== "paid") return sum;
+    if (yearOf(p.date) !== year) return sum;
+    return sum + (Number(p.amountMinor) || 0);
+  }, 0);
+});
+const lastYearSpentMinor = computed(() => {
+  const year = new Date().getFullYear() - 1;
+  return (data.value.payments.rows ?? []).reduce((sum, p) => {
+    if (p.status !== "success" && p.status !== "paid") return sum;
+    if (yearOf(p.date) !== year) return sum;
+    return sum + (Number(p.amountMinor) || 0);
+  }, 0);
+});
+const ytdTrend = computed(() => {
+  const prev = lastYearSpentMinor.value;
+  if (!prev) return null;
+  return ((ytdSpentMinor.value - prev) / prev) * 100;
+});
+const ytdTrendText = computed(() => {
+  if (ytdTrend.value === null) return "";
+  const n = ytdTrend.value;
+  const abs = Math.abs(n).toFixed(0);
+  return `${n >= 0 ? "+" : "−"}${abs}%`;
+});
+
+const pendingMinor = computed(() => {
+  const fromSchedule = (data.value.schedule ?? []).reduce((s, r) => s + (Number(r.outstandingMinor) || 0), 0);
+  const fromInvoices = (data.value.invoices.rows ?? []).reduce((s, inv) => {
+    if (inv.status === "paid" || inv.status === "void") return s;
+    return s + (Number(inv.balanceMinor ?? inv.totalMinor) || 0);
+  }, 0);
+  return Math.max(fromSchedule, fromInvoices);
+});
+
+const depositsHeldMinor = computed(() =>
+  (data.value.schedule ?? []).reduce((sum, s) => {
+    const parts = (s.milestones ?? []).filter(
+      (m) => m.paid && /deposit|caution/i.test(`${m.label || ""} ${m.key || ""}`)
+    );
+    if (parts.length) return sum + parts.reduce((a, m) => a + (Number(m.amountMinor) || 0), 0);
+    return sum;
+  }, 0)
+);
+const depositBookings = computed(
+  () =>
+    (data.value.schedule ?? []).filter((s) =>
+      (s.milestones ?? []).some((m) => m.paid && /deposit|caution/i.test(`${m.label || ""} ${m.key || ""}`))
+    ).length
+);
+
+const payNowTo = computed(() => {
+  const due = (data.value.schedule ?? []).find((s) => Number(s.outstandingMinor) > 0);
+  if (due?.reference) return `/bookings/${due.reference}`;
+  const inv = (data.value.invoices.rows ?? []).find((i) => i.status !== "paid" && i.bookingReference);
+  return inv ? `/bookings/${inv.bookingReference}` : "";
+});
+
+function bucket(status) {
+  if (status === "paid" || status === "success") return "paid";
+  if (status === "overdue") return "overdue";
+  if (status === "void" || status === "failed" || status === "abandoned") return "other";
+  return "pending";
+}
+
+const scheduleByRef = computed(() => {
+  const map = {};
+  for (const s of data.value.schedule ?? []) {
+    if (s.reference) map[s.reference] = s;
+  }
+  return map;
+});
+
+const tableRows = computed(() => {
+  const invoices = (data.value.invoices.rows ?? []).map((inv) => {
+    const linked = inv.bookingReference ? scheduleByRef.value[inv.bookingReference] : null;
+    const eventIso = inv.eventDate || linked?.startAt || (inv.dueDate ? `${inv.dueDate}T12:00:00Z` : "");
+    const dueIso = inv.dueDate ? `${inv.dueDate}T12:00:00Z` : "";
+    const subtitle = [inv.businessName && inv.businessName !== inv.venueName ? inv.businessName : null, inv.bookingReference]
+      .filter(Boolean)
+      .join(" · ");
+    return {
+      key: `inv-${inv.id}`,
+      kind: "invoice",
+      id: inv.id,
+      invoiceId: inv.number ? `#${String(inv.number).replace(/^#/, "")}` : "—",
+      venueName: inv.venueName || inv.businessName || "—",
+      subtitle,
+      eventDate: eventIso ? formatDateUS(eventIso) : "—",
+      dueLabel: dueIso && eventIso !== dueIso ? formatDateUS(dueIso) : "",
+      amountMinor: inv.totalMinor,
+      balanceMinor: inv.status === "paid" ? 0 : Number(inv.balanceMinor) || 0,
+      status: inv.status,
+      statusLabel: inv.statusLabel,
+      bookingReference: inv.bookingReference,
+      pdfUrl: inv.pdfUrl,
+      receiptUrl: inv.receiptUrl,
+      invoiceUrl: inv.invoiceUrl,
+    };
+  });
+  const covered = new Set(invoices.map((r) => r.bookingReference).filter(Boolean));
+  const extras = (data.value.schedule ?? [])
+    .filter((s) => s.reference && !covered.has(s.reference))
+    .map((s) => {
+      const overdue = (s.milestones || []).some((m) => m.overdue);
+      const pending = Number(s.outstandingMinor) > 0;
+      return {
+        key: `sch-${s.bookingId}`,
+        kind: "schedule",
+        id: s.bookingId,
+        invoiceId: s.reference,
+        venueName: s.venueName || s.eventName || "—",
+        subtitle: s.eventName && s.eventName !== s.venueName ? s.eventName : "",
+        eventDate: s.startAt ? formatDateUS(s.startAt) : "—",
+        dueLabel: "",
+        amountMinor: s.totalMinor,
+        balanceMinor: Number(s.outstandingMinor) || 0,
+        status: pending ? (overdue ? "overdue" : "pending") : "paid",
+        statusLabel: pending ? (overdue ? "Overdue" : "Pending") : "Paid",
+        bookingReference: s.reference,
+        pdfUrl: "",
+        receiptUrl: "",
+        invoiceUrl: "",
+      };
+    });
+  return [...invoices, ...extras];
+});
+
+const filteredRows = computed(() => {
+  const q = search.value.trim().toLowerCase();
+  return tableRows.value.filter((r) => {
+    if (statusFilter.value !== "all" && bucket(r.status) !== statusFilter.value) return false;
+    if (!q) return true;
+    return `${r.invoiceId} ${r.venueName} ${r.subtitle} ${r.bookingReference || ""}`.toLowerCase().includes(q);
+  });
+});
+
+const pendingCount = computed(() => tableRows.value.filter((r) => bucket(r.status) === "pending").length);
+const visibleRows = computed(() => filteredRows.value);
+const filtering = computed(() => Boolean(search.value.trim()) || statusFilter.value !== "all");
+const tableTotal = computed(() =>
+  filtering.value ? filteredRows.value.length : data.value.invoices.total || filteredRows.value.length
+);
+const shownFrom = computed(() => {
+  if (!visibleRows.value.length) return 0;
+  if (filtering.value) return 1;
+  const limit = data.value.invoices.limit || 25;
+  return (invoicesPage.value - 1) * limit + 1;
+});
+const shownTo = computed(() => {
+  if (!visibleRows.value.length) return 0;
+  if (filtering.value) return visibleRows.value.length;
+  const limit = data.value.invoices.limit || 25;
+  return Math.min(invoicesPage.value * limit, data.value.invoices.total || visibleRows.value.length);
+});
+const invoicePages = computed(() => Math.max(1, Math.ceil((data.value.invoices.total || 0) / (data.value.invoices.limit || 25))));
+const invoicePageNumbers = computed(() => {
+  const total = invoicePages.value;
+  const current = invoicesPage.value;
+  let end = Math.min(total, Math.max(current + 1, 3));
+  let start = Math.max(1, end - 2);
+  end = Math.min(total, start + 2);
+  const pages = [];
+  for (let n = start; n <= end; n += 1) pages.push(n);
+  return pages;
+});
+
+const emptyCopy = computed(() => {
+  if (search.value.trim()) return "No invoices match that search.";
+  if (statusFilter.value !== "all") return `No ${statusFilter.value} invoices.`;
+  return "No invoices yet. Venues send invoices here when they bill you directly.";
+});
+
+function rowStatusText(status) {
+  if (status === "paid" || status === "success") return "text-[#16A34A]";
+  if (status === "overdue") return "text-[#DC2626]";
+  return "text-[#D97706]";
+}
+function rowStatusDot(status) {
+  if (status === "paid" || status === "success") return "bg-[#16A34A]";
+  if (status === "overdue") return "bg-[#DC2626]";
+  return "bg-[#D97706]";
 }
 </script>
