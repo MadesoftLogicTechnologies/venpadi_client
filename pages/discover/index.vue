@@ -1,5 +1,5 @@
 <template>
-  <div class="px-4 sm:px-6 lg:px-8 py-6 max-w-[1180px]">
+  <div class="px-4 sm:px-6 lg:px-8 py-6 w-full">
     <h1 class="text-2xl font-bold text-header">Discover Venues</h1>
     <p class="mt-2 text-sm text-bodytext">
       Browse spaces available for your next event.

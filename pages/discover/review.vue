@@ -1,6 +1,6 @@
 <template>
   <div class="px-4 md2:px-8 py-5 md2:py-7">
-    <div class="max-w-[1080px]">
+    <div class="w-full">
       <nav class="text-[13px] text-bodytext flex flex-wrap items-center gap-1.5">
         <NuxtLink to="/discover" class="hover:text-header">Venues</NuxtLink>
         <span class="text-bodytext2">›</span>

@@ -1,15 +1,19 @@
 <template>
-  <div class="min-h-screen bg-white grid grid-cols-1 md2:grid-cols-2">
+  <div
+    class="min-h-screen bg-white grid grid-cols-1 md2:grid-cols-[minmax(440px,40%)_1fr]"
+  >
     <!-- Form panel -->
     <div
       class="flex flex-col justify-center px-6 sm:px-10 md2:px-12 lg:px-16 py-10 md2:py-12"
     >
-      <div class="w-full max-w-[420px] mx-auto md2:mx-0 md2:ml-auto md2:mr-[8%] lg:mr-[12%]">
+      <div class="w-full max-w-[400px] mx-auto">
         <NuxtLink to="/" class="inline-flex mb-10">
-          <AuthVenpadiLogo text-class="text-xl" :icon-size="28" />
+          <AuthVenpadiLogo brand text-class="text-xl" :icon-size="32" />
         </NuxtLink>
 
-        <h1 class="text-3xl sm:text-[2.15rem] font-extrabold text-header tracking-tight">
+        <h1
+          class="text-3xl sm:text-[2.15rem] font-extrabold text-header tracking-tight"
+        >
           Welcome back
         </h1>
         <p class="mt-2 text-sm sm:text-base text-bodytext">
@@ -58,19 +62,19 @@
             v-model="form.email"
             label="Email address"
             type="email"
-            placeholder="john@example.com"
-            required
+            placeholder=""
           />
           <InputField
             v-model="form.password"
             label="Password"
             type="password"
-            placeholder="********"
-            required
+            placeholder=""
           />
 
           <div class="flex items-center justify-between gap-3 pt-1">
-            <label class="inline-flex items-center gap-2 text-sm text-header cursor-pointer">
+            <label
+              class="inline-flex items-center gap-2 text-sm text-header cursor-pointer"
+            >
               <input
                 v-model="form.remember"
                 type="checkbox"
@@ -80,7 +84,7 @@
             </label>
             <NuxtLink
               to="/auth/forgot-password"
-              class="text-sm font-semibold text-header hover:text-primary"
+              class="text-sm font-semibold text-primary hover:text-primary-dark"
             >
               Forgot password?
             </NuxtLink>
@@ -88,7 +92,7 @@
 
           <button
             type="submit"
-            class="w-full mt-2 h-12 inline-flex items-center justify-center rounded-xl bg-brand-gradient-soft text-white text-sm font-semibold hover:opacity-95 transition-opacity shadow-sm"
+            class="w-full mt-2 h-12 inline-flex items-center justify-center rounded-xl bg-primary text-white text-sm font-semibold hover:bg-primary-dark transition-colors shadow-sm disabled:opacity-60"
             :disabled="submitting"
           >
             {{ submitting ? "Signing in…" : "Sign in" }}
@@ -98,8 +102,13 @@
         <p class="mt-6 text-sm text-bodytext">
           Don't have an account?
           <NuxtLink
-            :to="{ path: '/auth/signup', query: route.query.redirect ? { redirect: route.query.redirect } : {} }"
-            class="font-bold text-header hover:text-primary"
+            :to="{
+              path: '/auth/signup',
+              query: route.query.redirect
+                ? { redirect: route.query.redirect }
+                : {},
+            }"
+            class="font-bold text-primary hover:text-primary-dark"
           >
             Create an account
           </NuxtLink>
@@ -124,16 +133,18 @@
       <img
         :src="heroImage"
         alt=""
-        class="absolute inset-0 w-full h-full object-cover"
+        class="absolute inset-0 w-full h-full object-cover object-[55%_center]"
       />
       <div
-        class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-black/10"
+        class="absolute inset-0 bg-gradient-to-t from-black/40 from-0% via-transparent via-50% to-transparent"
       ></div>
-      <div class="absolute bottom-0 left-0 right-0 p-10 lg:p-14 max-w-xl">
-        <h2 class="text-3xl lg:text-4xl font-extrabold text-white tracking-tight leading-tight">
+      <div class="absolute bottom-0 left-0 right-0 p-10 lg:p-14 max-w-2xl">
+        <h2
+          class="text-3xl lg:text-[2.35rem] font-extrabold text-white tracking-tight leading-tight"
+        >
           Discover the perfect space for your next event.
         </h2>
-        <p class="mt-4 text-sm lg:text-base text-white/85 leading-relaxed">
+        <p class="mt-4 text-sm lg:text-base text-white/90 leading-relaxed">
           The modern platform for venue booking, designed to help you find,
           book, and manage unforgettable experiences.
         </p>
@@ -168,12 +179,14 @@ const form = reactive({
   remember: false,
 });
 
-const heroImage = "/images/login-hero.jpg";
+const heroImage = "/images/login-hero.png";
 
 /** Only same-site paths, so ?redirect= cannot bounce the user off-site. */
 function safeRedirect(value) {
   const v = Array.isArray(value) ? value[0] : value;
-  return typeof v === "string" && v.startsWith("/") && !v.startsWith("//") ? v : "/dashboards";
+  return typeof v === "string" && v.startsWith("/") && !v.startsWith("//")
+    ? v
+    : "/dashboards";
 }
 
 async function signIn() {
@@ -188,7 +201,6 @@ async function signIn() {
 }
 
 function continueWithGoogle() {
-  // No toast outlet on the plain layout.
   window.alert("Google sign-in is coming soon.");
 }
 </script>
