@@ -82,8 +82,8 @@ const columns = [
     title: "Platform",
     links: [
       { label: "How it works", to: "/#how-it-works" },
-      { label: "For venue owners", to: "/#owners" },
-      { label: "Vendor network", to: "/#vendors" },
+      { label: "For venue owners", to: "/for-vendors" },
+      { label: "For Vendors", to: "/for-vendors" },
       { label: "Pricing & Plans" },
     ],
   },

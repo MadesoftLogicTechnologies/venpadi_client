@@ -79,8 +79,7 @@
           </button>
         </div>
 
-        <p v-if="upcomingPending && !upcoming.rows.length" class="mt-4 text-sm text-bodytext">Loading…</p>
-        <div v-else-if="!upcomingVisible.length" class="mt-4 bg-white rounded-[20px] border border-border px-5 py-10 text-center">
+        <div v-if="!upcomingPending && !upcomingVisible.length" class="mt-4 bg-white rounded-[20px] border border-border px-5 py-10 text-center">
           <p class="text-[14px] font-semibold text-header">No upcoming bookings</p>
           <p class="mt-1 text-[13px] text-bodytext">Find a venue and send a booking request.</p>
           <NuxtLink to="/discover" class="mt-4 inline-flex h-9 px-4 items-center rounded-full border border-border text-[13px] font-semibold">
@@ -273,8 +272,7 @@
           <span class="font-medium text-bodytext text-[13px]">({{ pendingVisible.length }} pending request{{ pendingVisible.length === 1 ? "" : "s" }})</span>
         </h2>
 
-        <p v-if="pendingPending && !pendingList.rows.length" class="mt-4 text-sm text-bodytext">Loading…</p>
-        <div v-else-if="!pendingVisible.length" class="mt-4 bg-white rounded-[20px] border border-border px-5 py-8 text-center text-[13px] text-bodytext">
+        <div v-if="!pendingPending && !pendingVisible.length" class="mt-4 bg-white rounded-[20px] border border-border px-5 py-8 text-center text-[13px] text-bodytext">
           No pending requests.
         </div>
 
@@ -333,8 +331,7 @@
       <!-- Past -->
       <section v-if="showPast" class="mt-8">
         <h2 class="text-[16px] font-bold text-header">Past</h2>
-        <p v-if="pastPending && !past.rows.length" class="mt-4 text-sm text-bodytext">Loading…</p>
-        <div v-else-if="!pastVisible.length" class="mt-4 bg-white rounded-[20px] border border-border px-5 py-8 text-center text-[13px] text-bodytext">
+        <div v-if="!pastPending && !pastVisible.length" class="mt-4 bg-white rounded-[20px] border border-border px-5 py-8 text-center text-[13px] text-bodytext">
           No past bookings.
         </div>
         <div v-else class="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -359,8 +356,7 @@
       <!-- Cancelled -->
       <section v-if="showCancelled" class="mt-8">
         <h2 class="text-[16px] font-bold text-header">Cancelled</h2>
-        <p v-if="cancelledPending && !cancelled.rows.length" class="mt-4 text-sm text-bodytext">Loading…</p>
-        <div v-else-if="!cancelledVisible.length" class="mt-4 bg-white rounded-[20px] border border-border px-5 py-8 text-center text-[13px] text-bodytext">
+        <div v-if="!cancelledPending && !cancelledVisible.length" class="mt-4 bg-white rounded-[20px] border border-border px-5 py-8 text-center text-[13px] text-bodytext">
           No cancelled bookings.
         </div>
         <div v-else class="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -384,9 +380,8 @@
 
       <!-- Dossier (second half of the same page) -->
       <div v-if="showDossier" class="mt-10">
-        <p v-if="activePending && !active" class="text-sm text-bodytext">Loading workspace…</p>
         <BookingsBookingDossier
-          v-else-if="active"
+          v-if="active"
           :booking="active"
           :past="past.rows.slice(0, 2)"
           :past-total="past.total || past.rows.length"
@@ -502,6 +497,13 @@ const showPending = computed(() => tab.value === "pending");
 const showPast = computed(() => tab.value === "past");
 const showCancelled = computed(() => tab.value === "cancelled");
 const showDossier = computed(() => tab.value === "upcoming");
+usePageLoading(() => {
+  if (showUpcoming.value) return upcomingPending.value && !upcoming.value?.rows.length;
+  if (showPending.value) return pendingPending.value && !pendingList.value?.rows.length;
+  if (showPast.value) return pastPending.value && !past.value?.rows.length;
+  if (showCancelled.value) return cancelledPending.value && !cancelled.value?.rows.length;
+  return false;
+});
 
 const counts = computed(() => ({
   upcoming: dash.value?.counts?.upcoming ?? upcoming.value?.total ?? 0,
@@ -593,6 +595,7 @@ const { data: active, pending: activePending, refresh } = useResource(
   () => (activeKey.value ? api.get(`/me/bookings/${encodeURIComponent(activeKey.value)}`) : Promise.resolve(null)),
   { watch: [activeKey] }
 );
+usePageLoading(() => showDossier.value && activePending.value && !active.value);
 
 const featuredCard = computed(() => {
   const a = active.value;

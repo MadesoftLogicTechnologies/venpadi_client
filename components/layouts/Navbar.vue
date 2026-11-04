@@ -103,14 +103,6 @@
           <button
             type="button"
             class="w-9 h-9 rounded-full flex items-center justify-center text-bodytext hover:bg-greybg"
-            aria-label="Notifications sound"
-            @click="comingSoon"
-          >
-            <i class="pi pi-volume-up text-sm"></i>
-          </button>
-          <button
-            type="button"
-            class="w-9 h-9 rounded-full flex items-center justify-center text-bodytext hover:bg-greybg"
             aria-label="Inbox"
             @click="navigateTo('/messages')"
           >
@@ -207,9 +199,5 @@ function runSearch() {
 
 function openProfile() {
   return navigateTo(authStore.isAuthenticated ? "/settings" : "/auth/login");
-}
-
-function comingSoon() {
-  useToastStore().setMessage({ text: "Coming soon.", type: "info" });
 }
 </script>

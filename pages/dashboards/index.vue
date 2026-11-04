@@ -8,9 +8,7 @@
         Here is what’s happening with your venue planning today
       </p>
 
-      <p v-if="pending && !data" class="mt-6 text-sm text-bodytext">Loading…</p>
-
-      <template v-else-if="data">
+      <template v-if="data">
         <!-- KPIs -->
         <div class="mt-6 grid grid-cols-1 sm:grid-cols-3 gap-3 md2:gap-4">
           <NuxtLink
@@ -275,6 +273,7 @@ const auth = useAuthStore();
 const { isBusy, toggle } = useFavorites();
 
 const { data, pending } = useResource(() => api.get("/me/dashboard"));
+usePageLoading(() => pending.value && !data.value);
 const { data: pendingBookings } = useResource(
   () => api.get("/me/bookings", { tab: "pending", page: 1, limit: 4 }),
   { initial: { rows: [], total: 0 } }

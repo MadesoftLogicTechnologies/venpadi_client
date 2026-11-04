@@ -32,7 +32,6 @@
               <span class="text-[18px] font-extrabold text-header">{{ naira(payment.amountMinor, { decimals: true }) }}</span>
             </div>
           </template>
-          <p v-else-if="loading" class="text-bodytext">Loading payment…</p>
         </div>
 
         <button
@@ -70,6 +69,7 @@ const reference = computed(() => String(route.query.reference || ""));
 const payment = ref(null);
 const loading = ref(false);
 const completing = ref(false);
+usePageLoading(loading);
 
 onMounted(async () => {
   if (!reference.value) return;

@@ -52,8 +52,7 @@
       </div>
 
       <section class="mt-4 bg-white rounded-[24px] border border-border overflow-hidden">
-        <p v-if="pending && !data.rows.length" class="px-5 py-10 text-center text-sm text-bodytext">Loading…</p>
-        <p v-else-if="!visibleRows.length" class="px-5 py-12 text-center text-[13px] text-bodytext">
+        <p v-if="!pending && !visibleRows.length" class="px-5 py-12 text-center text-[13px] text-bodytext">
           {{ emptyCopy }}
         </p>
         <article
@@ -152,6 +151,7 @@ const { data, pending, refresh } = useResource(
   () => api.get("/notifications", { page: page.value, limit: LIMIT, unread: filter.value === "unread" ? true : undefined }),
   { watch: [filter, page], initial: { rows: [], total: 0, limit: LIMIT, unreadCount: 0 } }
 );
+usePageLoading(() => pending.value && !data.value.rows.length);
 
 const visibleRows = computed(() => {
   const q = search.value.trim().toLowerCase();

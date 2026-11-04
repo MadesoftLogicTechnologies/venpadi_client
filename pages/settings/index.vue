@@ -32,8 +32,7 @@
             Update your photo and personal details here. This information will be displayed on your public profile.
           </p>
 
-          <p v-if="!profileLoaded" class="mt-8 text-sm text-bodytext">Loading…</p>
-          <template v-else>
+          <template v-if="profileLoaded">
             <div class="mt-8 flex flex-col items-start gap-2">
               <label class="relative cursor-pointer" :class="{ 'opacity-60 pointer-events-none': avatarBusy }">
                 <span class="w-[88px] h-[88px] rounded-full overflow-hidden bg-gradient-to-br from-orange-200 to-primary flex items-center justify-center text-white text-xl font-bold">
@@ -255,8 +254,7 @@
                 Log out
               </button>
             </div>
-            <p v-if="sessionsPending && !sessions.length" class="mt-3 text-sm text-bodytext">Loading…</p>
-            <div class="mt-3 divide-y divide-border">
+            <div v-if="sessions.length" class="mt-3 divide-y divide-border">
               <div v-for="s in sessions" :key="s.id" class="py-3 flex items-center gap-3">
                 <span class="w-9 h-9 rounded-full bg-greybg flex items-center justify-center text-bodytext shrink-0">
                   <i class="pi" :class="s.deviceKind === 'mobile' ? 'pi-mobile' : 'pi-desktop'"></i>
@@ -326,8 +324,7 @@
 
           <div class="mt-6">
             <h2 class="text-[16px] font-bold text-header">Saved Methods</h2>
-            <p v-if="invoicesPending && !invoicesLoaded" class="mt-4 text-sm text-bodytext">Loading…</p>
-            <div v-else-if="!savedMethods.length" class="mt-3 rounded-[20px] border border-dashed border-border bg-white px-5 py-8 text-center">
+            <div v-if="invoicesLoaded && !savedMethods.length" class="mt-3 rounded-[20px] border border-dashed border-border bg-white px-5 py-8 text-center">
               <p class="text-[14px] font-semibold text-header">No saved cards yet</p>
               <p class="mt-1 text-[13px] text-bodytext">Cards you pay with can be saved here for faster checkout.</p>
             </div>
@@ -419,8 +416,7 @@
         <section v-if="tab === 'privacy'">
           <h1 class="text-[26px] md2:text-[32px] font-extrabold text-header tracking-tight">Privacy</h1>
           <p class="mt-1 text-[14px] text-bodytext">Choose how we reach you about each kind of update.</p>
-          <p v-if="!prefs" class="mt-6 text-sm text-bodytext">Loading…</p>
-          <div v-else class="mt-6 overflow-x-auto">
+          <div v-if="prefs" class="mt-6 overflow-x-auto">
             <table class="w-full text-[13px]">
               <thead class="text-[11px] uppercase tracking-wide text-bodytext2">
                 <tr>
@@ -459,8 +455,7 @@
         <section v-if="tab === 'saved'">
           <h1 class="text-[26px] md2:text-[32px] font-extrabold text-header tracking-tight">Saved venues</h1>
           <p class="mt-1 text-[14px] text-bodytext">Venues you’ve hearted so you can find them again.</p>
-          <p v-if="savedPending && !saved.rows.length" class="mt-6 text-sm text-bodytext">Loading…</p>
-          <div v-else-if="!saved.rows.length" class="mt-6 rounded-2xl border border-border bg-greybg p-8 text-center">
+          <div v-if="!savedPending && !saved.rows.length" class="mt-6 rounded-2xl border border-border bg-greybg p-8 text-center">
             <p class="text-[14px] font-semibold text-header">No saved venues</p>
             <p class="mt-1 text-[13px] text-bodytext">Tap the heart on any venue to keep it here.</p>
             <NuxtLink to="/discover" class="mt-3 inline-block text-[13px] font-semibold text-primary">Discover venues</NuxtLink>
@@ -564,6 +559,8 @@ onMounted(async () => {
     applyProfile(await api.get("/account"));
   } catch {
     /* toast shown */
+  } finally {
+    profileLoaded.value = true;
   }
 });
 
@@ -761,7 +758,7 @@ async function loadPrefs() {
   try {
     prefs.value = await api.get("/account/notification-preferences");
   } catch {
-    /* toast shown */
+    prefs.value = prefs.value || {};
   }
 }
 
@@ -799,4 +796,13 @@ watch(favoriteIds, () => {
 function logOut() {
   if (window.confirm("Log out of Venpadi on this device?")) useAuthStore().logout();
 }
+
+usePageLoading(() => {
+  if (tab.value === "profile") return !profileLoaded.value;
+  if (tab.value === "security") return sessionsPending.value && !sessions.value.length;
+  if (tab.value === "payments") return invoicesPending.value && !invoicesLoaded.value;
+  if (tab.value === "privacy") return !prefs.value;
+  if (tab.value === "saved") return savedPending.value && !saved.value.rows.length;
+  return false;
+});
 </script>
