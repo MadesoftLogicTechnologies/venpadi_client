@@ -1,12 +1,11 @@
 <template>
-  <div class="px-4 md2:px-8 py-5 md2:py-7">
-    <p v-if="pending" class="text-sm text-bodytext">Loading invoice…</p>
-    <p v-else-if="!invoice" class="text-sm text-bodytext">
+  <div class="px-4 md2:px-8 py-5 md2:py-6">
+    <p v-if="!pending && !invoice" class="text-sm text-bodytext">
       Invoice not found.
       <NuxtLink to="/invoices" class="text-primary font-semibold">Back to invoices</NuxtLink>
     </p>
 
-    <template v-else>
+    <template v-else-if="invoice">
       <p class="text-[12px] text-bodytext no-print">
         <NuxtLink to="/dashboards" class="hover:text-header">Dashboard</NuxtLink>
         <span class="text-bodytext2"> › </span>
@@ -15,15 +14,15 @@
         <span class="text-header font-medium">{{ displayNumber }}</span>
       </p>
 
-      <div class="mt-2 flex flex-col md2:flex-row md2:items-start md2:justify-between gap-3">
+      <div class="mt-2 flex flex-col md2:flex-row md2:items-center md2:justify-between gap-3">
         <div class="flex items-center gap-2.5 flex-wrap">
-          <h1 class="text-[26px] md2:text-[32px] font-extrabold text-header tracking-tight">
+          <h1 class="text-[26px] md2:text-[30px] font-extrabold text-header tracking-tight">
             Invoice {{ displayNumber }}
           </h1>
           <span
             v-if="invoice.statusLabel"
-            class="px-2.5 py-1 rounded-full text-[12px] font-semibold"
-            :class="statusClass(invoice.status)"
+            class="px-2.5 py-[3px] rounded-full text-[12px] font-semibold"
+            :class="invoiceBadgeClass"
           >
             {{ invoice.statusLabel }}
           </span>
@@ -31,15 +30,15 @@
         <div class="flex items-center gap-2 no-print">
           <button
             type="button"
-            class="h-10 px-4 rounded-lg border border-border bg-white text-[13px] font-semibold text-header inline-flex items-center gap-1.5"
+            class="h-10 px-3 rounded-full text-[13px] font-semibold text-header inline-flex items-center gap-1.5 hover:bg-white"
             @click="printInvoice"
           >
-            <i class="pi pi-print text-[12px]"></i>
+            <i class="pi pi-print text-[13px]"></i>
             Print
           </button>
           <button
             type="button"
-            class="h-10 px-4 rounded-lg bg-header text-white text-[13px] font-semibold inline-flex items-center gap-1.5"
+            class="h-10 px-4 rounded-full bg-header text-white text-[13px] font-semibold inline-flex items-center gap-1.5"
             @click="downloadPdf"
           >
             <i class="pi pi-download text-[12px]"></i>
@@ -48,69 +47,69 @@
         </div>
       </div>
 
-      <div class="mt-6 grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_300px] gap-5 items-start">
-        <article class="bg-white rounded-[24px] border border-border p-5 md2:p-8">
-          <div class="flex items-start justify-between gap-4">
+      <div class="mt-5 grid grid-cols-1 md2:grid-cols-[minmax(0,1fr)_260px] gap-6 lg:gap-8 items-start">
+        <article class="invoice-sheet bg-white rounded-[20px] px-5 py-7 md2:px-10 md2:py-10">
+          <div class="flex items-start justify-between gap-6">
             <div class="min-w-0">
-              <div class="flex items-center gap-2">
-                <AuthVenpadiLogo v-if="issuer.isVenpadi" brand :icon-size="32" text-class="text-[16px] font-bold" />
-                <template v-else>
-                  <span class="w-9 h-9 rounded-lg bg-header text-white flex items-center justify-center shrink-0">
-                    <i class="pi pi-building text-[14px]"></i>
-                  </span>
-                  <p class="text-[16px] font-bold text-header">{{ issuer.name }}</p>
-                </template>
+              <div class="flex items-center gap-2.5">
+                <span class="w-9 h-9 rounded-[10px] bg-header text-white flex items-center justify-center shrink-0">
+                  <i class="pi pi-building text-[14px]"></i>
+                </span>
+                <p class="text-[16px] font-bold text-header">{{ issuer.name }}</p>
               </div>
-              <div v-if="issuer.lines.length" class="mt-3 text-[12px] text-bodytext leading-relaxed space-y-0.5">
+              <div v-if="issuer.lines.length" class="mt-3 text-[12px] text-bodytext leading-[1.7]">
                 <p v-for="(line, i) in issuer.lines" :key="i">{{ line }}</p>
               </div>
             </div>
-            <div class="text-right shrink-0">
-              <p class="text-[28px] md2:text-[34px] font-extrabold tracking-[0.18em] text-[#E5E7EB] leading-none">INVOICE</p>
-              <dl class="mt-4 text-[12px] space-y-1">
-                <div v-if="issuedLabel">
-                  <dt class="uppercase tracking-wide text-bodytext2">Date issued</dt>
-                  <dd class="font-semibold text-header">{{ issuedLabel }}</dd>
-                </div>
-                <div v-if="dueLabel">
-                  <dt class="uppercase tracking-wide text-bodytext2">Due date</dt>
-                  <dd class="font-semibold" :class="invoice.status === 'overdue' ? 'text-primary' : 'text-header'">
+            <div class="text-right shrink-0 pt-0.5">
+              <p class="text-[28px] md2:text-[32px] font-extrabold tracking-[0.22em] text-[#E8EAED] leading-none">INVOICE</p>
+              <div class="mt-4 space-y-1.5 text-[11px]">
+                <p v-if="issuedLabel" class="uppercase tracking-wide text-bodytext2">
+                  Date issued
+                  <span class="ml-1 font-semibold normal-case tracking-normal text-header">{{ issuedLabel }}</span>
+                </p>
+                <p v-if="dueLabel" class="uppercase tracking-wide text-bodytext2">
+                  Due date
+                  <span
+                    class="ml-1 font-semibold normal-case tracking-normal"
+                    :class="invoice.status === 'overdue' ? 'text-primary' : 'text-header'"
+                  >
                     {{ dueLabel }}
-                  </dd>
-                </div>
-              </dl>
+                  </span>
+                </p>
+              </div>
             </div>
           </div>
 
-          <div class="mt-10 grid grid-cols-1 sm:grid-cols-2 gap-8 text-[13px]">
+          <div class="mt-12 grid grid-cols-1 sm:grid-cols-2 gap-10 text-[13px]">
             <div v-if="billTo.lines.length || billTo.name">
-              <p class="text-[11px] uppercase tracking-wide text-bodytext2 font-semibold">Billed to</p>
-              <p v-if="billTo.name" class="mt-2 text-[18px] font-extrabold text-header leading-tight whitespace-pre-line">{{ billTo.name }}</p>
-              <p v-for="(line, i) in billTo.lines" :key="i" class="text-bodytext leading-relaxed">{{ line }}</p>
+              <p class="text-[11px] uppercase tracking-[0.12em] text-bodytext2 font-semibold">Billed to</p>
+              <p v-if="billTo.name" class="mt-2.5 text-[18px] font-extrabold text-header leading-[1.2] whitespace-pre-line">{{ billTo.name }}</p>
+              <p v-for="(line, i) in billTo.lines" :key="i" class="text-bodytext leading-[1.65]">{{ line }}</p>
             </div>
             <div v-if="venue.lines.length || venue.name">
-              <p class="text-[11px] uppercase tracking-wide text-bodytext2 font-semibold">Venue details</p>
-              <p v-if="venue.name" class="mt-2 text-[15px] font-bold text-header">{{ venue.name }}</p>
-              <p v-for="(line, i) in venue.lines" :key="i" class="text-bodytext">{{ line }}</p>
+              <p class="text-[11px] uppercase tracking-[0.12em] text-bodytext2 font-semibold">Venue details</p>
+              <p v-if="venue.name" class="mt-2.5 text-[15px] font-bold text-header leading-snug">{{ venue.name }}</p>
+              <p v-for="(line, i) in venue.lines" :key="i" class="text-bodytext leading-[1.65]">{{ line }}</p>
             </div>
           </div>
 
-          <table class="mt-10 w-full text-[13px]">
+          <table class="mt-12 w-full text-[13px]">
             <thead>
-              <tr class="text-[11px] uppercase tracking-wide text-bodytext2 border-b border-border">
-                <th class="text-left font-semibold py-2 pr-3">Description</th>
-                <th class="text-left font-semibold py-2 px-3 w-[72px]">Qty</th>
-                <th class="text-right font-semibold py-2 px-3 w-[120px]">Unit price</th>
-                <th class="text-right font-semibold py-2 pl-3 w-[120px]">Total</th>
+              <tr class="text-[11px] uppercase tracking-[0.12em] text-bodytext2 border-b border-border">
+                <th class="text-left font-semibold py-2.5 pr-3">Description</th>
+                <th class="text-left font-semibold py-2.5 px-3 w-[88px]">Qty</th>
+                <th class="text-right font-semibold py-2.5 px-3 w-[120px]">Unit price</th>
+                <th class="text-right font-semibold py-2.5 pl-3 w-[120px]">Total</th>
               </tr>
             </thead>
             <tbody>
               <tr v-for="(item, i) in lineItems" :key="i" class="border-b border-border align-top">
                 <td class="py-4 pr-3">
-                  <p class="font-semibold text-header">{{ item.description }}</p>
-                  <p v-if="item.detail" class="text-[12px] text-bodytext">{{ item.detail }}</p>
+                  <p class="font-bold text-header">{{ item.description }}</p>
+                  <p v-if="item.detail" class="mt-0.5 text-[12px] text-bodytext leading-snug">{{ item.detail }}</p>
                 </td>
-                <td class="py-4 px-3 text-bodytext whitespace-nowrap">{{ item.qty }}</td>
+                <td class="py-4 px-3 text-bodytext whitespace-normal leading-snug">{{ item.qty }}</td>
                 <td class="py-4 px-3 text-right text-bodytext whitespace-nowrap">{{ item.unitPriceMinor != null ? naira(item.unitPriceMinor) : "—" }}</td>
                 <td class="py-4 pl-3 text-right font-bold text-header whitespace-nowrap">{{ naira(item.amountMinor) }}</td>
               </tr>
@@ -118,24 +117,24 @@
           </table>
           <p v-if="!lineItems.length" class="py-6 text-[13px] text-bodytext">No line items on this invoice.</p>
 
-          <dl class="mt-6 ml-auto max-w-[280px] space-y-2 text-[13px]">
-            <div v-if="invoice.subtotalMinor != null" class="flex justify-between gap-6">
+          <dl class="mt-8 ml-auto max-w-[260px] space-y-2 text-[13px]">
+            <div v-if="invoice.subtotalMinor != null" class="flex justify-between gap-8">
               <dt class="text-bodytext">Subtotal</dt>
               <dd class="text-header">{{ naira(invoice.subtotalMinor) }}</dd>
             </div>
-            <div v-if="invoice.discountMinor" class="flex justify-between gap-6">
+            <div v-if="invoice.discountMinor" class="flex justify-between gap-8">
               <dt class="text-bodytext">Discount</dt>
               <dd class="text-header">−{{ naira(invoice.discountMinor) }}</dd>
             </div>
-            <div v-if="invoice.taxMinor" class="flex justify-between gap-6">
+            <div v-if="invoice.taxMinor" class="flex justify-between gap-8">
               <dt class="text-bodytext">{{ taxLabel }}</dt>
               <dd class="text-header">{{ naira(invoice.taxMinor) }}</dd>
             </div>
-            <div v-if="paidMinor" class="flex justify-between gap-6">
+            <div v-if="paidMinor" class="flex justify-between gap-8">
               <dt class="text-bodytext">Paid</dt>
               <dd class="text-[#16A34A]">{{ naira(paidMinor) }}</dd>
             </div>
-            <div class="flex justify-between gap-6 pt-2 border-t border-border">
+            <div class="flex justify-between gap-8 pt-2.5 border-t border-border">
               <dt class="font-semibold text-header">{{ balanceMinor > 0 ? "Total Due" : "Total" }}</dt>
               <dd class="font-extrabold text-header">{{ naira(balanceMinor > 0 ? balanceMinor : totalMinor) }}</dd>
             </div>
@@ -145,18 +144,18 @@
           <p v-if="invoice.terms" class="mt-2 text-[12px] text-bodytext2">{{ invoice.terms }}</p>
         </article>
 
-        <aside class="no-print space-y-4">
-          <section v-if="timeline.length" class="bg-white rounded-[24px] border border-border p-5">
+        <aside class="no-print md2:pt-2">
+          <section v-if="timeline.length">
             <h2 class="text-[14px] font-bold text-header flex items-center gap-2">
               <i class="pi pi-clock text-[12px] text-bodytext"></i>
               Payment Timeline
             </h2>
-            <ol class="mt-4 space-y-4">
+            <ol class="mt-4 space-y-5">
               <li v-for="(ev, i) in timeline" :key="i" class="flex gap-3">
-                <span class="mt-1.5 w-2 h-2 rounded-full shrink-0" :class="ev.dot"></span>
+                <span class="mt-[7px] w-2 h-2 rounded-full shrink-0" :class="ev.dot"></span>
                 <div class="min-w-0">
                   <p class="text-[13px] font-semibold leading-snug" :class="ev.tone">{{ ev.title }}</p>
-                  <p v-if="ev.meta" class="text-[12px] text-bodytext">{{ ev.meta }}</p>
+                  <p v-if="ev.meta" class="mt-0.5 text-[12px] text-bodytext leading-snug">{{ ev.meta }}</p>
                 </div>
               </li>
             </ol>
@@ -165,7 +164,7 @@
           <NuxtLink
             v-if="payTo && balanceMinor > 0"
             :to="payTo"
-            class="w-full h-12 rounded-xl bg-brand-gradient-soft text-white text-[14px] font-semibold inline-flex items-center justify-center gap-2"
+            class="mt-8 w-full h-12 rounded-full bg-brand-gradient-soft text-white text-[14px] font-semibold inline-flex items-center justify-center gap-2 shadow-[0_8px_20px_rgba(255,77,23,0.25)]"
           >
             Pay {{ naira(balanceMinor) }} Now
             <i class="pi pi-arrow-right text-[11px]"></i>
@@ -173,12 +172,12 @@
 
           <button
             type="button"
-            class="w-full text-center text-[13px] font-medium text-bodytext hover:text-header"
+            class="mt-4 w-full text-center text-[13px] font-medium text-bodytext hover:text-header"
             @click="disputeInvoice"
           >
             Dispute Invoice
           </button>
-          <p class="text-center text-[12px] text-bodytext">
+          <p class="mt-2 text-center text-[12px] text-bodytext">
             Need help?
             <NuxtLink to="/help" class="font-semibold text-header hover:text-primary">Contact Support</NuxtLink>
           </p>
@@ -200,10 +199,21 @@ const pending = ref(true);
 const invoice = ref(null);
 const schedule = ref(null);
 const payments = ref([]);
+usePageLoading(pending);
 
 function asDate(value) {
   if (!value) return "";
   return /^\d{4}-\d{2}-\d{2}$/.test(value) ? `${value}T12:00:00Z` : value;
+}
+
+function splitAddress(address) {
+  if (!address) return [];
+  const text = String(address).trim();
+  if (!text) return [];
+  if (text.includes("\n")) return text.split(/\n+/).map((s) => s.trim()).filter(Boolean);
+  const idx = text.indexOf(", ");
+  if (idx > 8) return [text.slice(0, idx), text.slice(idx + 2)];
+  return [text];
 }
 
 onMounted(async () => {
@@ -243,11 +253,19 @@ const dueLabel = computed(() => {
   return iso ? formatDateUS(iso) : "";
 });
 
+const invoiceBadgeClass = computed(() => {
+  const status = invoice.value?.status;
+  if (status === "overdue") return "bg-[#FDE7E1] text-primary";
+  if (status === "paid" || status === "success") return "bg-[#EAF8F0] text-[#16A34A]";
+  if (status === "pending" || status === "sent" || status === "due") return "bg-[#FFF1E8] text-[#C2410C]";
+  return statusClass(status);
+});
+
 const issuer = computed(() => {
   const src = invoice.value?.issuer || {};
   const name = src.name || invoice.value?.businessName || "Venpadi";
-  const lines = [src.address, src.email, src.phone, src.vatNumber].filter(Boolean);
-  return { name, lines, isVenpadi: /venpadi/i.test(name) };
+  const lines = [...splitAddress(src.address), src.email, src.phone, src.vatNumber].filter(Boolean);
+  return { name, lines };
 });
 
 const billTo = computed(() => {
@@ -266,7 +284,6 @@ const venue = computed(() => {
   const lines = [
     inv.spaceName || inv.hallName || sch.spaceName || sch.eventName,
     inv.bookingReference || sch.reference ? `Booking ID: #${String(inv.bookingReference || sch.reference).replace(/^#/, "")}` : "",
-    sch.startAt ? formatDateUS(sch.startAt) : "",
   ].filter((v, i, arr) => v && arr.indexOf(v) === i && v !== name);
   return { name, lines };
 });
@@ -281,10 +298,11 @@ const lineItems = computed(() => {
         : qtyNum > 0
           ? Math.round((Number(item.amountMinor) || 0) / qtyNum)
           : item.amountMinor;
+      const qty = [item.quantity || (item.unitLabel ? "" : "1"), item.unitLabel].filter(Boolean).join(" ") || "1";
       return {
         description: item.description || item.label || "Item",
         detail: [item.group, item.detail].filter(Boolean).join(" · "),
-        qty: item.unitLabel || item.quantity || "1",
+        qty,
         unitPriceMinor: unit,
         amountMinor: item.amountMinor,
       };
@@ -328,9 +346,17 @@ const taxLabel = computed(() => {
 });
 
 const payTo = computed(() => {
-  const ref = invoice.value?.bookingReference || schedule.value?.reference;
-  return ref ? `/bookings/${ref}` : "";
+  const bookingRef = invoice.value?.bookingReference || schedule.value?.reference;
+  return bookingRef ? `/bookings/${bookingRef}` : "";
 });
+
+function metaWithTime(iso) {
+  if (!iso) return "";
+  const date = formatDateUS(asDate(iso));
+  const raw = String(iso);
+  if (raw.includes("T") && !raw.includes("T12:00:00Z")) return `${date} • ${formatTime(iso)}`;
+  return date;
+}
 
 const timeline = computed(() => {
   const events = [];
@@ -339,40 +365,38 @@ const timeline = computed(() => {
     const iso = asDate(inv.issueDate);
     events.push({
       title: "Invoice Generated",
-      meta: `${formatDateUS(iso)}${iso.includes("T") && !iso.includes("T12:00:00Z") ? ` • ${formatTime(iso)}` : ""}`,
+      meta: metaWithTime(iso),
       dot: "bg-header",
       tone: "text-header",
       at: iso,
+    });
+  }
+  const reminderAt = inv.lastReminderAt || inv.remindedAt || inv.reminderSentAt;
+  if (reminderAt) {
+    events.push({
+      title: "Reminder Sent",
+      meta: metaWithTime(reminderAt),
+      dot: "bg-header",
+      tone: "text-header",
+      at: reminderAt,
     });
   }
   for (const p of payments.value) {
     if (!p.date) continue;
     events.push({
       title: p.purposeLabel || p.statusLabel || "Payment",
-      meta: `${formatDateUS(p.date)}${p.date?.includes?.("T") ? ` • ${formatTime(p.date)}` : ""}${p.amountMinor != null ? ` · ${naira(p.amountMinor)}` : ""}`,
+      meta: `${metaWithTime(p.date)}${p.amountMinor != null ? ` · ${naira(p.amountMinor)}` : ""}`,
       dot: p.status === "success" || p.status === "paid" ? "bg-[#16A34A]" : "bg-bodytext2",
       tone: "text-header",
       at: p.date,
-    });
-  }
-  const milestones = inv.milestones?.length ? inv.milestones : schedule.value?.milestones || [];
-  for (const m of milestones) {
-    const at = m.dueAt || m.paidAt || asDate(m.dueDate);
-    if (!at && !m.label) continue;
-    events.push({
-      title: `${m.label || "Milestone"}${m.paid ? " · Paid" : m.overdue ? " · Overdue" : ""}`,
-      meta: at ? formatDateUS(asDate(at)) : "",
-      dot: m.paid ? "bg-[#16A34A]" : m.overdue ? "bg-[#DC2626]" : "bg-bodytext2",
-      tone: m.overdue ? "text-[#DC2626]" : "text-header",
-      at: at || "",
     });
   }
   if (inv.status === "overdue") {
     events.push({
       title: "Overdue / Awaiting Payment",
       meta: inv.dueDate ? `Since ${formatDateUS(asDate(inv.dueDate))}` : "",
-      dot: "bg-[#DC2626]",
-      tone: "text-[#DC2626]",
+      dot: "bg-primary",
+      tone: "text-primary",
       at: asDate(inv.dueDate) || "9999",
     });
   } else if (inv.status === "paid" || inv.status === "success") {
@@ -412,9 +436,17 @@ function disputeInvoice() {
 </script>
 
 <style scoped>
+.invoice-sheet {
+  min-height: 640px;
+}
 @media print {
   .no-print {
     display: none !important;
+  }
+  .invoice-sheet {
+    min-height: 0;
+    border-radius: 0;
+    padding: 0;
   }
 }
 </style>

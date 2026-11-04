@@ -37,8 +37,7 @@
         </div>
 
         <div class="mt-3 flex-1 overflow-y-auto slim-scrollbar -mx-1 px-1">
-          <p v-if="listPending && !conversations.rows.length" class="px-2 py-6 text-[13px] text-bodytext">Loading…</p>
-          <p v-else-if="!visibleConversations.length" class="px-2 py-8 text-center text-[13px] text-bodytext">
+          <p v-if="!listPending && !visibleConversations.length" class="px-2 py-8 text-center text-[13px] text-bodytext">
             {{ emptyListCopy }}
           </p>
           <button
@@ -218,7 +217,6 @@
                 {{ threadPending ? "Loading…" : "Load earlier messages" }}
               </button>
             </div>
-            <p v-if="threadPending && !thread.rows.length" class="text-[13px] text-bodytext">Loading…</p>
 
             <div v-for="group in groupedThread" :key="group.key">
               <p class="text-center text-[11px] text-bodytext2 mb-4">{{ group.label }}</p>
@@ -360,6 +358,7 @@ const { data: unread, refresh: refreshUnread } = useResource(
   () => api.get("/conversations/mine/unread-count", undefined, { toast: false }),
   { initial: { unreadMessages: 0, unreadConversations: 0 } }
 );
+usePageLoading(() => listPending.value && !conversations.value.rows.length);
 
 const activeId = ref("");
 const active = computed(() => conversations.value.rows.find((c) => c.id === activeId.value) ?? null);
@@ -373,7 +372,6 @@ const visibleConversations = computed(() => {
 });
 
 const emptyListCopy = computed(() => {
-  if (listPending.value) return "Loading…";
   if (search.value.trim()) return "No conversations match that search.";
   if (listFilter.value === "unread") return "No unread messages.";
   if (listFilter.value === "bookings") return "No booking conversations yet.";
@@ -488,6 +486,7 @@ const LIMIT = 50;
 const thread = reactive({ rows: [], total: 0, page: 1 });
 const threadPending = ref(false);
 const threadEl = ref(null);
+usePageLoading(() => threadPending.value && !thread.rows.length);
 
 function scrollToBottom() {
   nextTick(() => {

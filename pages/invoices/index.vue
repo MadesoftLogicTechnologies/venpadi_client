@@ -4,9 +4,7 @@
       <h1 class="text-[26px] md2:text-[32px] font-extrabold text-header tracking-tight">Invoices</h1>
       <p class="mt-1 text-[14px] text-bodytext">Manage and track your venue payments.</p>
 
-      <p v-if="pending && !loaded" class="mt-6 text-sm text-bodytext">Loading…</p>
-
-      <template v-else>
+      <template v-if="loaded">
         <!-- KPIs -->
         <div class="mt-6 grid grid-cols-1 md2:grid-cols-3 gap-4">
           <article class="bg-white rounded-[20px] border border-border p-5">
@@ -339,6 +337,7 @@ const loaded = ref(false);
 watch(pending, (p) => {
   if (!p) loaded.value = true;
 });
+usePageLoading(() => pending.value && !loaded.value);
 
 const { stash } = useInvoicePreview();
 

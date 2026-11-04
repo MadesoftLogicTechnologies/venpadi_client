@@ -116,7 +116,7 @@ const links = computed(() => {
     },
     {
       label: "For Vendors",
-      to: onHome ? "#vendors" : "/#vendors",
+      to: "/for-vendors",
     },
   ];
 });

@@ -7,13 +7,12 @@
         <span class="text-header font-medium">{{ b?.reference || route.params.id }}</span>
       </nav>
 
-      <p v-if="pending && !b" class="mt-6 text-sm text-bodytext">Loading booking…</p>
-      <div v-else-if="!b" class="mt-6 bg-white rounded-2xl border border-border p-8 text-center max-w-[640px]">
+      <div v-if="!pending && !b" class="mt-6 bg-white rounded-2xl border border-border p-8 text-center max-w-[640px]">
         <p class="text-base font-semibold text-header">Booking not found</p>
         <NuxtLink to="/bookings" class="mt-3 inline-block text-[13px] font-semibold text-primary">Back to My Bookings</NuxtLink>
       </div>
 
-      <template v-else>
+      <template v-else-if="b">
         <div
           v-if="verifying"
           class="mt-4 rounded-xl bg-[#EFF6FF] text-[#1D4ED8] text-[13px] px-4 py-3"
@@ -180,6 +179,7 @@ const id = computed(() => String(route.params.id));
 const { data: b, pending, refresh } = useResource(() => api.get(`/me/bookings/${encodeURIComponent(id.value)}`), {
   watch: [id],
 });
+usePageLoading(() => pending.value && !b.value);
 const { data: past } = useResource(
   () => api.get("/me/bookings", { tab: "past", page: 1, limit: 4 }),
   { initial: { rows: [], total: 0 } }
