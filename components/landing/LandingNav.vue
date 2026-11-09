@@ -10,15 +10,19 @@
       </NuxtLink>
 
       <nav class="hidden md2:flex items-center gap-8 text-sm font-medium text-header">
-        <NuxtLink
-          v-for="link in links"
-          :key="link.to"
-          :to="link.to"
-          class="hover:text-primary transition-colors"
-          :class="{ 'text-primary': isActive(link) }"
-        >
-          {{ link.label }}
-        </NuxtLink>
+        <template v-for="link in links" :key="link.label">
+          <NuxtLink
+            v-if="link.to"
+            :to="link.to"
+            class="hover:text-primary transition-colors"
+            :class="{ 'text-primary': isActive(link) }"
+          >
+            {{ link.label }}
+          </NuxtLink>
+          <span v-else class="cursor-default">
+            {{ link.label }}
+          </span>
+        </template>
       </nav>
 
       <div class="flex items-center gap-2 sm:gap-3 shrink-0">
@@ -57,16 +61,20 @@
       v-if="menuOpen"
       class="md2:hidden border-t border-border bg-white px-4 py-4 space-y-1"
     >
-      <NuxtLink
-        v-for="link in links"
-        :key="link.to"
-        :to="link.to"
-        class="block text-sm font-medium text-header py-2"
-        :class="{ 'text-primary': isActive(link) }"
-        @click="menuOpen = false"
-      >
-        {{ link.label }}
-      </NuxtLink>
+      <template v-for="link in links" :key="link.label">
+        <NuxtLink
+          v-if="link.to"
+          :to="link.to"
+          class="block text-sm font-medium text-header py-2"
+          :class="{ 'text-primary': isActive(link) }"
+          @click="menuOpen = false"
+        >
+          {{ link.label }}
+        </NuxtLink>
+        <span v-else class="block text-sm font-medium text-header py-2 cursor-default">
+          {{ link.label }}
+        </span>
+      </template>
       <div class="pt-3 mt-2 border-t border-border space-y-2">
         <NuxtLink
           to="/auth/login"
@@ -112,11 +120,11 @@ const links = computed(() => {
     },
     {
       label: "For Venue Owners",
-      to: onHome ? "#owners" : "/#owners",
+      to: "/for-venue-owners",
     },
     {
       label: "For Vendors",
-      to: "/for-vendors",
+      to: null,
     },
   ];
 });
@@ -124,6 +132,9 @@ const links = computed(() => {
 function isActive(link) {
   if (link.to === "/search") {
     return route.path.startsWith("/search");
+  }
+  if (link.to === "/for-venue-owners") {
+    return route.path.startsWith("/for-venue-owners");
   }
   if (link.to === "/auth/signup") {
     return route.path === "/auth/signup";

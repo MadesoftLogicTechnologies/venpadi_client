@@ -1,31 +1,31 @@
 <template>
-  <section id="step-04" class="bg-[#F7F5F2] py-14 md2:py-20">
+  <section id="step-4" class="scroll-mt-36 bg-[#F7F5F2] py-16 md:py-24">
     <div class="max-w-[1280px] mx-auto px-4 sm:px-6 md2:px-8">
-      <div class="grid md2:grid-cols-2 gap-10 md2:gap-14 items-center">
+      <div class="grid md2:grid-cols-2 gap-12 md2:gap-16 items-center">
         <div class="relative">
           <span
-            class="pointer-events-none absolute -left-2 -top-8 text-[7rem] sm:text-[9rem] font-extrabold leading-none text-header/[0.05] select-none"
+            class="pointer-events-none absolute -left-1 -top-10 text-[8rem] sm:text-[10rem] font-extrabold leading-none text-primary/[0.08] select-none"
           >
             04
           </span>
           <span
-            class="relative inline-flex items-center px-2.5 py-1 rounded-full bg-primary/10 text-primary text-[11px] font-bold tracking-wide"
+            class="relative inline-flex items-center px-2.5 py-1 rounded-full border border-primary/25 bg-primary/10 text-primary text-[11px] font-bold tracking-[0.12em] uppercase"
           >
-            STEP 04
+            Step 4 of 7
           </span>
           <h2
-            class="relative mt-4 text-2xl sm:text-3xl md2:text-[2.35rem] font-extrabold text-header tracking-tight leading-tight"
+            class="relative mt-5 text-2xl sm:text-3xl md2:text-[2.45rem] font-extrabold text-header tracking-tight leading-[1.15]"
           >
             Your calendar. Your control.
             <span class="text-primary">No surprises.</span>
           </h2>
           <p class="relative mt-4 text-sm sm:text-base text-bodytext leading-relaxed max-w-md">
-            Sync bidirectionally with Google Calendar so your venue stays accurate across
-            channels — and double-bookings stay off the table while hosts see real-time
+            Sync bidirectionally with Google Calendar and iCal so your venue stays accurate
+            across channels — double-bookings stay off the table while hosts see real-time
             availability 24/7.
           </p>
 
-          <ul class="relative mt-6 space-y-4">
+          <ul class="relative mt-7 space-y-4">
             <li v-for="item in features" :key="item.title" class="flex items-start gap-3">
               <span
                 class="mt-0.5 w-8 h-8 rounded-xl bg-primary/10 text-primary flex items-center justify-center shrink-0"
@@ -43,44 +43,73 @@
         </div>
 
         <div
-          class="rounded-[1.5rem] border border-border bg-white p-4 sm:p-5 shadow-[0_20px_50px_rgba(15,23,42,0.07)]"
+          class="rounded-[1.35rem] border border-border bg-white p-4 sm:p-5 shadow-[0_24px_60px_rgba(15,23,42,0.08)]"
         >
           <div class="flex items-center justify-between mb-4">
-            <p class="text-sm font-extrabold text-header">October 2025</p>
-            <div class="flex gap-3 text-[10px] font-semibold">
-              <span class="flex items-center gap-1 text-emerald-600"
-                ><span class="w-2 h-2 rounded-full bg-emerald-500"></span> Open</span
+            <div class="flex items-center gap-2">
+              <span
+                class="w-8 h-8 rounded-lg bg-primary/10 text-primary flex items-center justify-center"
               >
-              <span class="flex items-center gap-1 text-amber-600"
-                ><span class="w-2 h-2 rounded-full bg-amber-400"></span> Pending</span
+                <i class="pi pi-calendar text-sm"></i>
+              </span>
+              <p class="text-sm font-extrabold text-header">October 2025</p>
+            </div>
+            <div class="flex gap-1.5">
+              <span
+                class="w-7 h-7 rounded-lg border border-border text-bodytext flex items-center justify-center"
               >
-              <span class="flex items-center gap-1 text-red-600"
-                ><span class="w-2 h-2 rounded-full bg-red-500"></span> Blocked</span
+                <i class="pi pi-chevron-left text-[10px]"></i>
+              </span>
+              <span
+                class="w-7 h-7 rounded-lg border border-border text-bodytext flex items-center justify-center"
               >
+                <i class="pi pi-chevron-right text-[10px]"></i>
+              </span>
             </div>
           </div>
 
-          <div class="grid grid-cols-7 gap-1.5 text-center text-[10px] font-semibold text-bodytext mb-1.5">
+          <div
+            class="grid grid-cols-7 gap-1.5 text-center text-[10px] font-semibold text-bodytext mb-1.5"
+          >
             <span v-for="d in days" :key="d">{{ d }}</span>
           </div>
           <div class="grid grid-cols-7 gap-1.5">
             <div
               v-for="(cell, i) in cells"
               :key="i"
-              class="aspect-square rounded-lg flex items-center justify-center text-xs font-semibold"
+              class="aspect-[4/1] rounded-md flex items-center justify-center text-[11px] font-semibold border"
               :class="cellClass(cell)"
             >
-              {{ cell.n || "" }}
+              <span v-if="cell.today" class="text-[9px] font-bold">Today</span>
+              <template v-else>{{ cell.n || "" }}</template>
             </div>
           </div>
 
+          <div class="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2 text-[11px] font-semibold text-bodytext">
+            <span class="inline-flex items-center gap-1.5">
+              <span class="w-2.5 h-2.5 rounded-sm bg-emerald-400"></span> Confirmed
+            </span>
+            <span class="inline-flex items-center gap-1.5">
+              <span class="w-2.5 h-2.5 rounded-sm bg-amber-400"></span> 72h Hold
+            </span>
+            <span class="inline-flex items-center gap-1.5">
+              <span class="w-2.5 h-2.5 rounded-sm bg-red-400"></span> Blocked
+            </span>
+            <span class="inline-flex items-center gap-1.5">
+              <span class="w-2.5 h-2.5 rounded-full border-2 border-primary"></span> Current Day
+            </span>
+          </div>
+
           <div
-            class="mt-4 rounded-2xl bg-header text-white px-4 py-3 flex items-center justify-between gap-3"
+            class="mt-4 rounded-2xl bg-[#1A1F27] text-white px-4 py-3.5 flex flex-wrap items-center justify-between gap-3"
           >
-            <p class="text-xs leading-snug">
-              Sync external calendars and never miss a beat.
+            <p class="text-xs leading-snug flex items-center gap-2">
+              <i class="pi pi-info-circle text-primary text-sm"></i>
+              Click any calendar cell to toggle instant rates or block dates.
             </p>
-            <span class="shrink-0 text-[11px] font-bold text-primary">Book demo</span>
+            <span class="shrink-0 text-[11px] font-semibold underline underline-offset-2">
+              Open Settings
+            </span>
           </div>
         </div>
       </div>
@@ -91,72 +120,73 @@
 <script setup>
 const features = [
   {
-    icon: "pi pi-sync",
-    title: "Two-way auto-sync",
-    text: "Always up to date — changes reflect across Venpadi and your connected calendars.",
-  },
-  {
-    icon: "pi pi-sliders-h",
-    title: "Custom booking preferences",
-    text: "Decide when you’re available and how you want to manage incoming requests.",
-  },
-  {
-    icon: "pi pi-users",
-    title: "Internal partner scheduling",
-    text: "Let your team view availability and block events without stepping on each other.",
+    icon: "pi pi-ban",
+    title: "Blackout Dates & Teardown Windows",
+    text: "Block maintenance days and post-event reset windows so nothing slips through.",
   },
   {
     icon: "pi pi-clock",
-    title: "Custom turnaround buffers",
-    text: "Set time between bookings to prep the space for the next guest.",
+    title: "Custom Advance Notice Rules",
+    text: "Require lead time that matches your ops team — no last-minute chaos.",
+  },
+  {
+    icon: "pi pi-hourglass",
+    title: "Automatic 72-Hour Tentative Holds",
+    text: "Give serious buyers breathing room without locking inventory forever.",
+  },
+  {
+    icon: "pi pi-th-large",
+    title: "Unified Multi-Space Schedule",
+    text: "See every hall, terrace, and suite on one master calendar view.",
   },
 ];
 
-const days = ["S", "M", "T", "W", "T", "F", "S"];
+const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
+// Mon-start October 2025: Wed=1
 const cells = [
-  { n: null },
-  { n: null },
-  { n: 1, tone: "open" },
-  { n: 2, tone: "open" },
-  { n: 3, tone: "pending" },
-  { n: 4, tone: "blocked" },
-  { n: 5, tone: "open" },
-  { n: 6, tone: "open" },
-  { n: 7, tone: "blocked" },
-  { n: 8, tone: "open" },
-  { n: 9, tone: "pending" },
-  { n: 10, tone: "open" },
-  { n: 11, tone: "open" },
-  { n: 12, tone: "blocked" },
-  { n: 13, tone: "pending" },
-  { n: 14, tone: "open" },
-  { n: 15, tone: "open" },
-  { n: 16, tone: "blocked" },
-  { n: 17, tone: "open" },
-  { n: 18, tone: "pending" },
-  { n: 19, tone: "open" },
-  { n: 20, tone: "open" },
-  { n: 21, tone: "open" },
-  { n: 22, tone: "blocked" },
-  { n: 23, tone: "open" },
-  { n: 24, tone: "pending" },
-  { n: 25, tone: "open" },
-  { n: 26, tone: "open" },
-  { n: 27, tone: "blocked" },
-  { n: 28, tone: "open" },
-  { n: 29, tone: "open" },
-  { n: 30, tone: "pending" },
-  { n: 31, tone: "open" },
-  { n: null },
-  { n: null },
+  { n: 29 },
+  { n: 30 },
+  { n: 1, tone: "booked" },
+  { n: 2, tone: "booked" },
+  { n: 3, tone: "hold" },
+  { n: 4, tone: "booked" },
+  { n: 5, tone: "blocked" },
+  { n: 6 },
+  { n: 7 },
+  { n: 8 },
+  { n: 9 },
+  { n: 10, today: true },
+  { n: 11, tone: "booked" },
+  { n: 12, tone: "booked" },
+  { n: 13 },
+  { n: 14 },
+  { n: 15, tone: "hold" },
+  { n: 16 },
+  { n: 17 },
+  { n: 18, tone: "booked" },
+  { n: 19, tone: "booked" },
+  { n: 20 },
+  { n: 21 },
+  { n: 22 },
+  { n: 23 },
+  { n: 24 },
+  { n: 25 },
+  { n: 26 },
+  { n: 27 },
+  { n: 28 },
+  { n: 29 },
+  { n: 30 },
+  { n: 31 },
+  { n: 1 },
+  { n: 2 },
 ];
 
 function cellClass(cell) {
-  if (!cell.n) return "bg-transparent";
-  if (cell.tone === "open") return "bg-emerald-50 text-emerald-700";
-  if (cell.tone === "pending") return "bg-amber-50 text-amber-700";
-  if (cell.tone === "blocked") return "bg-red-50 text-red-700";
-  return "bg-greybg text-header";
+  if (cell.today) return "bg-white border-primary text-primary";
+  if (cell.tone === "booked") return "bg-emerald-50 border-emerald-200 text-emerald-700";
+  if (cell.tone === "hold") return "bg-amber-50 border-amber-200 text-amber-700";
+  if (cell.tone === "blocked") return "bg-red-50 border-red-200 text-red-700";
+  return "bg-transparent border-transparent text-bodytext";
 }
 </script>

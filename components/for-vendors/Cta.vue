@@ -1,51 +1,52 @@
 <template>
-  <section id="partner" class="bg-white pb-14 md2:pb-20">
-    <div class="max-w-[1280px] mx-auto px-4 sm:px-6 md2:px-8">
-      <div
-        class="relative overflow-hidden rounded-[1.75rem] bg-dark px-6 sm:px-10 md2:px-14 py-12 md2:py-16 text-center"
+  <section id="partner" class="relative overflow-hidden bg-[#0B0F14] py-16 md2:py-24">
+    <div
+      class="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(255,77,23,0.22),transparent_60%)]"
+    ></div>
+    <p
+      class="pointer-events-none absolute right-6 bottom-0 text-[clamp(5rem,20vw,14rem)] font-extrabold leading-none text-white/[0.04] select-none"
+      aria-hidden="true"
+    >
+      No. 1
+    </p>
+
+    <div class="relative max-w-[760px] mx-auto px-4 sm:px-6 md2:px-8 text-center text-white">
+      <span
+        class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-white/15 bg-white/5 text-[11px] sm:text-xs font-semibold text-white/80"
       >
-        <div
-          class="pointer-events-none absolute -left-20 top-0 w-[360px] h-[360px] rounded-full bg-primary/30 blur-3xl"
-        ></div>
-        <div
-          class="pointer-events-none absolute -right-16 bottom-0 w-[320px] h-[320px] rounded-full bg-primary/20 blur-3xl"
-        ></div>
+        <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+        Now accepting venue partners for Q4 peak event season
+      </span>
 
-        <div class="relative max-w-2xl mx-auto">
-          <p class="text-xs font-bold tracking-[0.12em] uppercase text-primary mb-3">
-            Become a partner
-          </p>
-          <h2 class="text-2xl sm:text-3xl md2:text-[2.5rem] font-extrabold text-white tracking-tight leading-tight">
-            Ready to fill your empty dates?
-          </h2>
-          <p class="mt-4 text-sm sm:text-base text-white/70 leading-relaxed">
-            Join 1,500+ venue owners already using Venpadi to turn quiet weekdays into
-            confirmed revenue. Listing is free — take the next step today.
-          </p>
+      <h2
+        class="mt-6 text-2xl sm:text-3xl md2:text-[2.75rem] font-extrabold tracking-tight leading-tight"
+      >
+        Your venue is ready.<br />
+        Your calendar is waiting.<br />
+        <span class="text-primary">Venpadi is open.</span>
+      </h2>
 
-          <div class="mt-8 flex flex-wrap items-center justify-center gap-3">
-            <NuxtLink
-              to="/auth/signup/venue"
-              class="inline-flex items-center justify-center px-6 py-3.5 rounded-full bg-brand-gradient-soft text-white text-sm font-semibold shadow-sm hover:opacity-95 transition-opacity"
-            >
-              List Your Venue Free
-            </NuxtLink>
-            <a
-              :href="ownerLogin"
-              class="inline-flex items-center px-6 py-3.5 rounded-full border border-white/30 text-white text-sm font-semibold hover:bg-white/10 transition-colors"
-            >
-              Sign in as Owner
-            </a>
-          </div>
-        </div>
+      <p class="mt-4 text-sm sm:text-base text-white/55 leading-relaxed">
+        Join the 5,000+ venue hosts across Nigeria turning unbooked square meters into
+        predictable, hands-free business profits.
+      </p>
+
+      <div class="mt-8 flex flex-wrap items-center justify-center gap-3">
+        <NuxtLink
+          to="/auth/signup/venue"
+          class="inline-flex items-center gap-1.5 px-6 py-3.5 rounded-xl bg-brand-gradient-soft text-white text-sm font-semibold hover:opacity-95"
+        >
+          List My Venue — It’s Free
+          <i class="pi pi-arrow-right text-xs"></i>
+        </NuxtLink>
+        <a
+          href="mailto:hello@venpadi.com"
+          class="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl border border-white/25 text-white text-sm font-semibold hover:bg-white/10"
+        >
+          <i class="pi pi-calendar text-xs"></i>
+          Book a 15-Min Onboarding Call
+        </a>
       </div>
     </div>
   </section>
 </template>
-
-<script setup>
-const config = useRuntimeConfig();
-const ownerLogin = computed(
-  () => `${config.public.VENDOR_PORTAL_URL || ""}/auth/login`.replace(/([^:]\/)\/+/g, "$1")
-);
-</script>

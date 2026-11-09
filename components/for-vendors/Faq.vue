@@ -1,38 +1,66 @@
 <template>
-  <section id="faqs" class="bg-[#F7F8FA] py-14 md2:py-20">
-    <div class="max-w-[800px] mx-auto px-4 sm:px-6 md2:px-8">
-      <div class="text-center mb-10">
-        <p class="text-xs font-bold tracking-[0.12em] uppercase text-primary mb-2">FAQs</p>
-        <h2 class="text-2xl sm:text-3xl font-extrabold text-header tracking-tight">
-          Questions venue owners ask us
-        </h2>
-        <NuxtLink
-          to="/for-vendors/faqs"
-          class="inline-flex mt-3 text-sm font-semibold text-primary hover:underline"
-        >
-          View all 34 owner FAQs →
-        </NuxtLink>
-      </div>
-
-      <div class="space-y-3">
-        <div
-          v-for="(item, i) in faqs"
-          :key="item.q"
-          class="rounded-2xl border border-border bg-white overflow-hidden"
-        >
-          <button
-            type="button"
-            class="w-full flex items-center justify-between gap-4 px-5 py-4 text-left"
-            @click="open = open === i ? null : i"
+  <section id="faqs" class="bg-white py-16 md2:py-24 scroll-mt-24">
+    <div class="max-w-[1280px] mx-auto px-4 sm:px-6 md2:px-8">
+      <div class="grid md2:grid-cols-[0.9fr_1.1fr] gap-10 md2:gap-14">
+        <div>
+          <p class="text-[11px] font-bold tracking-[0.14em] uppercase text-primary">
+            Clear answers
+          </p>
+          <h2
+            class="mt-3 text-2xl sm:text-3xl md2:text-[2.25rem] font-extrabold text-header tracking-tight leading-tight"
           >
-            <span class="text-sm sm:text-[15px] font-semibold text-header">{{ item.q }}</span>
-            <i
-              class="pi text-bodytext2 text-xs shrink-0 transition-transform"
-              :class="open === i ? 'pi-minus' : 'pi-plus'"
-            ></i>
-          </button>
-          <div v-show="open === i" class="px-5 pb-4">
-            <p class="text-sm text-bodytext leading-relaxed">{{ item.a }}</p>
+            Everything you need to know about listing
+          </h2>
+          <p class="mt-4 text-sm sm:text-base text-bodytext leading-relaxed">
+            Transparent answers from the Lagos team that onboarded the first thousand
+            venues — no fine print theatre.
+          </p>
+
+          <div class="mt-8 rounded-2xl bg-[#F7F5F2] p-5 sm:p-6">
+            <div class="flex items-start gap-3">
+              <span
+                class="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center shrink-0"
+              >
+                <i class="pi pi-megaphone text-sm"></i>
+              </span>
+              <div>
+                <p class="text-sm font-semibold text-header leading-snug">
+                  Want to speak with our Host Team? Call or WhatsApp our Lagos operations
+                  now
+                </p>
+                <a
+                  href="tel:+2347008367234"
+                  class="mt-3 inline-flex items-center px-4 py-2 rounded-full bg-white border border-border text-sm font-bold text-header hover:bg-greybg"
+                >
+                  +234 [0] 700 VENPADI
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="space-y-3">
+          <div
+            v-for="(item, i) in faqs"
+            :key="item.q"
+            class="rounded-2xl border border-border bg-white overflow-hidden"
+          >
+            <button
+              type="button"
+              class="w-full flex items-center justify-between gap-4 px-5 py-4 text-left"
+              @click="open = open === i ? null : i"
+            >
+              <span class="text-sm sm:text-[15px] font-semibold text-header">{{
+                item.q
+              }}</span>
+              <i
+                class="pi text-primary text-xs shrink-0 transition-transform"
+                :class="open === i ? 'pi-chevron-up' : 'pi-chevron-down'"
+              ></i>
+            </button>
+            <div v-show="open === i" class="px-5 pb-4">
+              <p class="text-sm text-bodytext leading-relaxed">{{ item.a }}</p>
+            </div>
           </div>
         </div>
       </div>
@@ -45,28 +73,28 @@ const open = ref(0);
 
 const faqs = [
   {
-    q: "Is it free to list my venue on Venpadi?",
-    a: "Yes. Creating and publishing a listing is free. Venpadi earns a transparent service fee only when you successfully complete a booking through the platform.",
+    q: "Are there any upfront or sign-up fees?",
+    a: "No. Listing is free with no setup charges. Venpadi only takes a transparent performance commission when a booking completes successfully.",
   },
   {
-    q: "How and when do I get paid?",
-    a: "Host payments are collected securely. After the event completes as agreed, funds are released to your bank. Eligible partners can access faster or instant payout options.",
+    q: "How do I prevent double-booking existing direct clients?",
+    a: "Block those dates on your Venpadi calendar (or sync Google/Apple). Holds auto-expire so your inventory stays accurate without chasing leads.",
   },
   {
-    q: "Can I still take offline bookings?",
-    a: "Absolutely. Block those dates on your Venpadi calendar so you never double-book. You stay in control of every available slot.",
+    q: "What happens if a guest damages my property?",
+    a: "Security deposits sit in escrow. Upload walk-through evidence and our dispute team mediates under a 72-hour SLA before releasing caution funds.",
   },
   {
-    q: "What if a host cancels?",
-    a: "Cancellation and deposit rules are clear up front. Depending on timing and your listing policy, you may keep part or all of the deposit.",
+    q: "How quickly are booking payouts transferred to my bank?",
+    a: "After successful event check-in and sign-off, automated settlement corridors disburse to your bank within 24 hours.",
   },
   {
-    q: "Do I need to be available 24/7?",
-    a: "No. Set response windows, enable notifications, and use quick accept/decline from the owner dashboard or mobile.",
+    q: "Can I set custom cancellation policies?",
+    a: "Yes. Choose non-refundable windows and deposit rules per space so last-minute cancellations don’t erase your weekend revenue.",
   },
   {
-    q: "Which cities do you cover?",
-    a: "We’re live across major Nigerian cities including Lagos and Abuja, and expanding. If your venue is elsewhere, list it — demand follows great spaces.",
+    q: "Can I list multiple separate spaces under one venue?",
+    a: "Absolutely. Manage infinite sub-halls, terraces, and suites under one owner account with independent pricing and calendars.",
   },
 ];
 </script>

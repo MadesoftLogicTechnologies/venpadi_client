@@ -3,6 +3,7 @@
     <ForVendorsNav />
     <main>
       <ForVendorsHowItWorksHero />
+      <ForVendorsHowItWorksStepNav />
       <ForVendorsHowItWorksStep01 />
       <ForVendorsHowItWorksStep02 />
       <ForVendorsHowItWorksStep03 />

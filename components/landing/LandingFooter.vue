@@ -82,17 +82,17 @@ const columns = [
     title: "Platform",
     links: [
       { label: "How it works", to: "/#how-it-works" },
-      { label: "For venue owners", to: "/for-vendors" },
-      { label: "For Vendors", to: "/for-vendors" },
+      { label: "For venue owners", to: "/for-venue-owners" },
+      { label: "For Vendors" },
       { label: "Pricing & Plans" },
     ],
   },
   {
     title: "Company",
     links: [
-      { label: "About Us" },
-      { label: "Careers" },
-      { label: "Press & Media" },
+      { label: "About Us", to: "/for-venue-owners/about" },
+      { label: "Careers", to: "/for-venue-owners/about#careers" },
+      { label: "Press & Media", to: "/for-venue-owners/about#press" },
       { label: "Privacy Policy" },
       { label: "Contact" },
     ],

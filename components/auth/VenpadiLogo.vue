@@ -1,50 +1,11 @@
 <template>
-  <div class="flex items-center gap-2" :class="className">
-    <svg
-      :width="iconSize"
-      :height="iconSize"
-      viewBox="0 0 32 32"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-      aria-hidden="true"
-    >
-      <path
-        v-if="brand"
-        d="M16 4.5L5.5 13.2V27h21V13.2L16 4.5z"
-        :fill="iconColor"
-      />
-      <rect
-        v-if="brand"
-        x="13.5"
-        y="15"
-        width="5"
-        height="5"
-        rx="0.6"
-        fill="#FFFFFF"
-      />
-      <path
-        v-if="!brand"
-        d="M16 4.5L5.5 13.2V27h7.2v-7.5h6.6V27H26.5V13.2L16 4.5z"
-        :stroke="iconColor"
-        fill="none"
-        stroke-width="2"
-        stroke-linejoin="round"
-      />
-      <circle
-        v-if="!brand"
-        cx="16"
-        cy="16.5"
-        r="2.4"
-        :fill="iconColor"
-      />
-    </svg>
-    <span
-      class="font-semibold tracking-tight"
-      :class="[textClass, wordmarkClass]"
-    >
-      Venpadi
-    </span>
-  </div>
+  <img
+    :src="src"
+    alt="Venpadi"
+    class="object-contain object-left"
+    :class="[className, heightClass]"
+    :style="imgStyle"
+  />
 </template>
 
 <script setup>
@@ -61,6 +22,7 @@ const props = defineProps({
     type: String,
     default: "",
   },
+  /** Kept for call-site compatibility; maps to image height. */
   textClass: {
     type: String,
     default: "text-lg",
@@ -71,11 +33,32 @@ const props = defineProps({
   },
 });
 
-const iconColor = computed(() => (props.dark ? "#FFFFFF" : "#FF4D17"));
+/**
+ * logo1 — light bg: black "Ven" + gradient "padi"
+ * logo2 — light bg: gradient "Ven" + black "padi"
+ * logo3 — dark bg: white "Ven" + gradient "padi"
+ * logo4 — dark bg: gradient "Ven" + white "padi"
+ */
+const src = computed(() => {
+  if (props.dark) {
+    return props.brand ? "/images/logo4.png" : "/images/logo3.png";
+  }
+  return props.brand ? "/images/logo2.png" : "/images/logo1.png";
+});
 
-const wordmarkClass = computed(() => {
-  if (props.dark) return "text-white";
-  if (props.brand) return "text-primary";
-  return "text-header";
+const heightClass = computed(() => {
+  const map = {
+    "text-base": "h-6",
+    "text-lg": "h-7",
+    "text-xl": "h-8",
+    "text-2xl": "h-9",
+  };
+  return map[props.textClass] || "";
+});
+
+const imgStyle = computed(() => {
+  if (heightClass.value) return { width: "auto" };
+  const h = Number(props.iconSize) || 28;
+  return { height: `${h}px`, width: "auto" };
 });
 </script>

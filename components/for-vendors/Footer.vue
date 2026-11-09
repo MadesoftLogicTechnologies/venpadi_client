@@ -103,23 +103,23 @@ const socials = [
 
 const ownerLinks = [
   { label: "List Your Venue", to: "/auth/signup/venue" },
-  { label: "Operating System", to: "/for-vendors#features" },
-  { label: "Case Studies", to: "/for-vendors/success-stories" },
-  { label: "Owner FAQ", to: "/for-vendors/faqs" },
+  { label: "Operating System", to: "/features" },
+  { label: "Case Studies", to: "/for-venue-owners/success-stories" },
+  { label: "Owner FAQ", to: "/for-venue-owners/faqs" },
 ];
 
 const platformLinks = [
   { label: "Explore Venues", to: "/search" },
-  { label: "Features", to: "/for-vendors#features" },
-  { label: "Owner FAQ", to: "/for-vendors/faqs" },
-  { label: "How It Works", to: "/for-vendors/how-it-works" },
+  { label: "Features", to: "/features" },
+  { label: "Owner FAQ", to: "/for-venue-owners/faqs" },
+  { label: "How It Works", to: "/for-venue-owners/how-it-works" },
 ];
 
 const companyLinks = [
-  { label: "About Us", href: "#" },
-  { label: "Careers", href: "#" },
-  { label: "Privacy Policy", to: "/for-vendors/privacy" },
-  { label: "Terms of Service", to: "/for-vendors/terms" },
+  { label: "About Us", to: "/for-venue-owners/about" },
+  { label: "Careers", to: "/for-venue-owners/about#careers" },
+  { label: "Privacy Policy", to: "/for-venue-owners/privacy" },
+  { label: "Terms of Service", to: "/for-venue-owners/terms" },
   { label: "Blog", href: "#" },
 ];
 </script>

@@ -1,30 +1,36 @@
 <template>
-  <section class="bg-[#F7F8FA] py-14 md2:py-20">
+  <section class="bg-white py-16 md2:py-24">
     <div class="max-w-[1280px] mx-auto px-4 sm:px-6 md2:px-8">
-      <div class="text-center max-w-2xl mx-auto mb-10">
-        <p class="text-xs font-bold tracking-[0.12em] uppercase text-primary mb-2">
-          Why Venpadi
+      <div class="text-center max-w-3xl mx-auto">
+        <p class="text-[11px] font-bold tracking-[0.14em] uppercase text-primary">
+          The sovereign difference
         </p>
-        <h2 class="text-2xl sm:text-3xl md2:text-[2.25rem] font-extrabold text-header tracking-tight">
-          Listing your venue shouldn’t feel like another side hustle.
+        <h2
+          class="mt-3 text-2xl sm:text-3xl md2:text-[2.35rem] font-extrabold text-header tracking-tight"
+        >
+          Other platforms list you. Venpadi grows you.
         </h2>
+        <p class="mt-3 text-sm sm:text-base text-bodytext leading-relaxed">
+          See how Venpadi outperforms standard classifieds, informal social DMs, and
+          clunky generic directories.
+        </p>
       </div>
 
-      <div class="overflow-x-auto rounded-3xl border border-border bg-white shadow-sm">
-        <table class="w-full min-w-[640px] text-left text-sm">
+      <div
+        class="mt-10 overflow-x-auto rounded-2xl border border-border bg-white shadow-[0_16px_50px_rgba(15,23,42,0.06)]"
+      >
+        <table class="w-full min-w-[860px] text-left text-sm">
           <thead>
-            <tr class="border-b border-border bg-greybg/50">
-              <th class="px-5 py-4 font-semibold text-bodytext2 w-[32%]">Capability</th>
-              <th class="px-5 py-4 font-extrabold text-primary w-[23%]">
-                <span class="inline-flex items-center gap-2">
-                  Venpadi
-                  <span class="text-[10px] px-2 py-0.5 rounded-full bg-primary/10 font-bold">
-                    Recommended
-                  </span>
-                </span>
+            <tr class="border-b border-border">
+              <th class="px-5 py-4 font-extrabold text-header">Capability &amp; Infrastructure</th>
+              <th class="px-4 py-4 font-semibold text-bodytext2 text-center">Local Classifieds</th>
+              <th class="px-4 py-4 font-semibold text-bodytext2 text-center">Social Media DMs</th>
+              <th class="px-4 py-4 font-semibold text-bodytext2 text-center">Generic Booking Sites</th>
+              <th
+                class="px-4 py-4 font-extrabold text-white text-center bg-brand-gradient-soft rounded-tr-2xl"
+              >
+                Venpadi
               </th>
-              <th class="px-5 py-4 font-semibold text-bodytext2 w-[23%]">DIY / socials</th>
-              <th class="px-5 py-4 font-semibold text-bodytext2 w-[22%]">Other platforms</th>
             </tr>
           </thead>
           <tbody>
@@ -32,35 +38,36 @@
               v-for="(row, i) in rows"
               :key="row.label"
               class="border-b border-border last:border-0"
-              :class="i % 2 === 1 ? 'bg-greybg/30' : ''"
+              :class="i % 2 === 1 ? 'bg-greybg/40' : ''"
             >
-              <td class="px-5 py-4 font-medium text-header">{{ row.label }}</td>
-              <td class="px-5 py-4">
-                <span class="inline-flex items-center gap-2 text-header font-semibold">
-                  <i class="pi pi-check-circle text-success text-sm"></i>
+              <td class="px-5 py-3.5 font-medium text-header">{{ row.label }}</td>
+              <td class="px-4 py-3.5 text-center text-bodytext">{{ row.classifieds }}</td>
+              <td class="px-4 py-3.5 text-center text-bodytext">{{ row.social }}</td>
+              <td class="px-4 py-3.5 text-center text-bodytext">{{ row.generic }}</td>
+              <td class="px-4 py-3.5 text-center bg-primary/[0.04]">
+                <span class="inline-flex items-center gap-1.5 font-semibold text-primary">
+                  <i class="pi pi-check text-[10px]"></i>
                   {{ row.venpadi }}
                 </span>
               </td>
-              <td class="px-5 py-4 text-bodytext">{{ row.diy }}</td>
-              <td class="px-5 py-4 text-bodytext">{{ row.other }}</td>
             </tr>
           </tbody>
         </table>
       </div>
 
-      <div class="mt-10 grid sm:grid-cols-2 md2:grid-cols-4 gap-4">
+      <div class="mt-8 grid md2:grid-cols-3 gap-4">
         <article
-          v-for="card in perks"
+          v-for="card in cards"
           :key="card.title"
-          class="rounded-2xl border border-border bg-white p-5"
+          class="rounded-2xl bg-[#F7F5F2] p-5 sm:p-6"
         >
-          <span
-            class="w-10 h-10 rounded-xl bg-primary/10 text-primary inline-flex items-center justify-center"
+          <div
+            class="w-10 h-10 rounded-xl bg-primary text-white flex items-center justify-center"
           >
-            <i :class="card.icon"></i>
-          </span>
-          <h3 class="mt-4 text-sm font-extrabold text-header">{{ card.title }}</h3>
-          <p class="mt-2 text-xs text-bodytext leading-relaxed">{{ card.text }}</p>
+            <i :class="['pi text-sm', card.icon]"></i>
+          </div>
+          <h3 class="mt-4 text-base font-extrabold text-header">{{ card.title }}</h3>
+          <p class="mt-2 text-sm text-bodytext leading-relaxed">{{ card.body }}</p>
         </article>
       </div>
     </div>
@@ -70,57 +77,78 @@
 <script setup>
 const rows = [
   {
-    label: "Qualified booking demand",
-    venpadi: "Built-in host traffic",
-    diy: "You chase every lead",
-    other: "Mixed / paid ads",
+    label: "Smart Discovery & SEO Rankings",
+    classifieds: "Static text",
+    social: "Algorithm luck",
+    generic: "Paid boosts",
+    venpadi: "Top Google & Venpadi SEO",
   },
   {
-    label: "Payment protection",
-    venpadi: "Escrow + guaranteed payouts",
-    diy: "Manual transfers",
-    other: "Varies",
+    label: "Intent-Driven High Ticket Clients",
+    classifieds: "Browsers only",
+    social: "Friends & DMs",
+    generic: "Mixed quality",
+    venpadi: "Verified Corp & Event Planners",
   },
   {
-    label: "Calendar & availability",
-    venpadi: "Synced owner dashboard",
-    diy: "Spreadsheets / WhatsApp",
-    other: "Basic tools",
+    label: "Guaranteed Escrow Booking Protection",
+    classifieds: "None",
+    social: "Cash / transfer",
+    generic: "Partial holds",
+    venpadi: "Zero-Fraud Escrow Holds",
   },
   {
-    label: "Setup cost",
-    venpadi: "Free to list",
-    diy: "Time & ads",
-    other: "Often subscription",
+    label: "Multi-Space Sub-Listing Management",
+    classifieds: "One page",
+    social: "Scattered posts",
+    generic: "Limited rooms",
+    venpadi: "Infinite Sub-Halls & Terraces",
   },
   {
-    label: "Local support",
-    venpadi: "Nigeria-first team",
-    diy: "You’re on your own",
-    other: "Generic support",
+    label: "Verified Corporate Client IDs",
+    classifieds: "Fake profiles",
+    social: "No verification",
+    generic: "Email only",
+    venpadi: "Gov ID & Corporate Email Check",
+  },
+  {
+    label: "Instant Push & WhatsApp Alerts",
+    classifieds: "None",
+    social: "Manual replies",
+    generic: "Email digests",
+    venpadi: "Instant Priority Routing",
+  },
+  {
+    label: "Dedicated Venue Growth Manager",
+    classifieds: "None",
+    social: "None",
+    generic: "Ticket queue",
+    venpadi: "Direct Human Concierge",
+  },
+  {
+    label: "Global Multi-Currency Settlements",
+    classifieds: "Cash only",
+    social: "Local transfer",
+    generic: "Single currency",
+    venpadi: "Local Bank in 40+ Currencies",
   },
 ];
 
-const perks = [
+const cards = [
   {
-    icon: "pi pi-bolt",
-    title: "Instant payouts",
-    text: "Eligible partners can withdraw confirmed earnings straight to their bank.",
+    icon: "pi-search",
+    title: "Smart Discovery & SEO",
+    body: "Your spaces appear when Fortune 500 coordinators and luxury wedding planners search high-intent keywords across major cities.",
   },
   {
-    icon: "pi pi-lock",
-    title: "Secure payments",
-    text: "Host payments are held safely until the event completes as agreed.",
+    icon: "pi-shield",
+    title: "Institutional Booking Protection",
+    body: "Automatic damage deposit escrow holds, ironclad digital rental agreements, and identity verification before entry.",
   },
   {
-    icon: "pi pi-shield",
-    title: "Protected by Venpadi",
-    text: "Clear policies on deposits, cancellations, and dispute handling.",
-  },
-  {
-    icon: "pi pi-headphones",
-    title: "Owner support",
-    text: "Dedicated help for listing setup, pricing tips, and booking issues.",
+    icon: "pi-chart-line",
+    title: "Yield Analytics Dashboard",
+    body: "See high-season demand spikes, optimize price per head, and compare your occupancy against regional city competitors.",
   },
 ];
 </script>
