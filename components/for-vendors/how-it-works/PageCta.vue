@@ -1,38 +1,56 @@
 <template>
-  <section class="relative overflow-hidden py-16 md2:py-24">
-    <div
-      class="absolute inset-0 bg-[linear-gradient(135deg,#1a1f27_0%,#0B0F14_55%,#1e1512_100%)]"
-    ></div>
-    <div
-      class="pointer-events-none absolute inset-0 opacity-40 bg-[radial-gradient(ellipse_at_center,rgba(255,77,23,0.35),transparent_60%)]"
-    ></div>
+  <section class="relative overflow-hidden min-h-[58vh] md:min-h-[65vh] flex items-center py-20 md:py-28">
+    <div class="absolute inset-0">
+      <img
+        :src="bgImage"
+        alt=""
+        class="h-full w-full object-cover object-center"
+        aria-hidden="true"
+      />
+      <div class="absolute inset-0 bg-black/85" />
+      <div
+        class="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(0,0,0,0.5),transparent_70%)]"
+      />
+    </div>
 
-    <div class="relative max-w-[720px] mx-auto px-4 sm:px-6 md2:px-8 text-center text-white">
-      <p class="text-xs font-bold tracking-[0.12em] uppercase text-primary mb-3">
-        Your story
+    <div class="relative z-10 mx-auto max-w-[900px] px-4 sm:px-6 md:px-8 text-center text-white">
+      <p class="text-xs font-bold tracking-[0.14em] uppercase text-primary mb-8">
+        Begin today
       </p>
       <h2
-        class="text-2xl sm:text-3xl md2:text-[2.75rem] font-extrabold tracking-tight leading-tight"
+        class="text-3xl sm:text-4xl md:text-[4.5rem] font-extrabold tracking-tight leading-[1.55] space-y-4 sm:space-y-5"
       >
-        Your calendar should be full.
-        <span class="text-primary">Let's fill it.</span>
+        <span class="block whitespace-nowrap">Your calendar should be</span>
+        <span class="block">full.</span>
+        <span class="block text-primary pt-2 sm:pt-3">Let’s fill it.</span>
       </h2>
-      <p class="mt-4 text-sm sm:text-base text-white/65 leading-relaxed">
-        Join venue owners already taking contracts, automating payouts, and raising the
-        bar for hospitality across Nigeria.
+      <p class="mt-10 text-sm sm:text-base text-white/70 leading-relaxed max-w-xl mx-auto">
+        Join the network of world-class venues streamlining contracts, automating buyer
+        payments, and elevating hospitality standards globally.
       </p>
 
       <NuxtLink
         to="/auth/signup/venue"
-        class="mt-8 inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-full bg-brand-gradient-soft text-white text-sm font-semibold shadow-sm hover:opacity-95 transition-opacity"
+        class="mt-12 inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-full bg-brand-gradient-soft text-white text-sm font-semibold shadow-[0_12px_40px_rgba(255,77,23,0.45)] hover:opacity-95 transition-opacity"
       >
-        List My Venue — It's Free
+        List My Venue — It’s Free
         <i class="pi pi-arrow-right text-xs"></i>
       </NuxtLink>
 
-      <p class="mt-4 text-[11px] sm:text-xs text-white/45">
-        No credit card required · Cancel anytime · No setup or hidden fees
+      <p class="mt-7 text-[11px] sm:text-xs text-white/50">
+        ✓ No credit card required · ✓ Cancel anytime · ✓ 48h average first booking
       </p>
+
+      <NuxtLink
+        to="/for-venue-owners"
+        class="mt-8 inline-flex text-sm text-white/90 underline underline-offset-4 decoration-white/40 hover:decoration-white transition-colors"
+      >
+        Or read more about becoming a Venpadi owner →
+      </NuxtLink>
     </div>
   </section>
 </template>
+
+<script setup lang="ts">
+const bgImage = "/" + "images/how-it-works-go-live-bg.jpg";
+</script>

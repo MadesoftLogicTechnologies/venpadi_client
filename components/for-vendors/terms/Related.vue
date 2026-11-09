@@ -41,19 +41,19 @@ const docs = [
     title: "Privacy & Data Policy",
     body: "How we collect, use, and protect owner and guest information on Venpadi.",
     icon: "pi-shield",
-    to: "/for-vendors/privacy",
+    to: "/for-venue-owners/privacy",
   },
   {
     title: "Cookies & Tracking",
     body: "Types of cookies we use and how you can manage preferences.",
     icon: "pi-circle",
-    to: "/for-vendors/privacy#priv-09",
+    to: "/for-venue-owners/privacy#priv-09",
   },
   {
     title: "Owner Conduct",
     body: "Operating standards that apply to messaging, listings, and payments.",
     icon: "pi-file",
-    to: "/for-vendors/terms#sec-08",
+    to: "/for-venue-owners/terms#sec-08",
   },
 ];
 </script>

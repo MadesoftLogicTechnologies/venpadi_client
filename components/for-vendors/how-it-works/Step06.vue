@@ -1,50 +1,82 @@
 <template>
-  <section id="step-06" class="bg-[#0B0F14] py-14 md2:py-20 text-white">
+  <section id="step-6" class="scroll-mt-36 bg-[#0B0F14] py-16 md:py-24 text-white">
     <div class="max-w-[1280px] mx-auto px-4 sm:px-6 md2:px-8">
-      <div class="grid md2:grid-cols-2 gap-10 md2:gap-14 items-center">
-        <div
-          class="order-2 md2:order-1 rounded-[1.5rem] border border-white/10 bg-[#141A22] p-4 sm:p-5 shadow-[0_24px_60px_rgba(0,0,0,0.35)]"
-        >
-          <div class="flex items-center justify-between mb-4">
-            <p class="text-sm font-extrabold">Client inbox</p>
-            <span class="text-[11px] font-semibold text-primary">3 new</span>
-          </div>
-
-          <div class="space-y-2.5 mb-4">
-            <div
-              v-for="row in inbox"
-              :key="row.name"
-              class="rounded-xl border border-white/10 bg-white/[0.03] px-3.5 py-3 flex items-center justify-between gap-3"
-            >
-              <div>
-                <p class="text-sm font-semibold">{{ row.name }}</p>
-                <p class="text-[11px] text-white/45">{{ row.meta }}</p>
+      <div class="grid md2:grid-cols-2 gap-12 md2:gap-16 items-center">
+        <div class="order-2 md2:order-1 relative">
+          <div
+            class="rounded-[1.35rem] border border-white/10 bg-[#141A22] p-4 sm:p-5 shadow-[0_28px_70px_rgba(0,0,0,0.4)]"
+          >
+            <div class="flex items-center justify-between mb-4">
+              <div class="flex items-center gap-2">
+                <p class="text-sm font-extrabold">Owner Inbox</p>
+                <span
+                  class="px-2 py-0.5 rounded-full bg-primary text-white text-[10px] font-bold"
+                >
+                  2 New
+                </span>
               </div>
-              <span
-                class="shrink-0 text-[10px] font-bold px-2 py-1 rounded-full"
-                :class="row.statusClass"
+              <span class="text-[11px] text-white/45">Response Time: &lt; 15 mins</span>
+            </div>
+
+            <div class="space-y-2.5">
+              <div
+                v-for="(row, i) in inbox"
+                :key="row.name"
+                class="rounded-xl border px-3.5 py-3 flex items-start justify-between gap-3"
+                :class="
+                  i === 0
+                    ? 'border-primary/50 bg-primary/[0.06]'
+                    : 'border-white/10 bg-white/[0.03]'
+                "
               >
-                {{ row.status }}
-              </span>
+                <div>
+                  <p class="text-sm font-semibold flex items-center gap-1.5">
+                    {{ row.name }}
+                    <span
+                      v-if="i === 0"
+                      class="w-1.5 h-1.5 rounded-full bg-primary"
+                    ></span>
+                  </p>
+                  <p class="text-[11px] text-white/45 mt-0.5">{{ row.meta }}</p>
+                </div>
+                <span
+                  class="shrink-0 text-xs font-bold"
+                  :class="row.confirmed ? 'text-emerald-400' : 'text-primary'"
+                >
+                  {{ row.right }}
+                </span>
+              </div>
             </div>
           </div>
 
-          <div class="rounded-xl border border-white/10 bg-white/[0.04] p-3.5">
-            <p class="text-[11px] font-semibold text-white/50 mb-2">Kate Williams</p>
-            <p class="text-sm text-white/85 leading-relaxed">
-              Hi — looking at your ballroom for a 280-guest wedding on Nov 22. Can you
-              share weekend packages?
-            </p>
-            <div class="mt-3 flex gap-2">
+          <div
+            class="relative md2:-mt-8 md2:ml-8 rounded-[1.25rem] border border-border bg-white text-header p-4 sm:p-5 shadow-[0_20px_50px_rgba(0,0,0,0.25)]"
+          >
+            <div class="flex items-center gap-3 mb-3">
               <span
-                class="px-3 py-1.5 rounded-full bg-primary text-white text-[11px] font-semibold"
+                class="w-10 h-10 rounded-full bg-primary text-white text-sm font-bold flex items-center justify-center"
+              >
+                KA
+              </span>
+              <div>
+                <p class="text-sm font-extrabold">Kemi Adeleke (Lead Producer)</p>
+                <p class="text-[11px] text-bodytext">Verified Buyer · 12 Venpadi bookings</p>
+              </div>
+            </div>
+            <p class="text-sm text-bodytext leading-relaxed">
+              “Good day, we require load-in access starting 6:00 AM on the 14th for bespoke
+              floral installations. Can we sign off on this addendum?”
+            </p>
+            <div class="mt-4 flex items-center gap-2">
+              <div
+                class="flex-1 rounded-full border border-border bg-[#F7F5F2] px-3.5 py-2.5 text-xs text-bodytext"
+              >
+                Type quick acceptance or custom quote…
+              </div>
+              <span
+                class="shrink-0 px-4 py-2.5 rounded-full bg-header text-white text-xs font-semibold"
               >
                 Reply
-              </span>
-              <span
-                class="px-3 py-1.5 rounded-full border border-white/20 text-white/80 text-[11px] font-semibold"
-              >
-                Quote
               </span>
             </div>
           </div>
@@ -52,28 +84,34 @@
 
         <div class="order-1 md2:order-2 relative">
           <span
-            class="pointer-events-none absolute -right-2 -top-8 text-[7rem] sm:text-[9rem] font-extrabold leading-none text-white/[0.06] select-none"
+            class="pointer-events-none absolute -right-1 -top-10 text-[8rem] sm:text-[10rem] font-extrabold leading-none text-white/[0.05] select-none"
           >
             06
           </span>
           <span
-            class="relative inline-flex items-center px-2.5 py-1 rounded-full bg-primary/20 text-primary text-[11px] font-bold tracking-[0.12em] uppercase"
+            class="relative inline-flex items-center px-2.5 py-1 rounded-full border border-primary/30 bg-primary/15 text-primary text-[11px] font-bold tracking-[0.12em] uppercase"
           >
-            Enquiries
+            Step 6 of 7
           </span>
           <h2
-            class="relative mt-4 text-2xl sm:text-3xl md2:text-[2.35rem] font-extrabold tracking-tight leading-tight"
+            class="relative mt-5 text-2xl sm:text-3xl md2:text-[2.45rem] font-extrabold tracking-tight leading-[1.15]"
           >
             The enquiries arrive.
-            <span class="text-primary">You stay in control.</span>
+            <span class="text-transparent bg-clip-text bg-brand-gradient-soft">
+              You stay in control.
+            </span>
           </h2>
-          <p class="relative mt-4 text-sm sm:text-base text-white/65 leading-relaxed max-w-md">
-            No endless spam. Every request includes verified guest counts, date fit,
-            required services, and a clear event description — so you only work real leads.
+          <p class="relative mt-4 text-sm sm:text-base text-white/60 leading-relaxed max-w-md">
+            No endless spam. Every request arrives pre-vetted with verified credentials,
+            guest counts, and event fit — so you only work real leads.
           </p>
 
-          <ol class="relative mt-6 space-y-4">
-            <li v-for="(item, i) in points" :key="item.title" class="flex items-start gap-3">
+          <div class="relative mt-7 space-y-3">
+            <div
+              v-for="(item, i) in points"
+              :key="item.title"
+              class="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3.5 flex items-start gap-3"
+            >
               <span
                 class="w-7 h-7 rounded-full bg-primary text-white text-xs font-extrabold flex items-center justify-center shrink-0"
               >
@@ -81,12 +119,12 @@
               </span>
               <div>
                 <p class="text-sm font-bold">{{ item.title }}</p>
-                <p class="mt-0.5 text-xs sm:text-sm text-white/55 leading-relaxed">
+                <p class="mt-0.5 text-xs sm:text-sm text-white/50 leading-relaxed">
                   {{ item.text }}
                 </p>
               </div>
-            </li>
-          </ol>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -96,37 +134,35 @@
 <script setup>
 const inbox = [
   {
-    name: "Adaeze Okonkwo",
-    meta: "Wedding · 280 guests · Nov 22",
-    status: "Deposit paid",
-    statusClass: "bg-emerald-500/20 text-emerald-300",
+    name: "Fintech Summit 2026 Product Launch",
+    meta: "Oct 24, 2025 · 450 Guests · The Grand Ballroom",
+    right: "₦1,500,000",
   },
   {
-    name: "Tunde Bello",
-    meta: "Corporate offsite · 90 guests",
-    status: "Pending enquiry",
-    statusClass: "bg-amber-500/20 text-amber-300",
+    name: "Kemi & Tunde Luxury Wedding",
+    meta: "Nov 14, 2025 · 600 Guests · Terrace + Ballroom",
+    right: "₦900,000",
   },
   {
-    name: "Chioma Eze",
-    meta: "Product launch · Terrace",
-    status: "Confirmed",
-    statusClass: "bg-primary/25 text-primary",
+    name: "Diplomatic Gala Dinner",
+    meta: "Dec 02, 2025 · 200 Guests · Penthouse Suite",
+    right: "✓ Confirmed",
+    confirmed: true,
   },
 ];
 
 const points = [
   {
-    title: "Pre-vetted enquiry filtering",
-    text: "Focus on leads that fit your capacity, dates, and event types.",
+    title: "Pre-vetted Enquiry Received",
+    text: "Review exact event format, guest count, and budget before you engage.",
   },
   {
-    title: "Instant messaging & custom quotes",
-    text: "Chat in-portal to finalize details, pricing, and extras in one place.",
+    title: "Direct Messaging & Dynamic Quotes",
+    text: "Send itemized custom quotes and negotiate extras in one thread.",
   },
   {
-    title: "Single-click instant bookings",
-    text: "Accept confirmed leads in one tap — documentation stays organized.",
+    title: "Single-Click Contract Execution",
+    text: "Client accepts digitally, signs standard terms, and locks the date.",
   },
 ];
 </script>

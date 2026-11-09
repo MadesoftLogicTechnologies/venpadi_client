@@ -1,81 +1,200 @@
 <template>
-  <section id="how-it-works" class="bg-white py-14 md2:py-20">
+  <section id="how-it-works" class="bg-white py-16 md2:py-24 scroll-mt-24">
     <div class="max-w-[1280px] mx-auto px-4 sm:px-6 md2:px-8">
-      <div class="text-center max-w-2xl mx-auto mb-12">
-        <p class="text-xs font-bold tracking-[0.12em] uppercase text-primary mb-2">
-          How listing works
+      <div class="text-center max-w-2xl mx-auto mb-14">
+        <p class="text-[11px] font-bold tracking-[0.14em] uppercase text-primary">
+          Seamless onboarding
         </p>
-        <h2 class="text-2xl sm:text-3xl md2:text-[2.25rem] font-extrabold text-header tracking-tight">
-          From empty calendar to paid booking in four steps.
-        </h2>
-        <NuxtLink
-          to="/for-vendors/how-it-works"
-          class="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-primary hover:opacity-80"
+        <h2
+          class="mt-3 text-2xl sm:text-3xl md2:text-[2.35rem] font-extrabold text-header tracking-tight"
         >
-          See the full seven-step guide
-          <i class="pi pi-arrow-right text-xs"></i>
-        </NuxtLink>
+          How Listing on Venpadi Works
+        </h2>
+        <p class="mt-3 text-sm sm:text-base text-bodytext leading-relaxed">
+          From zero to your first confirmed booking in under 24 hours with zero technical
+          complexity.
+        </p>
       </div>
 
-      <div class="space-y-12 md2:space-y-16">
+      <div class="space-y-16 md2:space-y-20">
         <article
           v-for="(step, i) in steps"
           :key="step.title"
-          class="grid md2:grid-cols-2 gap-8 md2:gap-12 items-center"
+          class="grid md2:grid-cols-2 gap-10 md2:gap-14 items-center"
         >
           <div :class="i % 2 === 1 ? 'md2:order-2' : ''">
-            <span
-              class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-primary text-white text-sm font-extrabold"
-            >
-              {{ i + 1 }}
-            </span>
-            <h3 class="mt-4 text-xl sm:text-2xl font-extrabold text-header tracking-tight">
+            <p class="text-[11px] font-bold tracking-[0.14em] uppercase text-primary">
+              {{ step.label }}
+            </p>
+            <h3 class="mt-3 text-xl sm:text-2xl font-extrabold text-header tracking-tight">
               {{ step.title }}
             </h3>
             <p class="mt-3 text-sm sm:text-base text-bodytext leading-relaxed max-w-md">
-              {{ step.text }}
+              {{ step.body }}
             </p>
-            <ul class="mt-4 space-y-2">
+            <ul class="mt-5 space-y-2.5">
               <li
                 v-for="point in step.points"
                 :key="point"
-                class="flex items-start gap-2 text-sm text-header"
+                class="flex items-center gap-2.5 text-sm font-medium text-header"
               >
-                <i class="pi pi-check text-primary text-xs mt-1"></i>
+                <span
+                  class="w-5 h-5 rounded-full bg-primary/10 text-primary flex items-center justify-center shrink-0"
+                >
+                  <i class="pi pi-check text-[10px] font-bold"></i>
+                </span>
                 {{ point }}
               </li>
             </ul>
           </div>
 
-          <div
-            class="rounded-3xl border border-border bg-[#F7F8FA] p-5 sm:p-8 shadow-sm"
-            :class="i % 2 === 1 ? 'md2:order-1' : ''"
-          >
-            <div class="rounded-2xl bg-white border border-border p-5 shadow-[0_12px_40px_rgba(15,23,42,0.06)]">
-              <div class="flex items-center gap-3 mb-4">
-                <span
-                  class="w-10 h-10 rounded-xl flex items-center justify-center text-primary bg-primary/10"
-                >
-                  <i :class="step.icon"></i>
-                </span>
+          <div :class="i % 2 === 1 ? 'md2:order-1' : ''">
+            <!-- Step 1 card -->
+            <div
+              v-if="i === 0"
+              class="rounded-2xl border border-border bg-white p-5 sm:p-6 shadow-[0_16px_50px_rgba(15,23,42,0.08)]"
+            >
+              <div class="flex items-center justify-between mb-5">
+                <p class="text-sm font-bold text-header">Owner Profile Setup</p>
+                <span class="text-[11px] font-semibold text-bodytext2">Step 1 of 3</span>
+              </div>
+              <label class="block text-xs font-semibold text-bodytext2 mb-1.5"
+                >Venue Name</label
+              >
+              <div
+                class="rounded-xl border border-border px-3.5 py-2.5 text-sm text-header mb-3"
+              >
+                The Grant Atrium &amp; Garden
+              </div>
+              <div class="grid grid-cols-2 gap-3 mb-5">
                 <div>
-                  <p class="text-sm font-bold text-header">{{ step.cardTitle }}</p>
-                  <p class="text-xs text-bodytext">{{ step.cardSub }}</p>
+                  <label class="block text-xs font-semibold text-bodytext2 mb-1.5"
+                    >City</label
+                  >
+                  <div
+                    class="rounded-xl border border-border px-3.5 py-2.5 text-sm text-header"
+                  >
+                    Lagos, VI
+                  </div>
+                </div>
+                <div>
+                  <label class="block text-xs font-semibold text-bodytext2 mb-1.5"
+                    >Max Capacity</label
+                  >
+                  <div
+                    class="rounded-xl border border-border px-3.5 py-2.5 text-sm text-header"
+                  >
+                    800 Guests
+                  </div>
                 </div>
               </div>
-              <div class="space-y-2">
-                <div
-                  v-for="(line, li) in step.lines"
-                  :key="li"
-                  class="h-2.5 rounded-full bg-greybg"
-                  :style="{ width: line }"
-                ></div>
-              </div>
-              <div
-                v-if="step.cta"
-                class="mt-5 inline-flex px-4 py-2 rounded-full bg-brand-gradient-soft text-white text-xs font-semibold"
+              <button
+                type="button"
+                class="w-full py-3 rounded-full bg-brand-gradient-soft text-white text-sm font-semibold"
               >
-                {{ step.cta }}
+                Continue to Details →
+              </button>
+            </div>
+
+            <!-- Step 2 card -->
+            <div
+              v-else-if="i === 1"
+              class="rounded-2xl border border-border bg-white p-5 sm:p-6 shadow-[0_16px_50px_rgba(15,23,42,0.08)]"
+            >
+              <div class="grid grid-cols-3 gap-2">
+                <img
+                  v-for="(src, idx) in gallery"
+                  :key="idx"
+                  :src="src"
+                  alt=""
+                  class="rounded-xl h-20 object-cover w-full"
+                />
+              </div>
+              <div class="mt-4 flex flex-wrap gap-2">
+                <span
+                  v-for="tag in amenities"
+                  :key="tag"
+                  class="px-2.5 py-1 rounded-full bg-greybg text-[11px] font-semibold text-header"
+                  >{{ tag }}</span
+                >
+              </div>
+              <div class="mt-5">
+                <div class="flex justify-between text-xs font-semibold mb-1.5">
+                  <span class="text-header">Profile Strength: 90%</span>
+                  <span class="text-emerald-600">Ready</span>
+                </div>
+                <div class="h-2 rounded-full bg-greybg overflow-hidden">
+                  <div class="h-full w-[90%] rounded-full bg-emerald-500"></div>
+                </div>
+                <p class="mt-2 text-[11px] text-bodytext">
+                  Ready for High-Tier Discoverability
+                </p>
+              </div>
+            </div>
+
+            <!-- Step 3 calendar -->
+            <div
+              v-else-if="i === 2"
+              class="rounded-2xl border border-border bg-white p-5 sm:p-6 shadow-[0_16px_50px_rgba(15,23,42,0.08)]"
+            >
+              <div class="flex items-center justify-between mb-4">
+                <p class="text-sm font-bold text-header">October 2024</p>
+                <span
+                  class="text-[10px] font-bold uppercase tracking-wide px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700"
+                  >2-Way Sync: Active</span
+                >
+              </div>
+              <div class="grid grid-cols-7 gap-1.5 text-center text-[11px]">
+                <span
+                  v-for="d in days"
+                  :key="d.label"
+                  class="aspect-[2/1] rounded-lg flex items-center justify-center font-semibold"
+                  :class="d.class"
+                  >{{ d.label }}</span
+                >
+              </div>
+              <div class="mt-4 flex flex-wrap gap-3 text-[11px] text-bodytext">
+                <span class="inline-flex items-center gap-1.5"
+                  ><span class="w-2.5 h-2.5 rounded-sm bg-primary"></span> Booked</span
+                >
+                <span class="inline-flex items-center gap-1.5"
+                  ><span class="w-2.5 h-2.5 rounded-sm bg-header/20"></span> Blocked</span
+                >
+                <span class="inline-flex items-center gap-1.5"
+                  ><span class="w-2.5 h-2.5 rounded-sm bg-emerald-500"></span> Synced</span
+                >
+              </div>
+            </div>
+
+            <!-- Step 4 payout -->
+            <div
+              v-else
+              class="rounded-2xl border border-border bg-white p-5 sm:p-6 shadow-[0_16px_50px_rgba(15,23,42,0.08)]"
+            >
+              <div class="flex items-center gap-3">
+                <span
+                  class="w-10 h-10 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center"
+                >
+                  <i class="pi pi-check text-sm font-bold"></i>
+                </span>
+                <div>
+                  <p class="text-sm font-extrabold text-header">Payout Disbursed</p>
+                  <p class="text-xs text-bodytext">GTBank ***6212</p>
+                </div>
+              </div>
+              <div class="mt-5 space-y-2.5 text-sm">
+                <div class="flex justify-between gap-3">
+                  <span class="text-bodytext">First Payout Rec.</span>
+                  <span class="font-semibold text-header">Oct 19, 2024</span>
+                </div>
+                <div class="flex justify-between gap-3">
+                  <span class="text-bodytext">Event Name</span>
+                  <span class="font-semibold text-header">Zenith Tech Summit</span>
+                </div>
+                <div class="flex justify-between gap-3">
+                  <span class="text-bodytext">Guest Verification</span>
+                  <span class="font-semibold text-emerald-600">ID &amp; Deposit Verified</span>
+                </div>
               </div>
             </div>
           </div>
@@ -88,44 +207,45 @@
 <script setup>
 const steps = [
   {
-    title: "Create your free listing",
-    text: "Add photos, pricing, capacity, and amenities in minutes. No setup fees — go live when you’re ready.",
-    points: ["Unlimited photos & spaces", "Flexible packages & add-ons", "Live in under 24 hours"],
-    icon: "pi pi-pencil",
-    cardTitle: "New venue listing",
-    cardSub: "Draft · 80% complete",
-    lines: ["92%", "70%", "55%", "40%"],
-    cta: "Publish listing",
+    label: "Step 01 — 3 minutes",
+    title: "Create your free venue owner account",
+    body: "Sign up with no credit card and no setup charges. Your owner workspace is ready in minutes.",
+    points: ["Instant verification", "Dedicated advisor"],
   },
   {
-    title: "Get discovered by the right hosts",
-    text: "Show up in search when planners filter by location, capacity, and budget — so inbound demand finds you.",
-    points: ["City & neighbourhood reach", "Verified host traffic", "Featured placement options"],
-    icon: "pi pi-map-marker",
-    cardTitle: "Search visibility",
-    cardSub: "Lagos · Ballrooms · 200–500 guests",
-    lines: ["85%", "65%", "48%"],
-    cta: null,
+    label: "Step 02 — 15 minutes",
+    title: "Build your high-converting profile",
+    body: "Add venue photography, amenities like AC and generators, and custom rates that match your floors.",
+    points: ["Professional photography tips", "Custom pricing tiers"],
   },
   {
-    title: "Confirm bookings with confidence",
-    text: "Review requests, sync your calendar, and accept only the dates that work — with clear contracts and deposits.",
-    points: ["Shared availability calendar", "One-tap accept / decline", "Deposit & balance tracking"],
-    icon: "pi pi-calendar",
-    cardTitle: "Booking request",
-    cardSub: "Corporate offsite · ₦1.2M",
-    lines: ["75%", "60%", "45%", "30%"],
-    cta: "Accept booking",
+    label: "Step 03 — Instant sync",
+    title: "Set availability and go live",
+    body: "Sync Google or Apple calendars and pass a 24-hour verification review before you open for bookings.",
+    points: ["24-hour review", "Instant book toggle"],
   },
   {
-    title: "Get paid — fast and securely",
-    text: "Funds land in your bank after successful events. Instant payout options for eligible partners.",
-    points: ["Guaranteed host payments", "Transparent fees", "Payout history & receipts"],
-    icon: "pi pi-wallet",
-    cardTitle: "Payout ready",
-    cardSub: "₦2,450,000 · Available now",
-    lines: ["90%", "55%"],
-    cta: "Withdraw to bank",
+    label: "Step 04 — Automated payouts",
+    title: "Receive bookings and get paid reliably",
+    body: "Contracts execute in-app, deposits sit in escrow, and payouts hit your bank within 24 hours of event sign-off.",
+    points: ["Zero chasing of balances", "Automated security deposit"],
   },
 ];
+
+const gallery = [
+  "https://images.unsplash.com/photo-1519167758481-83f29da8c2c4?w=300&h=200&fit=crop",
+  "https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?w=300&h=200&fit=crop",
+  "https://images.unsplash.com/photo-1497366811353-6870744d04b2?w=300&h=200&fit=crop",
+];
+
+const amenities = ["24/7 Power Supply", "Chairs", "Valet Parking"];
+
+const days = Array.from({ length: 21 }, (_, i) => {
+  const n = i + 1;
+  if ([3, 4, 11].includes(n)) return { label: String(n), class: "bg-primary text-white" };
+  if ([7, 14].includes(n)) return { label: String(n), class: "bg-header/10 text-header" };
+  if ([8, 9, 15, 16].includes(n))
+    return { label: String(n), class: "bg-emerald-50 text-emerald-700" };
+  return { label: String(n), class: "text-bodytext hover:bg-greybg" };
+});
 </script>
