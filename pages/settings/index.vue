@@ -382,7 +382,7 @@
 
         <!-- privacy / notifications -->
         <section v-if="tab === 'privacy'">
-          <h1 class="text-[26px] md2:text-[32px] font-extrabold text-header tracking-tight">Privacy</h1>
+          <h1 class="text-[26px] md2:text-[32px] font-extrabold text-header tracking-tight">Privacy &amp; data</h1>
           <p class="mt-1 text-[14px] text-bodytext">Choose how we reach you about each kind of update.</p>
           <div v-if="prefs" class="mt-6 overflow-x-auto">
             <table class="w-full text-[13px]">
@@ -417,6 +417,124 @@
               </tbody>
             </table>
           </div>
+
+          <!-- Your data: export + account deletion (GET /account/privacy) -->
+          <div class="mt-10 pt-8 border-t border-border">
+            <h2 class="text-[18px] font-bold text-header">Your data</h2>
+            <p class="mt-1 text-[13px] text-bodytext">Get a copy of your Venpadi data, or delete your account.</p>
+            <p v-if="privacyError" class="mt-4 text-[13px] text-bodytext">
+              We couldn’t load your data settings.
+              <button type="button" class="font-semibold text-primary" @click="loadPrivacy">Try again</button>
+            </p>
+
+            <template v-else-if="privacy">
+              <div class="mt-5 rounded-2xl border border-border p-4 md2:p-5">
+                <div class="flex flex-col sm:flex-row sm:items-center gap-3">
+                  <div class="min-w-0 flex-1">
+                    <p class="text-[14px] font-semibold text-header">Download your data</p>
+                    <p class="mt-0.5 text-[12px] text-bodytext">{{ exportCopy }}</p>
+                  </div>
+                  <button
+                    v-if="privacy.export?.status === 'ready'"
+                    type="button"
+                    class="h-10 px-4 rounded-lg bg-header text-white text-[13px] font-semibold disabled:opacity-60 shrink-0"
+                    :disabled="privacyBusy"
+                    @click="downloadExport"
+                  >
+                    Download archive
+                  </button>
+                  <button
+                    v-else-if="privacy.export?.status !== 'pending'"
+                    type="button"
+                    class="h-10 px-4 rounded-lg border border-border text-[13px] font-semibold text-header hover:bg-greybg disabled:opacity-60 shrink-0"
+                    :disabled="privacyBusy"
+                    @click="requestExport"
+                  >
+                    {{ privacy.export?.status === "failed" ? "Try again" : "Request data export" }}
+                  </button>
+                </div>
+              </div>
+
+              <div class="mt-4 rounded-2xl border border-[#FECACA] p-4 md2:p-5">
+                <template v-if="privacy.deletion?.status === 'scheduled'">
+                  <div class="flex flex-col sm:flex-row sm:items-center gap-3">
+                    <div class="min-w-0 flex-1">
+                      <p class="text-[14px] font-semibold text-[#DC2626]">Your account is scheduled for deletion</p>
+                      <p class="mt-0.5 text-[12px] text-bodytext">
+                        It will be deleted on {{ formatDateLong(privacy.deletion.scheduledFor) }}. Until then you can
+                        keep using Venpadi and cancel the request.
+                      </p>
+                    </div>
+                    <button
+                      type="button"
+                      class="h-10 px-4 rounded-lg bg-header text-white text-[13px] font-semibold disabled:opacity-60 shrink-0"
+                      :disabled="privacyBusy"
+                      @click="cancelDeletion"
+                    >
+                      Cancel deletion
+                    </button>
+                  </div>
+                </template>
+                <template v-else>
+                  <div class="flex flex-col sm:flex-row sm:items-center gap-3">
+                    <div class="min-w-0 flex-1">
+                      <p class="text-[14px] font-semibold text-header">Delete account</p>
+                      <p class="mt-0.5 text-[12px] text-bodytext">
+                        Deletion happens 14 days after you ask, and you can cancel any time before then.
+                      </p>
+                    </div>
+                    <button
+                      type="button"
+                      class="h-10 px-4 rounded-lg border border-[#DC2626] text-[#DC2626] text-[13px] font-semibold hover:bg-[#FEF2F2] disabled:opacity-50 shrink-0"
+                      :disabled="privacyBusy || deletionBlockers.length > 0"
+                      @click="openDeletion"
+                    >
+                      Delete account
+                    </button>
+                  </div>
+                  <div v-if="deletionBlockers.length" class="mt-3 rounded-xl bg-greybg px-4 py-3">
+                    <p class="text-[12px] font-semibold text-header">You can’t delete your account yet:</p>
+                    <ul class="mt-1 list-disc pl-5 text-[12px] text-bodytext space-y-0.5">
+                      <li v-for="(b, i) in deletionBlockers" :key="i">{{ b }}</li>
+                    </ul>
+                  </div>
+                </template>
+              </div>
+            </template>
+          </div>
+
+          <Modal v-if="deletionOpen" :max-width="500" @close="deletionOpen = false">
+            <form class="px-6 py-4" @submit.prevent="requestDeletion">
+              <h2 class="text-[18px] font-bold text-header">Delete your account?</h2>
+              <ul class="mt-3 list-disc pl-5 text-[13px] text-bodytext space-y-1.5">
+                <li>Your account is scheduled for deletion <strong class="text-header">14 days</strong> from now. You can cancel from this page until then.</li>
+                <li>After that, your profile is anonymised and you are signed out on every device. This can’t be undone.</li>
+                <li>Invoices and payment records are kept, as the law requires for tax and audit.</li>
+              </ul>
+              <label class="block mt-4">
+                <span class="text-[13px] font-medium text-header">Enter your password to confirm</span>
+                <input
+                  v-model="deletionPassword"
+                  type="password"
+                  autocomplete="current-password"
+                  class="mt-1 w-full h-11 rounded-lg border border-border px-3 text-[13px] outline-none focus:border-primary"
+                />
+              </label>
+              <p v-if="deletionError" class="mt-2 text-[12px] text-[#DC2626]">{{ deletionError }}</p>
+              <div class="mt-5 flex justify-end gap-2">
+                <button type="button" class="h-10 px-4 rounded-full border border-border text-[13px] font-semibold" @click="deletionOpen = false">
+                  Keep my account
+                </button>
+                <button
+                  type="submit"
+                  class="h-10 px-4 rounded-full bg-[#DC2626] text-white text-[13px] font-semibold disabled:opacity-60"
+                  :disabled="privacyBusy || !deletionPassword"
+                >
+                  {{ privacyBusy ? "Scheduling…" : "Schedule deletion" }}
+                </button>
+              </div>
+            </form>
+          </Modal>
         </section>
 
         <!-- saved venues -->
@@ -452,7 +570,7 @@ const tabs = [
   { key: "profile", label: "Personal Info", icon: "pi-home" },
   { key: "security", label: "Security", icon: "pi-lock" },
   { key: "payments", label: "Payments", icon: "pi-credit-card" },
-  { key: "privacy", label: "Privacy", icon: "pi-shield" },
+  { key: "privacy", label: "Privacy & data", icon: "pi-shield" },
   { key: "saved", label: "Saved venues", icon: "pi-heart" },
 ];
 
@@ -730,11 +848,114 @@ async function togglePref(cat, ch) {
   }
 }
 
+/* ── your data: export + deletion (GET /account/privacy) ─────────────────
+ * Export: POST /account/data-export (once per 24 h) -> a job builds the
+ * archive and emails the account's own address -> while `ready` (7 days),
+ * GET /account/data-export/download returns a 1-hour link.
+ * Deletion: POST /account/deletion-request { password } schedules it 14 days
+ * out; DELETE cancels. The API refuses while deletionBlockers is non-empty,
+ * so the button is disabled with the reasons listed instead. */
+const privacy = ref(null);
+const privacyError = ref(false);
+const privacyBusy = ref(false);
+const deletionOpen = ref(false);
+const deletionPassword = ref("");
+const deletionError = ref("");
+const deletionBlockers = computed(() => privacy.value?.deletionBlockers ?? []);
+
+async function loadPrivacy() {
+  privacyError.value = false;
+  try {
+    privacy.value = await api.get("/account/privacy", undefined, { toast: false });
+  } catch {
+    privacyError.value = true;
+  }
+}
+
+const exportCopy = computed(() => {
+  const e = privacy.value?.export;
+  switch (e?.status) {
+    case "pending":
+      return `Preparing your archive (requested ${formatDateTime(e.requestedAt)}). We’ll email you when it’s ready.`;
+    case "ready":
+      return e.expiresAt ? `Your archive is ready until ${formatDateTime(e.expiresAt)}.` : "Your archive is ready.";
+    case "failed":
+      return "We couldn’t build your last archive. Request it again.";
+    default:
+      return "A JSON archive of your account’s data, emailed to you when it’s ready.";
+  }
+});
+
+async function requestExport() {
+  privacyBusy.value = true;
+  try {
+    await api.post("/account/data-export");
+    notifySuccess("Export requested — we’ll email you when it’s ready");
+    await loadPrivacy();
+  } catch {
+    /* toast shown (e.g. once per 24 hours) */
+  } finally {
+    privacyBusy.value = false;
+  }
+}
+
+async function downloadExport() {
+  privacyBusy.value = true;
+  try {
+    const res = await api.get("/account/data-export/download");
+    if (res?.url) window.open(res.url, "_blank", "noopener");
+  } catch {
+    loadPrivacy(); // the archive may have expired
+  } finally {
+    privacyBusy.value = false;
+  }
+}
+
+function openDeletion() {
+  deletionPassword.value = "";
+  deletionError.value = "";
+  deletionOpen.value = true;
+}
+
+async function requestDeletion() {
+  if (!deletionPassword.value || privacyBusy.value) return;
+  privacyBusy.value = true;
+  deletionError.value = "";
+  try {
+    await api.post("/account/deletion-request", { password: deletionPassword.value }, { toast: false });
+    deletionOpen.value = false;
+    notifySuccess("Account deletion scheduled");
+    await loadPrivacy();
+  } catch (e) {
+    // The modal covers the toast outlet, so the reason is shown in place.
+    const field = e?.fields ? Object.values(e.fields)[0] : "";
+    deletionError.value = field ? `${e.message}: ${field}` : e?.message || "Could not schedule the deletion.";
+    if (e?.status === 422) loadPrivacy(); // a new blocker may have appeared
+  } finally {
+    deletionPassword.value = "";
+    privacyBusy.value = false;
+  }
+}
+
+async function cancelDeletion() {
+  privacyBusy.value = true;
+  try {
+    await api.del("/account/deletion-request");
+    notifySuccess("Deletion cancelled — your account stays");
+    await loadPrivacy();
+  } catch {
+    /* toast shown */
+  } finally {
+    privacyBusy.value = false;
+  }
+}
+
 watch(
   tab,
   (t) => {
     if (t === "security" && !sessions.value.length) refreshSessions();
     if (t === "privacy" && !prefs.value) loadPrefs();
+    if (t === "privacy" && !privacy.value) loadPrivacy();
   },
   { immediate: true }
 );
