@@ -98,7 +98,6 @@ const year = new Date().getFullYear();
 const socials = [
   { icon: "pi-globe", label: "Website", href: "/" },
   { icon: "pi-at", label: "Email", href: "mailto:hello@venpadi.com" },
-  { icon: "pi-share-alt", label: "Share", href: "#" },
 ];
 
 const ownerLinks = [
@@ -120,6 +119,6 @@ const companyLinks = [
   { label: "Careers", to: "/for-venue-owners/about#careers" },
   { label: "Privacy Policy", to: "/for-venue-owners/privacy" },
   { label: "Terms of Service", to: "/for-venue-owners/terms" },
-  { label: "Blog", href: "#" },
+  { label: "Contact", href: "mailto:hello@venpadi.com" },
 ];
 </script>

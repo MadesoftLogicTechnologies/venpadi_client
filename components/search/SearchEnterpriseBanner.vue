@@ -22,7 +22,7 @@
     </div>
 
     <a
-      href="#"
+      href="mailto:support@venpadi.com?subject=Concierge"
       class="relative shrink-0 inline-flex items-center justify-center gap-2 px-5 py-3 rounded-full bg-white text-header text-sm font-semibold hover:bg-greybg"
     >
       Talk to Concierge

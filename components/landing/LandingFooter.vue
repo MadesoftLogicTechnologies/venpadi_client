@@ -8,17 +8,8 @@
             Venpadi connects planners with verified venues and trusted vendors —
             so every event starts with the right space.
           </p>
-          <div class="mt-5 flex items-center gap-3">
-            <a
-              v-for="social in socials"
-              :key="social.icon"
-              href="#"
-              class="w-9 h-9 rounded-full border border-white/15 flex items-center justify-center text-white/70 hover:text-white hover:border-white/40 transition-colors"
-              :aria-label="social.label"
-            >
-              <i :class="['pi text-sm', social.icon]"></i>
-            </a>
-          </div>
+          <!-- Social icons return when Venpadi has real profile URLs; an icon that
+               goes nowhere is a dead control. -->
         </div>
 
         <div v-for="col in columns" :key="col.title">
@@ -34,7 +25,7 @@
               </NuxtLink>
               <a
                 v-else
-                href="#"
+                :href="link.href"
                 class="text-sm text-white/55 hover:text-white transition-colors"
               >
                 {{ link.label }}
@@ -49,9 +40,9 @@
       >
         <p>© {{ year }} Venpadi Technologies Inc. All rights reserved.</p>
         <div class="flex gap-4">
-          <a href="#" class="hover:text-white">Privacy</a>
-          <a href="#" class="hover:text-white">Terms</a>
-          <a href="#" class="hover:text-white">Cookies</a>
+          <NuxtLink to="/for-venue-owners/privacy" class="hover:text-white">Privacy</NuxtLink>
+          <NuxtLink to="/for-venue-owners/terms" class="hover:text-white">Terms</NuxtLink>
+          <NuxtLink to="/for-venue-owners/privacy#priv-09" class="hover:text-white">Cookies</NuxtLink>
         </div>
       </div>
     </div>
@@ -60,13 +51,6 @@
 
 <script setup>
 const year = new Date().getFullYear();
-
-const socials = [
-  { icon: "pi-instagram", label: "Instagram" },
-  { icon: "pi-twitter", label: "Twitter" },
-  { icon: "pi-linkedin", label: "LinkedIn" },
-  { icon: "pi-facebook", label: "Facebook" },
-];
 
 const columns = [
   {
@@ -83,8 +67,8 @@ const columns = [
     links: [
       { label: "How it works", to: "/#how-it-works" },
       { label: "For venue owners", to: "/for-venue-owners" },
-      { label: "For Vendors" },
-      { label: "Pricing & Plans" },
+      { label: "For Vendors", to: "/for-venue-owners" },
+      { label: "Pricing & Plans", to: "/features#pricing" },
     ],
   },
   {
@@ -93,8 +77,8 @@ const columns = [
       { label: "About Us", to: "/for-venue-owners/about" },
       { label: "Careers", to: "/for-venue-owners/about#careers" },
       { label: "Press & Media", to: "/for-venue-owners/about#press" },
-      { label: "Privacy Policy" },
-      { label: "Contact" },
+      { label: "Privacy Policy", to: "/for-venue-owners/privacy" },
+      { label: "Contact", href: "mailto:hello@venpadi.com" },
     ],
   },
 ];

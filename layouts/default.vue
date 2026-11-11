@@ -21,10 +21,10 @@
         >
           <p>Venpadi © {{ year }} Venpadi Inc. All rights reserved.</p>
           <div class="flex flex-wrap gap-x-4 gap-y-1">
-            <a href="#" class="hover:text-header">Privacy Policy</a>
-            <a href="#" class="hover:text-header">Terms of Service</a>
-            <a href="#" class="hover:text-header">Help Center</a>
-            <a href="#" class="hover:text-header">Contact Support</a>
+            <NuxtLink to="/for-venue-owners/privacy" class="hover:text-header">Privacy Policy</NuxtLink>
+            <NuxtLink to="/for-venue-owners/terms" class="hover:text-header">Terms of Service</NuxtLink>
+            <NuxtLink to="/help" class="hover:text-header">Help Center</NuxtLink>
+            <a href="mailto:support@venpadi.com" class="hover:text-header">Contact Support</a>
           </div>
         </footer>
       </div>
