@@ -182,7 +182,9 @@
               </button>
             </div>
 
+            <!-- Only when there is a next page: on the last page it was a no-op. -->
             <button
+              v-if="!onLastPage"
               type="button"
               class="px-6 py-3 rounded-full border border-border text-sm font-semibold text-header hover:bg-greybg"
               :disabled="loading"
