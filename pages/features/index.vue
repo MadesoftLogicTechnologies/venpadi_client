@@ -31,7 +31,7 @@ useHead({
     {
       name: "description",
       content:
-        "Listings, bookings, escrow payments, analytics, messaging, vendors, and trust — the full Venpadi operating system for venue owners.",
+        "Listings, bookings, escrow payments, analytics, messaging, add-ons, and trust — the full Venpadi operating system for venue owners.",
     },
   ],
 });

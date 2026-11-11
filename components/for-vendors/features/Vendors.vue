@@ -3,16 +3,16 @@
     <div class="max-w-[1280px] mx-auto px-4 sm:px-6 md2:px-8">
       <div class="max-w-2xl">
         <p class="text-[11px] font-bold tracking-[0.14em] uppercase text-pink-600">
-          06 — Vendor network
+          06 — Add-ons
         </p>
         <h2
           class="mt-3 text-2xl sm:text-3xl md2:text-[2.25rem] font-extrabold text-header tracking-tight leading-tight"
         >
-          Your clients want more than a venue. Give them everything.
+          Your clients want more than a venue. Sell them the extras.
         </h2>
         <p class="mt-4 text-sm sm:text-base text-bodytext leading-relaxed">
-          Turn your event venue into a full-service hospitality ecosystem while taking a
-          predictable commission on auxiliary supplier hires.
+          Offer the services you provide alongside the space — clients add them while
+          booking, and they are priced and invoiced with the hire.
         </p>
       </div>
 
@@ -28,7 +28,6 @@
             <i :class="['pi text-xs', cat.icon]"></i>
           </div>
           <h3 class="mt-3 text-sm font-extrabold text-header">{{ cat.title }}</h3>
-          <p class="mt-1 text-xs text-bodytext">{{ cat.count }} vetted vendors</p>
         </article>
       </div>
 
@@ -47,33 +46,35 @@
 </template>
 
 <script setup>
+// Kinds of add-on a venue can sell. The third-party vendor marketplace is a
+// later phase and is not presented here (audit C4).
 const categories = [
-  { title: "Music & DJs", count: 142, icon: "pi-volume-up" },
-  { title: "Photography & Video", count: 215, icon: "pi-camera" },
-  { title: "Gourmet Catering", count: 98, icon: "pi-shopping-bag" },
-  { title: "Floristry & Decor", count: 112, icon: "pi-sun" },
-  { title: "MC & Host Services", count: 84, icon: "pi-microphone" },
-  { title: "AV & Lighting", count: 62, icon: "pi-bolt" },
-  { title: "Transportation", count: 44, icon: "pi-car" },
-  { title: "Event Staffing", count: 52, icon: "pi-users" },
+  { title: "Music & DJs", icon: "pi-volume-up" },
+  { title: "Photography & Video", icon: "pi-camera" },
+  { title: "Catering", icon: "pi-shopping-bag" },
+  { title: "Floristry & Decor", icon: "pi-sun" },
+  { title: "MC & Host Services", icon: "pi-microphone" },
+  { title: "AV & Lighting", icon: "pi-bolt" },
+  { title: "Transportation", icon: "pi-car" },
+  { title: "Event Staffing", icon: "pi-users" },
 ];
 
 const benefits = [
   {
-    title: "100% vetted vendors",
-    body: "All third-party hires pass background checks, health permits, and equipment tests.",
+    title: "Your own price list",
+    body: "Price each add-on per event, per day, per hour or per guest, and choose which spaces offer it.",
   },
   {
-    title: "Preferred vendor lists",
-    body: "Lock your own preferred list to keep unreliable suppliers off your floors.",
+    title: "Chosen while booking",
+    body: "Clients pick add-ons with their space; the total is calculated before they pay.",
   },
   {
-    title: "In-booking coordination",
-    body: "Vendor arrival, loading dock timings, and electrical schematics automated.",
+    title: "Refundable deposits",
+    body: "Attach a caution deposit to equipment add-ons — held in escrow with the booking.",
   },
   {
-    title: "Revenue share",
-    body: "Earn 5%–10% referral fees paid automatically on every vendor booked via your link.",
+    title: "One invoice, one payout",
+    body: "Add-on payments arrive with the hire and are paid out with it.",
   },
 ];
 </script>

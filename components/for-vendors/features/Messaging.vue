@@ -65,8 +65,8 @@
           </h2>
           <p class="mt-4 text-sm sm:text-base text-white/55 leading-relaxed">
             Stop scrambling through deleted WhatsApp voice notes and scattered email
-            attachments. Venpadi anchors every conversation, specification, and floor
-            plan revision directly to the event booking.
+            attachments. Venpadi keeps every conversation with a client, and the files
+            you share, beside their bookings.
           </p>
 
           <ul class="mt-8 space-y-5">
@@ -92,28 +92,18 @@
 const features = [
   {
     title: "Booking-linked threads",
-    body: "Keeps chat, guest headcounts, and invoices in one place.",
+    body: "Keeps the chat, the client's bookings and their invoices in one place.",
     icon: "pi-link",
   },
   {
-    title: "Event briefing questionnaires",
-    body: "Standardize requirements for sound, lights, stage plans, and generators.",
-    icon: "pi-list",
+    title: "File attachments",
+    body: "Share floor plans, PDFs and photos (up to 10 MB each) right in the thread.",
+    icon: "pi-paperclip",
   },
   {
-    title: "Version-controlled documents",
-    body: "Store floor plans and safety certificates with audit logs so outdated files never win.",
-    icon: "pi-history",
-  },
-  {
-    title: "Push & SMS alerts",
-    body: "Clients get immediate SMS pings when you reply — faster approvals.",
-    icon: "pi-mobile",
-  },
-  {
-    title: "Broadcast messaging",
-    body: "Message all upcoming weekend clients at once about weather or roadworks.",
-    icon: "pi-megaphone",
+    title: "Email & in-app alerts",
+    body: "Clients are notified by email and in the app when you reply.",
+    icon: "pi-bell",
   },
 ];
 </script>

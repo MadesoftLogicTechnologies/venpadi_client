@@ -49,11 +49,13 @@
         </NuxtLink>
       </div>
 
+      <!-- The host count is GET /public/stats; with none to report the line hides. -->
       <p
+        v-if="hasFigure(stats?.hosts)"
         class="mt-6 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-black/40 border border-white/10 text-xs sm:text-sm text-white/80"
       >
         <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
-        1,200+ venues run their entire business on Venpadi’s dashboard today
+        {{ statCount(stats.hosts) }} venue {{ stats.hosts === 1 ? "host runs" : "hosts run" }} their bookings on Venpadi today
       </p>
 
       <div class="mt-8 flex flex-wrap items-center justify-center gap-2">
@@ -72,13 +74,15 @@
 </template>
 
 <script setup>
+const { stats } = usePublicStats();
+
 const tags = [
   { label: "Listings", icon: "pi-images", href: "#listings" },
   { label: "Bookings", icon: "pi-calendar", href: "#bookings" },
   { label: "Payments", icon: "pi-wallet", href: "#payments" },
   { label: "Analytics", icon: "pi-chart-bar", href: "#analytics" },
   { label: "Messaging", icon: "pi-comments", href: "#messaging" },
-  { label: "Vendors", icon: "pi-users", href: "#vendors" },
+  { label: "Add-ons", icon: "pi-plus-circle", href: "#vendors" },
   { label: "Trust", icon: "pi-shield", href: "#trust" },
 ];
 </script>

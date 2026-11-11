@@ -18,19 +18,23 @@
         <p
           class="text-[11px] font-bold tracking-[0.14em] uppercase text-bodytext2"
         >
-          Performance commission only
+          Host fee on bookings
         </p>
+        <!-- The live host fee (rates.hostFeeBps from GET /public/stats). Until it
+             loads the slot stays empty — a literal here once said 5% while the
+             fee was 9%. -->
         <p
-          class="mt-4 text-6xl sm:text-7xl font-extrabold tracking-tight bg-brand-gradient-soft bg-clip-text text-transparent"
+          class="mt-4 min-h-[1em] text-6xl sm:text-7xl font-extrabold tracking-tight bg-brand-gradient-soft bg-clip-text text-transparent"
         >
-          5%
+          {{ hostFee || "\u00a0" }}
         </p>
         <p class="mt-2 text-base font-semibold text-header">
-          commission on completed bookings.
+          of the hire on bookings paid through Venpadi.
         </p>
         <p class="mt-4 text-sm text-bodytext leading-relaxed">
-          List for free · No monthly subscription · No setup fee · No payment gateway
-          hidden markups.
+          Deducted from your payout (VAT applies to the fee) · Free to list · No setup
+          fee · Bookings you record yourself carry no fee · Paid plans and boosts for
+          extra visibility are optional.
         </p>
         <NuxtLink
           to="/auth/signup/venue"
@@ -58,7 +62,10 @@
 </template>
 
 <script setup>
-const perks = [
+const { rates } = usePublicStats();
+const hostFee = computed(() => hostFeeLabel(rates.value));
+
+const perks = computed(() => [
   {
     title: "Free to list",
     body: "Showcase every hall and garden without paying a dime upfront.",
@@ -66,13 +73,13 @@ const perks = [
   },
   {
     title: "Free to manage",
-    body: "Full access to calendar, messaging, and multi-user staff accounts.",
+    body: "Calendar, bookings, messaging and payouts come with the free plan.",
     icon: "pi-cog",
   },
   {
     title: "Pay when paid",
-    body: "The 5% fee is only deducted upon successful event completion payouts.",
+    body: `The ${hostFee.value ? `${hostFee.value} ` : ""}host fee is taken from your payout — nothing is charged up front.`,
     icon: "pi-wallet",
   },
-];
+]);
 </script>

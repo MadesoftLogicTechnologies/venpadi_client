@@ -15,8 +15,9 @@
         Your venue, running the way it
         <span class="text-primary">always should have been.</span>
       </h2>
-      <p class="mt-4 text-sm sm:text-base text-white/55 leading-relaxed">
-        Join over 1,200 premier venue operators across Lagos, Abuja, Accra, and Nairobi.
+      <!-- Host and city counts are GET /public/stats; the line hides without them. -->
+      <p v-if="joinLine" class="mt-4 text-sm sm:text-base text-white/55 leading-relaxed">
+        {{ joinLine }}
       </p>
 
       <div class="mt-8 flex flex-wrap items-center justify-center gap-3">
@@ -48,25 +49,25 @@
         </span>
       </div>
 
-      <div
-        class="mt-10 mx-auto max-w-md rounded-2xl border border-white/10 bg-black/40 px-5 py-4 text-left"
-      >
-        <p class="text-sm text-white/80 leading-relaxed">
-          “We listed on a Tuesday. By Friday the calendar had three deposits. That never
-          happened on WhatsApp.”
-        </p>
-        <p class="mt-3 text-xs font-semibold text-white/45">
-          Grace Akusu · Kems Garden Event Center
-        </p>
-      </div>
     </div>
   </section>
 </template>
 
 <script setup>
+const { stats } = usePublicStats();
+
+const joinLine = computed(() => {
+  const s = stats.value;
+  if (!hasFigure(s?.hosts)) return "";
+  const hosts = `${statCount(s.hosts)} venue ${s.hosts === 1 ? "host" : "hosts"}`;
+  return hasFigure(s?.cities)
+    ? `Join ${hosts} across ${statCount(s.cities)} ${s.cities === 1 ? "city" : "cities"}.`
+    : `Join ${hosts} already on Venpadi.`;
+});
+
 const proofs = [
   "No credit card required",
-  "Lists in under 10 minutes",
-  "Cancel anytime",
+  "Free to list",
+  "Upgrade only if you want more visibility",
 ];
 </script>

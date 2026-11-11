@@ -12,9 +12,9 @@
             Your money. Not stuck in transit.
           </h2>
           <p class="mt-4 text-sm sm:text-base text-white/55 leading-relaxed">
-            End the awkwardness of manual bank transfer verification and delayed
-            payouts. Collect deposits instantly across Africa and global markets with
-            integrated escrow settlement.
+            End the awkwardness of manual bank transfer verification and chasing
+            balances. Clients pay by card through Paystack, the money is held in escrow,
+            and it is released to you once the event is done.
           </p>
 
           <div class="mt-6 flex flex-wrap gap-2">
@@ -45,23 +45,25 @@
         <div
           class="rounded-2xl border border-white/10 bg-white/[0.04] p-5 sm:p-6"
         >
-          <p class="text-[11px] font-bold tracking-wider uppercase text-white/40">
-            Available for payout
-          </p>
+          <!-- An illustration of the payouts screen: no invented balances, and the
+               "button" is a picture of one, not a control. -->
+          <div class="flex items-center justify-between gap-3">
+            <p class="text-[11px] font-bold tracking-wider uppercase text-white/40">
+              Available for payout
+            </p>
+            <span class="text-[10px] font-bold uppercase tracking-wide px-2 py-1 rounded-full bg-white/10 text-white/60">Example</span>
+          </div>
           <div class="mt-2 flex items-end justify-between gap-3">
-            <p class="text-3xl font-extrabold tracking-tight">₦12,480,000</p>
-            <button
-              type="button"
-              class="px-4 py-2 rounded-full bg-primary text-white text-xs font-semibold"
-            >
-              Initiate transfer
-            </button>
+            <span class="block h-8 w-44 rounded-md bg-white/15" aria-hidden="true"></span>
+            <span class="px-4 py-2 rounded-full bg-primary text-white text-xs font-semibold" aria-hidden="true">
+              Request payout
+            </span>
           </div>
 
           <div class="mt-6">
             <div class="flex justify-between text-xs text-white/45 mb-2">
-              <span>Pending balance</span>
-              <span>₦4,240,000</span>
+              <span>In the 48h dispute window</span>
+              <span class="block h-3 w-16 rounded bg-white/15" aria-hidden="true"></span>
             </div>
             <div class="h-2 rounded-full bg-white/10 overflow-hidden">
               <div class="h-full w-[35%] rounded-full bg-primary"></div>
@@ -78,7 +80,7 @@
               class="flex items-center justify-between gap-3 text-sm"
             >
               <span class="text-white/70">{{ tx.label }}</span>
-              <span class="font-bold text-emerald-400">{{ tx.amount }}</span>
+              <span class="font-bold text-emerald-400">{{ tx.status }}</span>
             </div>
           </div>
         </div>
@@ -88,54 +90,34 @@
 </template>
 
 <script setup>
-const rails = [
-  "Stripe",
-  "Paystack",
-  "Flutterwave",
-  "Bank transfer",
-  "Airwallex",
-  "BNPL",
-  "USSD",
-  "Mastercard",
-  "Visa",
-  "Verve",
-];
+// Paystack is the one live gateway (API DECISIONS §5); these are the cards it takes.
+const rails = ["Paystack", "Mastercard", "Visa", "Verve"];
 
 const features = [
   {
     title: "Automated collection",
-    body: "Take 50% upfront and schedule the balance 14 days before the event.",
+    body: "The first payment is due within 48 hours of approval; the balance is due 30 days before the event.",
     icon: "pi-sync",
   },
   {
     title: "Escrow protection",
-    body: "Venue and client funds held securely until event check-in is approved.",
+    body: "Client payments are held until the event is completed and the 48-hour dispute window has passed.",
     icon: "pi-lock",
   },
   {
-    title: "Multi-currency",
-    body: "Accept USD, GBP, EUR, NGN, GHS, and KES with localized conversion.",
-    icon: "pi-globe",
-  },
-  {
-    title: "BNPL financing",
-    body: "Hosts pay in installments while you still receive 100% upfront.",
-    icon: "pi-credit-card",
-  },
-  {
-    title: "Real-time payouts",
-    body: "Direct settlements into merchant banks without unnecessary delays.",
+    title: "Payouts to your bank",
+    body: "Request a payout of your available balance to your verified bank account.",
     icon: "pi-send",
   },
   {
-    title: "Tax-compliant invoices",
-    body: "VAT and WHT compliant PDF receipts with custom stamps, instantly.",
+    title: "Clear invoices",
+    body: "Every invoice shows the hire, add-ons, fees and VAT line by line.",
     icon: "pi-file",
   },
 ];
 
 const txs = [
-  { label: "Kemi & Tunde deposit", amount: "+₦625,000" },
-  { label: "Zenith Bank settlement", amount: "+₦340,000" },
+  { label: "Wedding reception — deposit", status: "Received" },
+  { label: "Strategy offsite — balance", status: "Received" },
 ];
 </script>

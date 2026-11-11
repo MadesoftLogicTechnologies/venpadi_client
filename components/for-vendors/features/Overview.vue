@@ -52,11 +52,12 @@
               Trust & safety
             </p>
             <h3 class="mt-1 text-lg font-extrabold text-header">
-              Biometric verification & 72-hour dispute SLAs
+              Verified hosts &amp; escrowed payments
             </h3>
             <p class="mt-2 text-sm text-bodytext leading-relaxed max-w-3xl">
-              Comprehensive KYC/KYB: venue owners and event leads are verified against
-              government databases before transactions occur.
+              Venue owners submit identity, business registration and proof of address
+              before their venue is marked verified. Client payments are held in escrow
+              and released after the event's 48-hour dispute window.
             </p>
           </div>
           <a
@@ -77,7 +78,7 @@ const systems = [
   {
     eyebrow: "Listings engine",
     title: "Multi-space showcasing",
-    body: "High-res galleries, floorplans, capacity charts, and automated SEO discovery.",
+    body: "Photo galleries, multiple spaces per venue, capacity by layout, and amenities.",
     icon: "pi-images",
     iconBg: "bg-[#EEF2FF]",
     iconColor: "text-[#4F46E5]",
@@ -86,16 +87,16 @@ const systems = [
   {
     eyebrow: "Booking engine",
     title: "Automated lifecycle",
-    body: "Tentative holds with auto-expiry, status tracking, and scheduled conflict locks.",
+    body: "Date holds that expire on their own, status tracking, and double-booking locks.",
     icon: "pi-calendar",
     iconBg: "bg-emerald-50",
     iconColor: "text-emerald-600",
     href: "#bookings",
   },
   {
-    eyebrow: "Instant payments",
-    title: "Escrow & split payouts",
-    body: "Multi-gateway payments, automated balance collection, and guaranteed income protection.",
+    eyebrow: "Escrow payments",
+    title: "Deposits, balances & payouts",
+    body: "Card payments through Paystack, scheduled deposit and balance collection, and payouts to your bank.",
     icon: "pi-wallet",
     iconBg: "bg-primary/10",
     iconColor: "text-primary",
@@ -104,7 +105,7 @@ const systems = [
   {
     eyebrow: "Intelligence",
     title: "Revenue & demand",
-    body: "Yield forecasting, space utilization rates, and channel acquisition insights.",
+    body: "Revenue by month, space, event type and source, plus occupancy — from your own bookings.",
     icon: "pi-chart-bar",
     iconBg: "bg-sky-50",
     iconColor: "text-sky-600",
@@ -113,16 +114,16 @@ const systems = [
   {
     eyebrow: "Direct messaging",
     title: "Unified client threads",
-    body: "Booking-anchored communications, questionnaire forms, and revision history.",
+    body: "One conversation per client, with file attachments, beside their bookings.",
     icon: "pi-comments",
     iconBg: "bg-violet-50",
     iconColor: "text-violet-600",
     href: "#messaging",
   },
   {
-    eyebrow: "Vendor ecosystem",
-    title: "Integrated add-ons",
-    body: "Curated preferred suppliers, automatic commission kickbacks, and coordination.",
+    eyebrow: "Add-ons",
+    title: "Sell your own extras",
+    body: "Catering, décor, equipment and staffing you provide, priced and invoiced with the booking.",
     icon: "pi-users",
     iconBg: "bg-pink-50",
     iconColor: "text-pink-600",

@@ -7,11 +7,11 @@
       <h2
         class="mt-3 text-2xl sm:text-3xl md2:text-[2.35rem] font-extrabold tracking-tight leading-tight max-w-3xl"
       >
-        The money is safe. The booking is protected. The dispute is mediated.
+        The money is held. The date is locked. The deposit is protected.
       </h2>
       <p class="mt-4 text-sm sm:text-base text-white/55 leading-relaxed max-w-2xl">
-        Running an event venue carries real property risks. Venpadi is built with an
-        institutional safety net — every host authenticated, every deposit escrowed.
+        Running an event venue carries real property risks. Venpadi is built with a
+        safety net — verified hosts, escrowed payments and refundable caution deposits.
       </p>
 
       <div class="mt-10 grid md2:grid-cols-3 gap-4">
@@ -30,29 +30,6 @@
         </article>
       </div>
 
-      <blockquote
-        class="mt-6 rounded-2xl border border-white/10 bg-white/[0.04] p-5 sm:p-7"
-      >
-        <p class="text-base sm:text-lg font-semibold leading-relaxed">
-          “A corporate client’s sound contractor damaged our mahogany acoustic paneling
-          during takedown. Within 48 hours Venpadi’s dispute team inspected our
-          pre-event walk-through photos and released the ₦450,000 caution deposit
-          straight into our account.”
-        </p>
-        <div class="mt-5 flex items-center gap-3">
-          <div
-            class="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center text-sm font-bold"
-          >
-            AO
-          </div>
-          <div>
-            <p class="text-sm font-bold">Amaka Osei</p>
-            <p class="text-xs text-white/45">
-              Managing Director, The Landmark — Abuja
-            </p>
-          </div>
-        </div>
-      </blockquote>
     </div>
   </section>
 </template>
@@ -60,18 +37,18 @@
 <script setup>
 const cards = [
   {
-    title: "Escrow guarantee",
-    body: "Funds held in segregated statutory escrow accounts — no manual revokes, no silent holds.",
+    title: "Escrowed payments",
+    body: "Client payments are held by Venpadi and released to you after the event and its 48-hour dispute window.",
     icon: "pi-building",
   },
   {
-    title: "72-hour dispute SLA",
-    body: "Dedicated asset managers review photos and proof of damage against a hard response clock.",
-    icon: "pi-stopwatch",
+    title: "Caution deposits & claims",
+    body: "Hold a refundable caution deposit; after the event, claim against it for damage and the client can accept or contest.",
+    icon: "pi-shield",
   },
   {
-    title: "Biometric & CAC verification",
-    body: "Corporate registration (CAC/RC) and biometric identity checks before high-value transactions.",
+    title: "Host verification",
+    body: "Identity, business registration (CAC) and proof of address are checked before a venue shows as verified.",
     icon: "pi-verified",
   },
 ];

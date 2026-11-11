@@ -13,7 +13,7 @@
           </h2>
           <p class="mt-4 text-sm sm:text-base text-white/55 leading-relaxed">
             Generic form builders strip away character. Venpadi showcases individual
-            halls, gardens, and suites with real-time availability — so guests book the
+            halls, gardens, and suites with live availability — so guests book the
             space they actually want.
           </p>
 
@@ -40,10 +40,11 @@
               <p class="text-xs text-white/40">Properties</p>
               <p class="text-sm font-bold">Grand Plaza Pavilion</p>
             </div>
+            <!-- An illustration of the listing editor: example spaces, no invented prices or booking counts. -->
             <span
-              class="text-[10px] font-bold uppercase tracking-wide px-2.5 py-1 rounded-full bg-emerald-500/15 text-emerald-400"
+              class="text-[10px] font-bold uppercase tracking-wide px-2.5 py-1 rounded-full bg-white/10 text-white/60"
             >
-              Live
+              Example
             </span>
           </div>
 
@@ -58,7 +59,6 @@
                   <p class="text-sm font-bold">{{ space.name }}</p>
                   <p class="mt-0.5 text-xs text-white/45">{{ space.meta }}</p>
                 </div>
-                <p class="text-sm font-extrabold text-primary shrink-0">{{ space.price }}</p>
               </div>
               <p class="mt-2 text-[11px] text-white/40">{{ space.status }}</p>
             </li>
@@ -68,7 +68,7 @@
             class="mt-4 rounded-xl border border-dashed border-white/20 px-4 py-6 text-center text-xs text-white/40"
           >
             Drop high-resolution event photos here
-            <p class="mt-1 text-[10px] text-white/30">RAW · WebP · JPG · PNG</p>
+            <p class="mt-1 text-[10px] text-white/30">JPG · PNG · WebP</p>
           </div>
         </div>
       </div>
@@ -80,17 +80,17 @@
 const features = [
   {
     title: "Rich media gallery",
-    body: "Upload 50+ ultra-high-resolution images with tags per room style.",
+    body: "Upload a photo gallery for the venue and for each of its spaces.",
     icon: "pi-image",
   },
   {
     title: "Multi-space inventory",
-    body: "Manage ballrooms, rooftops, and suites with independent dynamic pricing.",
+    body: "Manage ballrooms, rooftops, and suites, each with its own day, half-day or hourly rates.",
     icon: "pi-th-large",
   },
   {
     title: "Real-time availability",
-    body: "Public calendar that syncs instantly with iCal, Google Calendar, and Outlook.",
+    body: "Bookings and the dates you block update your public availability immediately.",
     icon: "pi-calendar",
   },
   {
@@ -103,31 +103,23 @@ const features = [
     body: "Display parking, generators, prep kitchens, staging, and dressing rooms.",
     icon: "pi-tags",
   },
-  {
-    title: "Google Schema.org SEO",
-    body: "Automated venue structured data so your spaces are visible on Google.",
-    icon: "pi-search",
-  },
 ];
 
 const spaces = [
   {
     name: "The Grand Hall",
     meta: "1,500 banquet · 450 standing",
-    price: "₦650,000/day",
-    status: "125 bookings in Q4",
+    status: "Day and half-day rates",
   },
   {
     name: "Sunset Rooftop Terrace",
     meta: "150 cocktail",
-    price: "₦180,000/day",
-    status: "48 bookings in Q4",
+    status: "Evening hire",
   },
   {
     name: "Executive Boardroom Suite",
     meta: "25 seated",
-    price: "₦85,000/day",
-    status: "Exclusive",
+    status: "Hourly rate",
   },
 ];
 </script>

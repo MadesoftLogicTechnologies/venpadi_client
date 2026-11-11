@@ -81,11 +81,13 @@ const ownerLogin = computed(
   () => `${config.public.VENDOR_PORTAL_URL || ""}/auth/login`.replace(/([^:]\/)\/+/g, "$1")
 );
 
-const links = [
+// "Stories" only when owner testimonials are published — the section hides otherwise.
+const { testimonials } = usePublicTestimonials("host");
+const links = computed(() => [
   { label: "Core Overview", href: "#overview" },
   { label: "Interactive Mockups", href: "#listings" },
   { label: "Comparison", href: "#comparison" },
   { label: "Pricing", href: "#pricing" },
-  { label: "Stories", href: "#stories" },
-];
+  ...(testimonials.value.length ? [{ label: "Stories", href: "#stories" }] : []),
+]);
 </script>

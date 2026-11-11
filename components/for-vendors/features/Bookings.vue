@@ -34,7 +34,11 @@
 
       <div class="mt-8 grid md2:grid-cols-2 gap-6">
         <div class="rounded-2xl border border-border bg-white p-5 sm:p-6">
-          <p class="text-sm font-bold text-header mb-4">Active bookings queue</p>
+          <!-- An illustration: example bookings, no invented amounts or real company names. -->
+          <div class="flex items-center justify-between gap-3 mb-4">
+            <p class="text-sm font-bold text-header">Active bookings queue</p>
+            <span class="text-[10px] font-bold uppercase tracking-wide px-2 py-1 rounded-full bg-greybg text-bodytext">Example</span>
+          </div>
           <ul class="space-y-3">
             <li
               v-for="booking in bookings"
@@ -53,7 +57,6 @@
                   {{ booking.status }}
                 </span>
               </div>
-              <p class="mt-2 text-sm font-extrabold text-header">{{ booking.amount }}</p>
             </li>
           </ul>
         </div>
@@ -77,13 +80,14 @@
 </template>
 
 <script setup>
+// The booking states the API actually moves through (API DECISIONS §3).
 const stages = [
-  { title: "Enquiry", sub: "Lead captured" },
-  { title: "Tentative hold", sub: "48-hr block applied" },
-  { title: "Deposit paid", sub: "Slot secured" },
-  { title: "Confirmed", sub: "Full details collected" },
-  { title: "In progress", sub: "Event day active" },
-  { title: "Completed", sub: "Funds released" },
+  { title: "Request", sub: "Date held while you review" },
+  { title: "Approved", sub: "Client has 48h to pay" },
+  { title: "Confirmed", sub: "First payment received" },
+  { title: "Balance", sub: "Due before the event" },
+  { title: "Completed", sub: "Event has ended" },
+  { title: "Paid out", sub: "After the 48h dispute window" },
 ];
 
 const bookings = [
@@ -91,49 +95,46 @@ const bookings = [
     title: "Kemi & Tunde Wedding Reception",
     space: "The Grand Hall",
     status: "Confirmed",
-    amount: "₦1,250,000",
     badgeClass: "bg-emerald-50 text-emerald-700",
   },
   {
-    title: "Zenith Bank Q4 Strategy Conf",
+    title: "Quarterly Strategy Offsite",
     space: "Executive Boardroom",
-    status: "Deposit paid",
-    amount: "₦340,000",
+    status: "Balance due",
     badgeClass: "bg-sky-50 text-sky-700",
   },
   {
     title: "Adora’s 30th Birthday Soirée",
     space: "Sunset Rooftop",
-    status: "Tentative hold",
-    amount: "₦180,000",
+    status: "Approved",
     badgeClass: "bg-amber-50 text-amber-700",
   },
 ];
 
 const features = [
   {
-    title: "Smart sorting inbox",
-    body: "Filters urgent date requests automatically from general inquiries.",
+    title: "One inbox for requests",
+    body: "Booking requests and general enquiries arrive together, each with its dates and guest count.",
     icon: "pi-inbox",
   },
   {
-    title: "Tentative hold auto-expiry",
-    body: "Set 24, 48, or 72-hour limits. If no payment is made, the date unlocks.",
+    title: "Hold auto-expiry",
+    body: "A request holds the date while you decide; an approved booking left unpaid expires and the date unlocks.",
     icon: "pi-clock",
   },
   {
     title: "Custom booking add-ons",
-    body: "Attach drinks packages, sound systems, or cleaning deposits inside the invoice.",
+    body: "Attach drinks packages, sound systems, or refundable caution deposits to the booking's invoice.",
     icon: "pi-plus-circle",
   },
   {
-    title: "Automated deadline reminders",
-    body: "Gentle WhatsApp and SMS notifications sent for final balance payments.",
+    title: "Payment reminders",
+    body: "Clients get email and in-app reminders before their balance is due.",
     icon: "pi-bell",
   },
   {
     title: "Cancellation policy enforcement",
-    body: "Select non-refundable windows to prevent revenue loss from last-minute cancellations.",
+    body: "Choose a flexible, moderate or strict policy; refunds on cancellation are calculated from it.",
     icon: "pi-ban",
   },
 ];
