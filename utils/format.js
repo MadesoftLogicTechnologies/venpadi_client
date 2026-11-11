@@ -90,6 +90,15 @@ export function timeAgo(iso) {
   return formatDate(iso);
 }
 
+/** 2411724 -> "2.3 MB", 5120 -> "5 KB"; null/invalid -> "". */
+export function formatBytes(n) {
+  const v = Number(n);
+  if (n === null || n === undefined || !Number.isFinite(v) || v < 0) return "";
+  if (v >= 1024 * 1024) return `${(v / (1024 * 1024)).toFixed(1).replace(/\.0$/, "")} MB`;
+  if (v >= 1024) return `${Math.round(v / 1024)} KB`;
+  return `${v} B`;
+}
+
 /** "Tunde Adeyemi" -> "TA" */
 export const initials = (name) =>
   String(name ?? "")

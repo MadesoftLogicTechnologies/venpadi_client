@@ -232,21 +232,8 @@
                     <div class="max-w-[78%]">
                       <p class="text-right text-[11px] text-bodytext2 mb-1">{{ formatTime(m.createdAt) }} · You</p>
                       <div class="rounded-2xl rounded-br-md bg-brand-gradient-soft text-white px-3.5 py-2.5 text-[13px] leading-relaxed">
-                        <p class="whitespace-pre-line">{{ m.body }}</p>
-                        <a
-                          v-if="m.attachmentUrl"
-                          :href="m.attachmentUrl"
-                          target="_blank"
-                          rel="noopener"
-                          class="mt-2 flex items-center gap-2 rounded-xl bg-white/15 px-3 py-2 text-white"
-                        >
-                          <i class="pi pi-file text-[14px]"></i>
-                          <span class="min-w-0">
-                            <span class="block text-[12px] font-semibold truncate">{{ fileName(m) }}</span>
-                            <span v-if="fileSize(m)" class="block text-[11px] opacity-80">{{ fileSize(m) }}</span>
-                          </span>
-                          <i class="pi pi-download text-[12px] ml-auto"></i>
-                        </a>
+                        <p v-if="m.body" class="whitespace-pre-line">{{ m.body }}</p>
+                        <MessagesMessageAttachment v-if="attachmentOf(m)" :attachment="attachmentOf(m)" mine />
                       </div>
                     </div>
                   </div>
@@ -267,22 +254,7 @@
                       </p>
                       <div class="mt-1 rounded-2xl rounded-bl-md bg-greybg px-3.5 py-2.5 text-[13px] text-header leading-relaxed">
                         <p v-if="m.body" class="whitespace-pre-line">{{ m.body }}</p>
-                        <a
-                          v-if="m.attachmentUrl"
-                          :href="m.attachmentUrl"
-                          target="_blank"
-                          rel="noopener"
-                          class="mt-2 flex items-center gap-2 rounded-xl bg-white border border-border px-3 py-2"
-                        >
-                          <span class="w-8 h-8 rounded-lg bg-[#FFF1ED] text-primary flex items-center justify-center shrink-0">
-                            <i class="pi pi-file text-[13px]"></i>
-                          </span>
-                          <span class="min-w-0">
-                            <span class="block text-[12px] font-semibold text-header truncate">{{ fileName(m) }}</span>
-                            <span v-if="fileSize(m)" class="block text-[11px] text-bodytext">{{ fileSize(m) }}</span>
-                          </span>
-                          <i class="pi pi-download text-[12px] text-bodytext ml-auto"></i>
-                        </a>
+                        <MessagesMessageAttachment v-if="attachmentOf(m)" :attachment="attachmentOf(m)" />
                       </div>
                     </div>
                   </div>
@@ -300,17 +272,50 @@
                 placeholder="Write a message..."
                 @keydown.enter.exact.prevent="send"
               ></textarea>
+              <div
+                v-if="attachment || uploading"
+                class="mb-1 inline-flex items-center gap-2 max-w-full rounded-xl bg-white border border-border px-3 py-1.5"
+              >
+                <i :class="['pi text-[12px] text-primary', uploading ? 'pi-spin pi-spinner' : 'pi-paperclip']"></i>
+                <span class="min-w-0 text-[12px] text-header truncate">
+                  {{ uploading ? `Uploading ${uploadingName}…` : attachment.fileName }}
+                </span>
+                <span v-if="attachment && formatBytes(attachment.sizeBytes)" class="text-[11px] text-bodytext shrink-0">
+                  {{ formatBytes(attachment.sizeBytes) }}
+                </span>
+                <button
+                  v-if="attachment"
+                  type="button"
+                  class="w-5 h-5 rounded-full text-bodytext hover:text-header shrink-0"
+                  aria-label="Remove attachment"
+                  @click="clearAttachment"
+                >
+                  <i class="pi pi-times text-[10px]"></i>
+                </button>
+              </div>
+              <p v-if="attachError" class="mb-1 text-[12px] text-[#DC2626]">{{ attachError }}</p>
               <div class="flex items-center gap-1 pt-1">
-                <span class="w-8 h-8 rounded-full flex items-center justify-center text-bodytext2" title="Attachments coming soon">
+                <input
+                  ref="fileInput"
+                  type="file"
+                  class="hidden"
+                  :accept="ATTACH_TYPES.join(',')"
+                  @change="pickAttachment"
+                />
+                <button
+                  type="button"
+                  class="w-8 h-8 rounded-full flex items-center justify-center text-bodytext hover:bg-white hover:text-header disabled:opacity-50"
+                  title="Attach a PDF or image (max 10 MB)"
+                  aria-label="Attach a file"
+                  :disabled="uploading || sending"
+                  @click="fileInput?.click()"
+                >
                   <i class="pi pi-paperclip text-[13px]"></i>
-                </span>
-                <span class="w-8 h-8 rounded-full flex items-center justify-center text-bodytext2" title="Emoji">
-                  <i class="pi pi-face-smile text-[13px]"></i>
-                </span>
+                </button>
                 <button
                   type="submit"
                   class="ml-auto h-8 px-4 rounded-full bg-primary text-white text-[12px] font-semibold disabled:opacity-60 inline-flex items-center gap-1.5"
-                  :disabled="sending || !draftBody.trim()"
+                  :disabled="sending || uploading || (!draftBody.trim() && !attachment)"
                 >
                   Send
                   <i class="pi pi-send text-[10px]"></i>
@@ -471,11 +476,11 @@ function conversationBadge(c) {
 function isSystem(m) {
   return m?.kind === "system" || m?.type === "system" || m?.system === true;
 }
-function fileName(m) {
-  return m.fileName || m.attachmentName || m.filename || "Attachment";
-}
-function fileSize(m) {
-  return m.fileSizeLabel || m.attachmentSize || "";
+/** A message's attachment; an older payload carries only attachmentUrl. */
+function attachmentOf(m) {
+  if (m?.attachment?.url) return m.attachment;
+  if (m?.attachmentUrl) return { url: m.attachmentUrl, fileName: "Attachment", contentType: "", sizeBytes: null };
+  return null;
 }
 function composeHint() {
   notifySuccess("Open a booking and tap Message Host to start a chat.");
@@ -532,6 +537,9 @@ async function loadEarlier() {
 
 function select(id) {
   composing.value = false;
+  // An upload belongs to the conversation it was made in (the API refuses it
+  // anywhere else), so a pending one is dropped on switching.
+  clearAttachment();
   activeId.value = id;
   thread.rows = [];
   thread.total = 0;
@@ -542,17 +550,73 @@ function select(id) {
 const draftBody = ref("");
 const sending = ref(false);
 
+/* ── attachments (C9) ──────────────────────────────────────────────────────
+ * Pick -> upload at once to POST /conversations/mine/:id/attachments
+ * (multipart, field `file`) -> send { body?, attachmentId }. The type and
+ * size limits mirror the API; checking them here saves a 10 MB upload that
+ * would only be refused. */
+const ATTACH_TYPES = ["application/pdf", "image/jpeg", "image/png", "image/webp"];
+const ATTACH_MAX_BYTES = 10 * 1024 * 1024;
+const fileInput = ref(null);
+const attachment = ref(null); // MessageAttachment once uploaded
+const uploading = ref(false);
+const uploadingName = ref("");
+const attachError = ref("");
+let uploadSeq = 0;
+
+function clearAttachment() {
+  uploadSeq++; // a still-running upload must not land in the next conversation
+  attachment.value = null;
+  uploading.value = false;
+  attachError.value = "";
+}
+
+async function pickAttachment(event) {
+  const file = event.target.files?.[0];
+  event.target.value = "";
+  if (!file) return;
+  attachError.value = "";
+  if (!ATTACH_TYPES.includes(file.type)) {
+    attachError.value = "Attach a PDF, JPEG, PNG or WebP file.";
+    return;
+  }
+  if (file.size > ATTACH_MAX_BYTES) {
+    attachError.value = `That file is ${formatBytes(file.size)}; the limit is 10 MB.`;
+    return;
+  }
+  const id = activeId.value;
+  const mine = ++uploadSeq;
+  attachment.value = null;
+  uploading.value = true;
+  uploadingName.value = file.name;
+  try {
+    const form = new FormData();
+    form.append("file", file);
+    const res = await apiRequest(`/conversations/mine/${id}/attachments`, { method: "POST", body: form });
+    if (mine === uploadSeq && activeId.value === id) attachment.value = res ?? null;
+  } catch {
+    /* toast shown */
+  } finally {
+    if (mine === uploadSeq) uploading.value = false;
+  }
+}
+
 async function send() {
   const body = draftBody.value.trim();
-  if (!body || sending.value) return;
+  const attachmentId = attachment.value?.id;
+  if ((!body && !attachmentId) || sending.value || uploading.value) return;
   sending.value = true;
   try {
-    const msg = await api.post(`/conversations/mine/${activeId.value}/messages`, { body });
+    const payload = {};
+    if (body) payload.body = body;
+    if (attachmentId) payload.attachmentId = attachmentId;
+    const msg = await api.post(`/conversations/mine/${activeId.value}/messages`, payload);
     if (msg) {
       thread.rows.push(msg);
       thread.total += 1;
     }
     draftBody.value = "";
+    attachment.value = null;
     scrollToBottom();
     refreshList();
   } catch {
