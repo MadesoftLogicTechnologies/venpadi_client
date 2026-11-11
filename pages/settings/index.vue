@@ -401,21 +401,24 @@
                   <td v-for="ch in CHANNELS" :key="ch.key" class="text-center px-3">
                     <button
                       type="button"
-                      class="relative w-9 h-5 rounded-full inline-block align-middle"
-                      :class="prefs[cat.key]?.[ch.key] ? 'bg-primary' : 'bg-[#D1D5DB]'"
-                      :aria-pressed="!!prefs[cat.key]?.[ch.key]"
+                      class="relative w-9 h-5 rounded-full inline-block align-middle disabled:opacity-40 disabled:cursor-not-allowed"
+                      :class="isOn(cat.key, ch) ? 'bg-primary' : 'bg-[#D1D5DB]'"
+                      :disabled="!ch.available"
+                      :title="ch.available ? undefined : 'SMS alerts are not available yet'"
+                      :aria-pressed="isOn(cat.key, ch)"
                       :aria-label="`${cat.label} by ${ch.label}`"
                       @click="togglePref(cat.key, ch.key)"
                     >
                       <span
                         class="absolute top-0.5 w-4 h-4 rounded-full bg-white shadow-sm transition-all"
-                        :class="prefs[cat.key]?.[ch.key] ? 'right-0.5' : 'left-0.5'"
+                        :class="isOn(cat.key, ch) ? 'right-0.5' : 'left-0.5'"
                       ></span>
                     </button>
                   </td>
                 </tr>
               </tbody>
             </table>
+            <p class="mt-3 text-[12px] text-bodytext2">SMS alerts are not available yet.</p>
           </div>
 
           <!-- Your data: export + account deletion (GET /account/privacy) -->
@@ -822,12 +825,15 @@ const CATEGORIES = [
   { key: "reviews", label: "Reviews", hint: "Review requests and venue replies" },
   { key: "marketing", label: "Offers & news", hint: "Occasional updates from Venpadi" },
 ];
+/* SMS is shown but not offered: there is no SMS provider yet (API TODOS), and a
+ * toggle that is "on" but never sends is a promise we can't keep (audit v1). */
 const CHANNELS = [
-  { key: "email", label: "Email" },
-  { key: "sms", label: "SMS" },
-  { key: "inApp", label: "In-app" },
+  { key: "email", label: "Email", available: true },
+  { key: "sms", label: "SMS", available: false },
+  { key: "inApp", label: "In-app", available: true },
 ];
 const prefs = ref(null);
+const isOn = (cat, ch) => ch.available && !!prefs.value?.[cat]?.[ch.key];
 
 async function loadPrefs() {
   try {
