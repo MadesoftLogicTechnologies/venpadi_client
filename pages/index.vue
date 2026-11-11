@@ -1,7 +1,7 @@
 <template>
   <div class="bg-white min-h-screen">
     <LandingNav />
-    <LandingHero :venue="landing?.topVenues?.[0] ?? null" />
+    <LandingHero :venue="landing?.topVenues?.[0] ?? null" :cities="landing?.stats?.cities ?? 0" />
     <LandingStats :stats="landing?.stats ?? null" />
     <LandingCategories :categories="landing?.categories ?? []" :loading="pending && !landing" />
     <LandingTopVenues

@@ -7,7 +7,8 @@
             class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-greybg text-sm text-bodytext mb-5"
           >
             <span class="w-2 h-2 rounded-full bg-primary shrink-0"></span>
-            Book venues in 50+ cities worldwide
+            <!-- The city count is the API's (stats.cities); "50+ cities worldwide" was invented. -->
+            {{ cities > 0 ? `Book venues in ${cities.toLocaleString("en-US")} ${cities === 1 ? "city" : "cities"}` : "Book verified event venues" }}
           </div>
 
           <h1
@@ -181,6 +182,7 @@
 <script setup>
 const props = defineProps({
   venue: { type: Object, default: null },
+  cities: { type: Number, default: 0 },
 });
 
 // The featured card shows the top venue from GET /public/landing.
