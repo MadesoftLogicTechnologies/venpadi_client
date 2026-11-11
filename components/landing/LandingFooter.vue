@@ -67,7 +67,6 @@ const columns = [
     links: [
       { label: "How it works", to: "/#how-it-works" },
       { label: "For venue owners", to: "/for-venue-owners" },
-      { label: "For Vendors", to: "/for-venue-owners" },
       { label: "Pricing & Plans", to: "/features#pricing" },
     ],
   },

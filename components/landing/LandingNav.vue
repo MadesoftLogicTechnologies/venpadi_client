@@ -124,10 +124,8 @@ const links = computed(() => {
       label: "For Venue Owners",
       to: "/for-venue-owners",
     },
-    {
-      label: "For Vendors",
-      to: null,
-    },
+    // No "For Vendors" item: the service-vendor marketplace is Phase 2 (audit
+    // decision D2), and an unlinked nav label reads as a broken link.
   ];
 });
 
