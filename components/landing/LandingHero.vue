@@ -16,14 +16,16 @@
           >
             Book the perfect venue,
             <span class="text-transparent bg-clip-text bg-brand-gradient-soft">
-              anywhere in the world.
+              for every occasion.
             </span>
           </h1>
 
+          <!-- No inventory claim here ("thousands of venues", "anywhere in the world"):
+               the live count is shown from stats, and copy must not outrun it (audit v1). -->
           <p class="mt-5 text-base sm:text-lg text-bodytext max-w-xl leading-relaxed">
-            Discover thousands of event venues — from intimate executive
+            Discover verified event venues — from intimate executive
             boardrooms to grand luxury ballrooms. Compare, book, and manage
-            everything seamlessly in one unified platform.
+            everything in one place.
           </p>
 
           <form
