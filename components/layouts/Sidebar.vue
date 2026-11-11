@@ -67,25 +67,6 @@
     </nav>
 
     <div class="px-3 pb-5 pt-2 border-t border-border space-y-2 shrink-0">
-      <button
-        v-if="!collapsed && !isBooker"
-        type="button"
-        class="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-brand-gradient text-white text-sm font-semibold shadow-sm hover:opacity-95 transition-opacity"
-        @click="navigateTo('/help')"
-      >
-        <i class="pi pi-comments text-sm"></i>
-        Quick Support
-      </button>
-      <button
-        v-else-if="collapsed && !isBooker"
-        type="button"
-        class="w-full flex items-center justify-center py-2.5 rounded-xl bg-brand-gradient text-white"
-        aria-label="Quick Support"
-        @click="navigateTo('/help')"
-      >
-        <i class="pi pi-comments text-sm"></i>
-      </button>
-
       <NuxtLink
         to="/settings"
         class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-[#374151] hover:bg-greybg"
@@ -107,8 +88,6 @@
 </template>
 
 <script setup>
-import { useAuthStore } from "~/store/auth";
-
 defineProps({
   collapsed: { type: Boolean, default: false },
 });
@@ -116,33 +95,10 @@ defineProps({
 defineEmits(["update:collapsed"]);
 
 const route = useRoute();
-const authStore = useAuthStore();
 
-// Master's switch: the booker menu for signed-in planners and on /discover.
-const isBooker = computed(
-  () => (authStore.isAuthenticated && !!authStore.user) || authStore.role === "booker" || route.path.startsWith("/discover")
-);
-
-const ownerItems = [
-  { label: "Dashboard", to: "/dashboards", icon: "pi-th-large" },
-  { label: "Calendar", to: "/calendar", icon: "pi-calendar" },
-  { label: "Bookings", to: "/bookings", icon: "pi-bookmark" },
-  { label: "Venues", to: "/venues", icon: "pi-building" },
-  {
-    label: "Visibility",
-    to: "/visibility",
-    icon: "pi-eye",
-    children: [
-      { label: "Transactions", to: "/visibility/transactions" },
-      { label: "Invoice", to: "/visibility/invoice" },
-    ],
-  },
-  { label: "Finance", to: "/finance", icon: "pi-wallet" },
-  { label: "Staff", to: "/staff", icon: "pi-users" },
-  { label: "Leads", to: "/leads", icon: "pi-user-plus" },
-  { label: "Messages", to: "/messages", icon: "pi-envelope" },
-];
-
+// This is the planner portal: every signed-in user here is a client. The
+// venue-owner menu (venues, visibility, finance, staff …) lives in the vendor
+// portal; linking to those routes from here led to empty shells.
 const bookerItems = [
   { label: "Dashboard", to: "/dashboards", icon: "pi-th-large" },
   { label: "My Bookings", to: "/bookings", icon: "pi-calendar" },
@@ -152,18 +108,9 @@ const bookerItems = [
   { label: "Invoices", to: "/invoices", icon: "pi-file" },
 ];
 
-const items = computed(() => (isBooker.value ? bookerItems : ownerItems));
+const items = bookerItems;
 
 function isActive(item) {
-  if (isBooker.value && item.to === "/discover") {
-    return route.path === "/discover" || route.path.startsWith("/discover/");
-  }
-  if (item.to === "/venues") {
-    return route.path === "/venues" || route.path.startsWith("/venues/");
-  }
-  if (item.children) {
-    return route.path === item.to || route.path.startsWith(`${item.to}/`);
-  }
   return route.path === item.to || route.path.startsWith(`${item.to}/`);
 }
 
