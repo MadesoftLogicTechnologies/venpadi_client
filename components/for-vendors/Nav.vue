@@ -33,8 +33,8 @@
           to="/auth/signup/venue"
           class="inline-flex items-center gap-1.5 px-4 sm:px-5 py-2.5 rounded-full bg-primary text-white text-sm font-semibold hover:opacity-95 transition-opacity"
         >
-          List Your Venue Free
-          <i class="pi pi-arrow-right text-xs"></i>
+          List Your Venue<span class="hidden sm:inline">&nbsp;Free</span>
+          <i class="hidden sm:inline pi pi-arrow-right text-xs"></i>
         </NuxtLink>
         <button
           type="button"

@@ -32,9 +32,11 @@
         >
           List Your Venue
         </NuxtLink>
+        <!-- Below sm, Sign In lives in the hamburger menu: with it here the header
+             was 433px wide at 375px and pushed the menu button off-screen. -->
         <NuxtLink
           to="/auth/login"
-          class="inline-flex items-center text-sm font-medium text-header hover:text-primary px-2 py-2"
+          class="hidden sm:inline-flex items-center text-sm font-medium text-header hover:text-primary px-2 py-2"
         >
           Sign In
         </NuxtLink>
