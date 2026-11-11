@@ -32,8 +32,10 @@
         </ol>
       </div>
 
-      <div class="mt-8 grid md2:grid-cols-2 gap-6">
-        <div class="rounded-2xl border border-border bg-white p-5 sm:p-6">
+      <!-- grid-cols-1 + min-w-0: a grid item's min width is its content, so the
+           truncated (nowrap) titles below widened the page to 408px at 375px. -->
+      <div class="mt-8 grid grid-cols-1 md2:grid-cols-2 gap-6">
+        <div class="min-w-0 rounded-2xl border border-border bg-white p-5 sm:p-6">
           <!-- An illustration: example bookings, no invented amounts or real company names. -->
           <div class="flex items-center justify-between gap-3 mb-4">
             <p class="text-sm font-bold text-header">Active bookings queue</p>
