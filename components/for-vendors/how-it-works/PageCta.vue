@@ -25,8 +25,8 @@
         <span class="block text-primary pt-2 sm:pt-3">Let’s fill it.</span>
       </h2>
       <p class="mt-10 text-sm sm:text-base text-white/70 leading-relaxed max-w-xl mx-auto">
-        Join the network of world-class venues streamlining contracts, automating buyer
-        payments, and elevating hospitality standards globally.
+        Join the venues on Venpadi taking bookings, collecting payments through escrow,
+        and managing their calendars in one place.
       </p>
 
       <NuxtLink

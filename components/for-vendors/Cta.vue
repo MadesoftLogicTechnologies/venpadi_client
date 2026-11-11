@@ -7,7 +7,7 @@
       class="pointer-events-none absolute right-6 bottom-0 text-[clamp(5rem,20vw,14rem)] font-extrabold leading-none text-white/[0.04] select-none"
       aria-hidden="true"
     >
-      No. 1
+      Venpadi
     </p>
 
     <div class="relative max-w-[760px] mx-auto px-4 sm:px-6 md2:px-8 text-center text-white">
@@ -15,7 +15,7 @@
         class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-white/15 bg-white/5 text-[11px] sm:text-xs font-semibold text-white/80"
       >
         <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
-        Now accepting venue partners for Q4 peak event season
+        Now accepting venue partners
       </span>
 
       <h2
@@ -27,8 +27,9 @@
       </h2>
 
       <p class="mt-4 text-sm sm:text-base text-white/55 leading-relaxed">
-        Join the 5,000+ venue hosts across Nigeria turning unbooked square meters into
-        predictable, hands-free business profits.
+        <template v-if="hasFigure(stats?.hosts)">Join {{ statCount(stats.hosts) }} venue hosts</template>
+        <template v-else>Join the venue hosts</template>
+        on Venpadi turning unbooked dates into predictable business.
       </p>
 
       <div class="mt-8 flex flex-wrap items-center justify-center gap-3">
@@ -43,10 +44,15 @@
           href="mailto:hello@venpadi.com"
           class="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl border border-white/25 text-white text-sm font-semibold hover:bg-white/10"
         >
-          <i class="pi pi-calendar text-xs"></i>
-          Book a 15-Min Onboarding Call
+          <i class="pi pi-envelope text-xs"></i>
+          Talk to the Venpadi team
         </a>
       </div>
     </div>
   </section>
 </template>
+
+<script setup>
+// Host count from GET /public/stats; the "5,000+" it replaced was invented.
+const { stats } = usePublicStats();
+</script>

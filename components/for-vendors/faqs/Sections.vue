@@ -33,7 +33,7 @@
               >
                 <i class="pi pi-check text-[10px]"></i>
               </span>
-              {{ cat.countLabel }}
+              {{ cat.items.length }} {{ cat.items.length === 1 ? "question" : "questions" }}
             </p>
           </div>
 
@@ -72,7 +72,7 @@
       </div>
 
       <div
-        v-if="catIndex === 1"
+        v-if="catIndex === 1 && featured"
         class="bg-[#1A1614] text-white py-14 md2:py-16 px-4 sm:px-6 md2:px-8"
       >
         <div class="max-w-[720px] mx-auto text-center">
@@ -80,55 +80,16 @@
           <blockquote
             class="text-lg sm:text-xl md2:text-[1.35rem] font-medium leading-relaxed text-white/95"
           >
-            “I spent two years thinking a proper booking system was for big hotel chains —
-            not for someone running one venue in Lagos. Venpadi changed that assumption
-            permanently.”
+            “{{ featured.quote }}”
           </blockquote>
           <p class="mt-5 text-sm text-primary/90">
-            Tobi Adeyemi, Founder, The Rooftop Lagos
+            {{ [featured.name, featured.role].filter(Boolean).join(", ") }}
           </p>
         </div>
       </div>
 
-      <div
-        v-if="catIndex === 3"
-        class="bg-[#1A1614] text-white py-14 md2:py-20 px-4 sm:px-6 md2:px-8"
-      >
-        <div class="max-w-[1100px] mx-auto">
-          <p class="text-[11px] font-bold tracking-[0.14em] uppercase text-primary">
-            Human-concierge layer
-          </p>
-          <h2
-            class="mt-3 text-2xl sm:text-3xl md2:text-[2.35rem] font-extrabold tracking-tight max-w-2xl"
-          >
-            The platform actually answers.
-          </h2>
-          <p class="mt-4 text-sm sm:text-base text-white/60 leading-relaxed max-w-2xl">
-            Technology should automate logistics, not replace accountability. Every
-            approved venue on Venpadi is paired with a dedicated human Venue Success
-            Manager reachable by direct WhatsApp and phone.
-          </p>
-          <div
-            class="mt-5 inline-flex items-start gap-2.5 rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white/80 max-w-xl"
-          >
-            <span class="mt-0.5 w-2 h-2 rounded-full bg-[#FF2D55] shrink-0"></span>
-            Receive a dedicated manager assigned to every venue account for the first
-            30 days.
-          </div>
-
-          <div class="mt-10 grid sm:grid-cols-3 gap-4">
-            <article
-              v-for="quote in conciergeQuotes"
-              :key="quote.name"
-              class="rounded-2xl border border-white/10 bg-white/[0.03] p-5"
-            >
-              <p class="text-sm text-white/80 leading-relaxed">“{{ quote.text }}”</p>
-              <p class="mt-4 text-sm font-semibold text-white">{{ quote.name }}</p>
-              <p class="text-xs text-primary mt-0.5">{{ quote.role }}</p>
-            </article>
-          </div>
-        </div>
-      </div>
+      <!-- The "dedicated Venue Success Manager on WhatsApp" block and its named
+           quotes were invented (no such service, no WhatsApp channel); removed. -->
     </div>
   </section>
 </template>
@@ -138,23 +99,9 @@ import { faqCategories } from "./data.js";
 
 const openKey = ref(keyOf(faqCategories[0].id, 0));
 
-const conciergeQuotes = [
-  {
-    name: "Farhan K.",
-    role: "Estate Director, Abuja",
-    text: "Our manager knew our calendar better than we did by week two. That alone paid for itself.",
-  },
-  {
-    name: "Jameel R.",
-    role: "Ballroom Ops, Lagos",
-    text: "Weekend emergencies actually got a human on WhatsApp — not a ticket number.",
-  },
-  {
-    name: "Rania S.",
-    role: "Multi-space Host",
-    text: "They helped us rewrite packages so corporate planners stopped ghosting after the tour.",
-  },
-];
+// The interstitial quote is a published host testimonial (API), or nothing.
+const { testimonials } = usePublicTestimonials("host");
+const featured = computed(() => testimonials.value[0] ?? null);
 
 function keyOf(catId, index) {
   return `${catId}:${index}`;

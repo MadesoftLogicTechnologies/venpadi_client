@@ -20,9 +20,9 @@
             <span class="text-primary">No surprises.</span>
           </h2>
           <p class="relative mt-4 text-sm sm:text-base text-bodytext leading-relaxed max-w-md">
-            Sync bidirectionally with Google Calendar and iCal so your venue stays accurate
-            across channels — double-bookings stay off the table while hosts see real-time
-            availability 24/7.
+            One Venpadi calendar for every space: confirmed bookings block their dates
+            automatically, you block the rest, and planners only see dates that are
+            actually free.
           </p>
 
           <ul class="relative mt-7 space-y-4">
@@ -90,7 +90,7 @@
               <span class="w-2.5 h-2.5 rounded-sm bg-emerald-400"></span> Confirmed
             </span>
             <span class="inline-flex items-center gap-1.5">
-              <span class="w-2.5 h-2.5 rounded-sm bg-amber-400"></span> 72h Hold
+              <span class="w-2.5 h-2.5 rounded-sm bg-amber-400"></span> Hold
             </span>
             <span class="inline-flex items-center gap-1.5">
               <span class="w-2.5 h-2.5 rounded-sm bg-red-400"></span> Blocked
@@ -105,7 +105,7 @@
           >
             <p class="text-xs leading-snug flex items-center gap-2">
               <i class="pi pi-info-circle text-primary text-sm"></i>
-              Click any calendar cell to toggle instant rates or block dates.
+              Click any calendar day to block it or see what’s booked.
             </p>
             <span class="shrink-0 text-[11px] font-semibold underline underline-offset-2">
               Open Settings
@@ -131,8 +131,8 @@ const features = [
   },
   {
     icon: "pi pi-hourglass",
-    title: "Automatic 72-Hour Tentative Holds",
-    text: "Give serious buyers breathing room without locking inventory forever.",
+    title: "Tentative Holds That Expire",
+    text: "Give serious buyers breathing room for a set number of hours without locking inventory forever.",
   },
   {
     icon: "pi pi-th-large",

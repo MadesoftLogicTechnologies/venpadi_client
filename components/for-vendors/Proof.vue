@@ -1,13 +1,19 @@
 <template>
   <section class="bg-[#F7F5F2]">
-    <div id="case-studies" class="max-w-[1280px] mx-auto px-4 sm:px-6 md2:px-8 py-14 md2:py-16">
+    <!-- Host testimonials from GET /public/content/testimonials?audience=host;
+         hidden when there are none (the duplicated "Ioana Kutuzova" USD quote
+         it replaced was invented). -->
+    <div v-if="testimonials.length" id="case-studies" class="max-w-[1280px] mx-auto px-4 sm:px-6 md2:px-8 py-14 md2:py-16">
       <div class="grid md2:grid-cols-2 gap-5">
         <article
-          v-for="t in testimonials"
-          :key="t.name"
+          v-for="t in testimonials.slice(0, 2)"
+          :key="t.id"
           class="rounded-[1.5rem] bg-[#F3EEE6] overflow-hidden grid sm:grid-cols-[1.1fr_0.9fr] shadow-[0_12px_40px_rgba(15,23,42,0.06)]"
         >
           <div class="p-6 sm:p-8 flex flex-col">
+            <div v-if="testimonialStars(t)" class="flex gap-0.5 mb-3" :aria-label="`${testimonialStars(t)} out of 5 stars`">
+              <i v-for="n in testimonialStars(t)" :key="n" class="pi pi-star-fill text-primary text-xs"></i>
+            </div>
             <p class="text-xl sm:text-2xl font-extrabold text-header leading-snug tracking-tight">
               “{{ t.quote }}”
             </p>
@@ -15,7 +21,7 @@
               <div>
                 <p class="text-sm font-extrabold text-header">{{ t.name }}</p>
                 <p class="text-[11px] font-bold tracking-wider uppercase text-bodytext2 mt-0.5">
-                  {{ t.brand }}
+                  {{ t.role }}
                 </p>
               </div>
               <NuxtLink
@@ -35,12 +41,10 @@
               height="347"
             />
             <div
-              class="absolute left-2 bottom-10 w-16 h-16 rounded-full bg-white shadow-lg flex flex-col items-center justify-center"
+              class="absolute left-2 bottom-10 w-16 h-16 rounded-full shadow-lg flex items-center justify-center text-white text-sm font-extrabold"
+              :style="{ background: t.color || '#FF4D17' }"
             >
-              <i :class="['pi text-primary text-sm', t.badgeIcon]"></i>
-              <span class="text-[8px] font-extrabold tracking-wider uppercase text-primary mt-0.5">
-                {{ t.brand }}
-              </span>
+              {{ t.initials }}
             </div>
           </div>
         </article>
@@ -57,130 +61,36 @@
         Built for venue owners who think like businesses.
       </h2>
 
+      <!-- Figures come from GET /public/stats and a card's number hides when it
+           is zero or missing; the 68% / 3.2x / 48 hrs / 100% it replaced were
+           invented. -->
       <div class="mt-10 grid sm:grid-cols-2 md2:grid-cols-4 gap-4">
-        <!-- Occupancy -->
         <article
-          class="rounded-2xl border border-border bg-white p-5 sm:p-6 relative overflow-hidden"
+          v-for="card in cards"
+          :key="card.title"
+          class="rounded-2xl border p-5 sm:p-6 relative overflow-hidden"
+          :class="card.dark ? 'border-header bg-header text-white' : 'border-border bg-white'"
         >
           <div
-            class="pointer-events-none absolute -top-8 -right-8 w-28 h-28 rounded-full bg-primary/10"
+            class="pointer-events-none absolute -top-8 -right-8 w-28 h-28 rounded-full"
+            :class="card.dark ? 'bg-primary/25' : 'bg-primary/10'"
           ></div>
-          <div class="relative w-24 h-24 mx-auto sm:mx-0">
-            <svg viewBox="0 0 96 96" class="w-full h-full -rotate-90">
-              <circle cx="48" cy="48" r="38" fill="none" stroke="#F3EDE8" stroke-width="8" />
-              <circle
-                cx="48"
-                cy="48"
-                r="38"
-                fill="none"
-                stroke="#FF4D17"
-                stroke-width="8"
-                stroke-linecap="round"
-                stroke-dasharray="239"
-                stroke-dashoffset="76"
-              />
-            </svg>
-            <div class="absolute inset-0 flex flex-col items-center justify-center text-center">
-              <p class="text-lg font-extrabold text-header leading-none">68%</p>
-              <p class="text-[8px] font-bold tracking-wider uppercase text-bodytext2 mt-1">
-                Capacity shift
-              </p>
-            </div>
-          </div>
+          <p v-if="card.figure" class="relative text-4xl font-extrabold text-primary tracking-tight">{{ card.figure }}</p>
+          <span
+            v-else
+            class="relative w-12 h-12 rounded-xl bg-primary/10 text-primary flex items-center justify-center"
+          >
+            <i :class="['pi text-lg', card.icon]"></i>
+          </span>
+          <p v-if="card.figureLabel && card.figure" class="mt-1 text-[11px] font-bold tracking-wider uppercase" :class="card.dark ? 'text-white/60' : 'text-bodytext2'">
+            {{ card.figureLabel }}
+          </p>
           <div class="mt-5 flex items-center gap-2">
-            <h3 class="text-base font-extrabold text-header">Occupancy Growth</h3>
-            <i class="pi pi-arrow-up-right text-primary text-xs"></i>
+            <h3 class="text-base font-extrabold" :class="card.dark ? '' : 'text-header'">{{ card.title }}</h3>
+            <i :class="['pi text-primary text-xs', card.icon]"></i>
           </div>
-          <p class="mt-2 text-xs text-bodytext leading-relaxed">
-            Average documented increase in venue schedule utilization within year 1 of
-            listing.
-          </p>
-        </article>
-
-        <!-- Visibility -->
-        <article
-          class="rounded-2xl border border-border bg-white p-5 sm:p-6 relative overflow-hidden"
-        >
-          <div
-            class="pointer-events-none absolute -top-8 -right-8 w-28 h-28 rounded-full bg-primary/10"
-          ></div>
-          <p class="text-4xl font-extrabold text-primary tracking-tight">3.2x</p>
-          <svg viewBox="0 0 160 48" class="mt-3 w-full h-10 text-primary/70">
-            <path
-              d="M0 40 C25 38 35 28 55 22 C75 16 90 30 110 14 C125 4 145 10 160 2"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-dasharray="3 3"
-            />
-          </svg>
-          <div class="mt-4 flex items-center gap-2">
-            <h3 class="text-base font-extrabold text-header">More Visibility</h3>
-            <i class="pi pi-globe text-primary text-xs"></i>
-          </div>
-          <p class="mt-2 text-xs text-bodytext leading-relaxed">
-            Targeted intent searches versus passive social media advertising &amp; link
-            trees alone.
-          </p>
-        </article>
-
-        <!-- First booking -->
-        <article
-          class="rounded-2xl border border-border bg-white p-5 sm:p-6 relative overflow-hidden"
-        >
-          <div
-            class="pointer-events-none absolute -top-8 -right-8 w-28 h-28 rounded-full bg-primary/10"
-          ></div>
-          <p class="text-3xl font-extrabold text-primary tracking-tight">48 hrs</p>
-          <div class="mt-3">
-            <div class="flex justify-between text-[10px] font-bold uppercase text-bodytext2 mb-1">
-              <span>p90 record</span>
-            </div>
-            <div class="h-2 rounded-full bg-greybg overflow-hidden">
-              <div class="h-full w-[82%] rounded-full bg-primary"></div>
-            </div>
-          </div>
-          <div class="mt-3 flex flex-wrap gap-1.5">
-            <span class="px-2 py-1 rounded-full bg-greybg text-[10px] font-semibold text-bodytext"
-              >Day 1 Ingest</span
-            >
-            <span class="px-2 py-1 rounded-full bg-greybg text-[10px] font-semibold text-bodytext"
-              >Day 2 Matching</span
-            >
-            <span
-              class="px-2 py-1 rounded-full bg-primary text-[10px] font-semibold text-white"
-              >Live Funded</span
-            >
-          </div>
-          <div class="mt-4 flex items-center gap-2">
-            <h3 class="text-base font-extrabold text-header">Fastest First Booking</h3>
-            <i class="pi pi-bolt text-primary text-xs"></i>
-          </div>
-          <p class="mt-2 text-xs text-bodytext leading-relaxed">
-            Median timeframe for newly verified venues to receive their first validated
-            booking deposit.
-          </p>
-        </article>
-
-        <!-- Payouts dark -->
-        <article
-          class="rounded-2xl border border-header bg-header text-white p-5 sm:p-6 relative overflow-hidden"
-        >
-          <div
-            class="pointer-events-none absolute -top-10 -right-6 w-32 h-32 rounded-full bg-primary/25"
-          ></div>
-          <p class="text-4xl font-extrabold text-primary tracking-tight">100%</p>
-          <p class="mt-2 inline-flex items-center gap-2 text-xs text-white/70">
-            <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
-            Deposit &amp; Escrow Protected
-          </p>
-          <div class="mt-6 flex items-center gap-2">
-            <h3 class="text-base font-extrabold">Guaranteed Payouts</h3>
-            <i class="pi pi-shield text-primary text-xs"></i>
-          </div>
-          <p class="mt-2 text-xs text-white/55 leading-relaxed">
-            Automated milestone escrow holding, zero-chargeback guarantee, and instant
-            direct bank disbursements within 24 hours of event sign-off.
+          <p class="mt-2 text-xs leading-relaxed" :class="card.dark ? 'text-white/55' : 'text-bodytext'">
+            {{ card.body }}
           </p>
         </article>
       </div>
@@ -191,18 +101,40 @@
 <script setup>
 const storyImage = "/images/venue-owner-story.svg";
 
-const testimonials = [
+const { testimonials } = usePublicTestimonials("host");
+const { stats } = usePublicStats();
+
+const fig = (key, fmt = statCount) => (hasFigure(stats.value?.[key]) ? fmt(stats.value[key]) : null);
+
+const cards = computed(() => [
   {
-    quote: "Over the past year, we have increased our bookings by $50K with Venpadi.",
-    name: "Ioana Kutuzova",
-    brand: "Gertie",
-    badgeIcon: "pi-shopping-bag",
+    title: "Planner demand",
+    icon: "pi-users",
+    figure: fig("planners"),
+    figureLabel: "Planners on Venpadi",
+    body: "Planners search by event type, capacity, budget and live availability — and find your spaces when they match.",
   },
   {
-    quote: "Over the past year, we have increased our bookings by $50K with Venpadi.",
-    name: "Ioana Kutuzova",
-    brand: "Kogi",
-    badgeIcon: "pi-sun",
+    title: "Real bookings",
+    icon: "pi-calendar",
+    figure: fig("eventsHosted"),
+    figureLabel: "Events booked",
+    body: "Requests arrive with dates, guest count and event details, so you approve or decline with everything in front of you.",
   },
-];
+  {
+    title: "Verified reviews",
+    icon: "pi-star",
+    figure: hasFigure(stats.value?.reviewCount) ? fig("averageRating", (n) => `${Number(n).toFixed(1)}/5`) : null,
+    figureLabel: "Average rating",
+    body: "Reviews written after a completed booking are marked verified, so planners can tell real events apart.",
+  },
+  {
+    title: "Escrow-protected payouts",
+    icon: "pi-shield",
+    dark: true,
+    figure: fig("gmvProcessedMinor", nairaCompact),
+    figureLabel: "Paid through Venpadi",
+    body: "Planners pay into escrow. Funds are released to your payout account after the event is completed and a 48-hour window has passed.",
+  },
+]);
 </script>

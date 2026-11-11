@@ -65,36 +65,36 @@
 
 <script setup>
 const steps = [
-  { title: "Create Account", sub: "2 minutes" },
+  { title: "Create Account", sub: "Free" },
   { title: "Build Profile", sub: "Media & Story" },
   { title: "Add Spaces", sub: "Hourly/Daily" },
-  { title: "Set Calendar", sub: "Sync & Holds" },
-  { title: "Go Live", sub: "Instant Index" },
+  { title: "Set Calendar", sub: "Blocks & Holds" },
+  { title: "Go Live", sub: "In Search" },
   { title: "Enquiries", sub: "Direct Chat" },
-  { title: "Get Paid", sub: "24hr Escrow" },
+  { title: "Get Paid", sub: "Escrow" },
 ];
 
 const stats = [
   {
-    icon: "pi pi-clock",
+    icon: "pi pi-tag",
     iconClass: "bg-header/5 text-header",
-    value: "20 minutes",
+    value: "Free to list",
     valueClass: "text-header",
-    text: "To complete onboarding from zero to a live, bookable venue showcase.",
+    text: "No setup fee and no subscription to put your venue on Venpadi.",
   },
   {
     icon: "pi pi-calendar",
     iconClass: "bg-primary/10 text-primary",
-    value: "48 hours",
+    value: "Escrow",
     valueClass: "text-transparent bg-clip-text bg-brand-gradient-soft",
-    text: "Historical average duration to receive your first verified client booking inquiry.",
+    text: "Every marketplace booking is paid into escrow, so you never chase a balance.",
   },
   {
     icon: "pi pi-wallet",
     iconClass: "bg-header/5 text-header",
-    value: "24 hours",
+    value: "48-hour window",
     valueClass: "text-header",
-    text: "Speed of complete fund release into your treasury post event completion.",
+    text: "After the event is completed, funds become available for payout once this window passes.",
   },
 ];
 </script>

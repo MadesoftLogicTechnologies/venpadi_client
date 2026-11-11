@@ -12,8 +12,7 @@
             Everything you need to know about listing
           </h2>
           <p class="mt-4 text-sm sm:text-base text-bodytext leading-relaxed">
-            Transparent answers from the Lagos team that onboarded the first thousand
-            venues — no fine print theatre.
+            Transparent answers from the Venpadi team — no fine print theatre.
           </p>
 
           <div class="mt-8 rounded-2xl bg-[#F7F5F2] p-5 sm:p-6">
@@ -25,14 +24,13 @@
               </span>
               <div>
                 <p class="text-sm font-semibold text-header leading-snug">
-                  Want to speak with our Host Team? Call or WhatsApp our Lagos operations
-                  now
+                  Want to speak with our Host Team? Email us and a person will reply.
                 </p>
                 <a
-                  href="tel:+2347008367234"
+                  href="mailto:owners@venpadi.com"
                   class="mt-3 inline-flex items-center px-4 py-2 rounded-full bg-white border border-border text-sm font-bold text-header hover:bg-greybg"
                 >
-                  +234 [0] 700 VENPADI
+                  owners@venpadi.com
                 </a>
               </div>
             </div>
@@ -71,30 +69,36 @@
 <script setup>
 const open = ref(0);
 
-const faqs = [
+// The fee is quoted from the live rate (GET /public/stats), never a literal.
+const { rates } = usePublicStats();
+const hostFee = computed(() => hostFeeLabel(rates.value));
+
+const faqs = computed(() => [
   {
     q: "Are there any upfront or sign-up fees?",
-    a: "No. Listing is free with no setup charges. Venpadi only takes a transparent performance commission when a booking completes successfully.",
+    a: hostFee.value
+      ? `No. Listing is free with no setup charges. Venpadi takes a ${hostFee.value} host fee on bookings made through the marketplace.`
+      : "No. Listing is free with no setup charges. Venpadi takes a host fee only on bookings made through the marketplace.",
   },
   {
     q: "How do I prevent double-booking existing direct clients?",
-    a: "Block those dates on your Venpadi calendar (or sync Google/Apple). Holds auto-expire so your inventory stays accurate without chasing leads.",
+    a: "Block those dates on your Venpadi calendar, or record the booking as a direct booking. Planners can only request dates that are free.",
   },
   {
     q: "What happens if a guest damages my property?",
-    a: "Security deposits sit in escrow. Upload walk-through evidence and our dispute team mediates under a 72-hour SLA before releasing caution funds.",
+    a: "Refundable caution deposits are held in escrow. After the event you can claim a deduction with evidence; the planner can accept it or contest it, and the rest is refunded.",
   },
   {
     q: "How quickly are booking payouts transferred to my bank?",
-    a: "After successful event check-in and sign-off, automated settlement corridors disburse to your bank within 24 hours.",
+    a: "Funds become available for payout once the event is completed and a 48-hour window has passed, then they are paid to your bank account.",
   },
   {
     q: "Can I set custom cancellation policies?",
-    a: "Yes. Choose non-refundable windows and deposit rules per space so last-minute cancellations don’t erase your weekend revenue.",
+    a: "Yes. Choose a flexible, moderate or strict cancellation policy for your venue so last-minute cancellations don’t erase your weekend revenue.",
   },
   {
     q: "Can I list multiple separate spaces under one venue?",
-    a: "Absolutely. Manage infinite sub-halls, terraces, and suites under one owner account with independent pricing and calendars.",
+    a: "Absolutely. Manage every hall, terrace and suite under one owner account with independent pricing and calendars.",
   },
-];
+]);
 </script>

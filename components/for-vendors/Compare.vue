@@ -75,80 +75,75 @@
 </template>
 
 <script setup>
+// Only capabilities the platform has today: no SEO-ranking, ID-check,
+// WhatsApp, concierge or multi-currency claims (none exist).
 const rows = [
   {
-    label: "Smart Discovery & SEO Rankings",
+    label: "Searchable by Event Type, Capacity & Date",
     classifieds: "Static text",
     social: "Algorithm luck",
-    generic: "Paid boosts",
-    venpadi: "Top Google & Venpadi SEO",
+    generic: "Basic filters",
+    venpadi: "Live availability search",
   },
   {
-    label: "Intent-Driven High Ticket Clients",
+    label: "Planners Who Arrive With Event Details",
     classifieds: "Browsers only",
     social: "Friends & DMs",
     generic: "Mixed quality",
-    venpadi: "Verified Corp & Event Planners",
+    venpadi: "Structured booking requests",
   },
   {
-    label: "Guaranteed Escrow Booking Protection",
+    label: "Escrow Booking Protection",
     classifieds: "None",
     social: "Cash / transfer",
     generic: "Partial holds",
-    venpadi: "Zero-Fraud Escrow Holds",
+    venpadi: "Escrow until after the event",
   },
   {
     label: "Multi-Space Sub-Listing Management",
     classifieds: "One page",
     social: "Scattered posts",
     generic: "Limited rooms",
-    venpadi: "Infinite Sub-Halls & Terraces",
+    venpadi: "Every hall & terrace, priced separately",
   },
   {
-    label: "Verified Corporate Client IDs",
-    classifieds: "Fake profiles",
-    social: "No verification",
-    generic: "Email only",
-    venpadi: "Gov ID & Corporate Email Check",
-  },
-  {
-    label: "Instant Push & WhatsApp Alerts",
+    label: "Booking & Message Alerts",
     classifieds: "None",
     social: "Manual replies",
     generic: "Email digests",
-    venpadi: "Instant Priority Routing",
+    venpadi: "Email & in-app notifications",
   },
   {
-    label: "Dedicated Venue Growth Manager",
+    label: "Team Access",
     classifieds: "None",
-    social: "None",
-    generic: "Ticket queue",
-    venpadi: "Direct Human Concierge",
+    social: "Shared phone",
+    generic: "Single login",
+    venpadi: "Staff accounts with roles",
   },
   {
-    label: "Global Multi-Currency Settlements",
+    label: "Invoices & Payouts",
     classifieds: "Cash only",
     social: "Local transfer",
-    generic: "Single currency",
-    venpadi: "Local Bank in 40+ Currencies",
+    generic: "Manual",
+    venpadi: "Invoices + payouts to your bank",
   },
 ];
 
 const cards = [
   {
     icon: "pi-search",
-    title: "Smart Discovery & SEO",
-    body: "Your spaces appear when Fortune 500 coordinators and luxury wedding planners search high-intent keywords across major cities.",
+    title: "Smart Discovery",
+    body: "Your spaces appear when planners search by event type, capacity, location, budget and date — and only when they're actually free.",
   },
   {
     icon: "pi-shield",
-    title: "Institutional Booking Protection",
-    body: "Automatic damage deposit escrow holds, ironclad digital rental agreements, and identity verification before entry.",
+    title: "Booking Protection",
+    body: "Payments are held in escrow, refundable caution deposits are handled for you, and every booking follows your cancellation policy.",
   },
   {
     icon: "pi-chart-line",
-    title: "Yield Analytics Dashboard",
-    body: "See high-season demand spikes, optimize price per head, and compare your occupancy against regional city competitors.",
+    title: "Analytics Dashboard",
+    body: "See bookings, earnings and enquiries for each of your venues in one dashboard.",
   },
 ];
 </script>

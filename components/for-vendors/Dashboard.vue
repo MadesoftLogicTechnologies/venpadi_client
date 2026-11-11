@@ -14,9 +14,9 @@
             Everything you need. One clean dashboard.
           </h2>
           <p class="mt-4 text-sm sm:text-base text-white/55 leading-relaxed">
-            Ditch fragmented WhatsApp messages, double-booked spreadsheets, and manual
-            wire checks. Manage availability, issue contracts, and track multi-space
-            yields with surgical precision.
+            Ditch fragmented chat threads, double-booked spreadsheets, and manual
+            transfer checks. Manage availability, approve requests, send invoices and
+            track every space from one place.
           </p>
 
           <ul class="mt-8 space-y-4">
@@ -52,11 +52,12 @@
             <span class="ml-3 text-[11px] text-white/40 truncate">
               dashboard.venpadi.com/venues/faith-grandeur
             </span>
+            <!-- An illustration of the dashboard, not live data: no invented
+                 amounts or occupancy figures. -->
             <span
-              class="ml-auto inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 text-[10px] font-bold"
+              class="ml-auto inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-white/10 text-white/60 text-[10px] font-bold"
             >
-              <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
-              Live
+              Example
             </span>
           </div>
 
@@ -81,7 +82,7 @@
                 <div>
                   <p class="text-base font-bold">Good afternoon, Faith 👋</p>
                   <p class="mt-1 text-xs text-white/45">
-                    Grandeur Hall &amp; Glass Garden are 88% reserved this month
+                    Here’s what’s happening across your spaces this month
                   </p>
                 </div>
                 <button
@@ -96,12 +97,7 @@
                 <p class="text-[10px] font-bold tracking-wider uppercase text-white/40">
                   This month earnings
                 </p>
-                <div class="mt-1 flex items-end gap-3">
-                  <p class="text-2xl font-extrabold tracking-tight">₦4,820,000</p>
-                  <span class="text-xs font-semibold text-emerald-400 mb-1"
-                    >+23% vs last month</span
-                  >
-                </div>
+                <div class="mt-2 h-6 w-40 rounded-md bg-white/10" aria-hidden="true"></div>
                 <svg viewBox="0 0 280 64" class="mt-3 w-full h-14 text-primary">
                   <path
                     d="M0 50 C30 48 50 40 70 36 C100 30 120 44 150 28 C180 12 210 20 240 10 C255 6 270 12 280 8"
@@ -126,7 +122,6 @@
                     <p class="mt-0.5 text-[11px] text-white/40">{{ b.meta }}</p>
                   </div>
                   <div class="text-right shrink-0">
-                    <p class="text-sm font-extrabold">{{ b.amount }}</p>
                     <p class="mt-0.5 text-[10px] font-semibold" :class="b.statusClass">
                       {{ b.status }}
                     </p>
@@ -155,19 +150,19 @@
 const features = [
   {
     title: "Real-time Booking Calendar",
-    body: "Sync seamlessly across multiple event halls, day-blocks, and hourly holds.",
+    body: "One availability calendar across every space, with day bookings, hourly slots and blocked dates.",
   },
   {
-    title: "Earnings & Multi-Currency Payouts",
-    body: "Direct local settlements via Paystack, Flutterwave, or Stripe in 40+ currencies.",
+    title: "Earnings & Payouts",
+    body: "Planners pay through Paystack into escrow; your earnings are paid out to your Nigerian bank account.",
   },
   {
-    title: "Direct Client Messaging & Contract Signing",
-    body: "Pre-screen guest capacities, verify company identities, and enforce house policies.",
+    title: "Direct Client Messaging",
+    body: "Talk to planners before and after they book, review event details, and set your house policies.",
   },
   {
-    title: "Dynamic Venue Analytics",
-    body: "Monitor page impressions, corporate enquiry conversion rates, and revenue per sq meter.",
+    title: "Venue Analytics",
+    body: "Follow bookings, earnings and enquiries for each venue from your dashboard.",
   },
 ];
 
@@ -176,16 +171,14 @@ const sidebar = ["Overview", "Calendar", "Enquiries", "My Venues", "Payouts", "S
 const bookings = [
   {
     title: "Corporate Gala — Grandeur Hall",
-    meta: "Oct 28 · 350 Guests · ID Verified",
-    amount: "₦1,200,000",
+    meta: "Saturday · Deposit paid",
     status: "Confirmed & Escrowed",
     statusClass: "text-emerald-400",
   },
   {
     title: "Wedding Reception — Garden Pavilion",
-    meta: "Nov 3 · 200 Guests · Deposit Paid",
-    amount: "₦880,000",
-    status: "Hold Pending Terms",
+    meta: "Request · Awaiting your reply",
+    status: "Pending approval",
     statusClass: "text-amber-400",
   },
 ];

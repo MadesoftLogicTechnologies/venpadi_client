@@ -11,7 +11,7 @@
           How Listing on Venpadi Works
         </h2>
         <p class="mt-3 text-sm sm:text-base text-bodytext leading-relaxed">
-          From zero to your first confirmed booking in under 24 hours with zero technical
+          From sign-up to your first confirmed booking — with zero technical
           complexity.
         </p>
       </div>
@@ -207,28 +207,28 @@
 <script setup>
 const steps = [
   {
-    label: "Step 01 — 3 minutes",
+    label: "Step 01 — Sign up",
     title: "Create your free venue owner account",
     body: "Sign up with no credit card and no setup charges. Your owner workspace is ready in minutes.",
-    points: ["Instant verification", "Dedicated advisor"],
+    points: ["No setup fee", "Add your team with staff roles"],
   },
   {
-    label: "Step 02 — 15 minutes",
+    label: "Step 02 — Your listing",
     title: "Build your high-converting profile",
     body: "Add venue photography, amenities like AC and generators, and custom rates that match your floors.",
     points: ["Professional photography tips", "Custom pricing tiers"],
   },
   {
-    label: "Step 03 — Instant sync",
+    label: "Step 03 — Availability",
     title: "Set availability and go live",
-    body: "Sync Google or Apple calendars and pass a 24-hour verification review before you open for bookings.",
-    points: ["24-hour review", "Instant book toggle"],
+    body: "Set your availability and blocked dates on the Venpadi calendar, and submit your venue for verification before you open for bookings.",
+    points: ["Verification review", "Instant book toggle"],
   },
   {
-    label: "Step 04 — Automated payouts",
+    label: "Step 04 — Escrow payouts",
     title: "Receive bookings and get paid reliably",
-    body: "Contracts execute in-app, deposits sit in escrow, and payouts hit your bank within 24 hours of event sign-off.",
-    points: ["Zero chasing of balances", "Automated security deposit"],
+    body: "Planners pay through Venpadi into escrow. Once the event is completed and a 48-hour window has passed, the funds are released for payout to your bank.",
+    points: ["Zero chasing of balances", "Refundable caution deposits"],
   },
 ];
 

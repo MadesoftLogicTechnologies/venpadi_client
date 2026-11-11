@@ -17,7 +17,7 @@
           <span
             class="inline-flex items-center px-3 py-1.5 rounded-full border border-primary/35 bg-primary/10 text-[11px] font-bold tracking-[0.1em] uppercase text-primary"
           >
-            Venue owner FAQ · 34 questions answered
+            Venue owner FAQ · {{ questionCount }} questions answered
           </span>
 
           <h1
@@ -69,10 +69,15 @@
 </template>
 
 <script setup>
+import { faqCategories } from "./data.js";
+
+// Counted from the FAQ data itself, so the number can't drift from the page.
+const questionCount = faqCategories.reduce((n, c) => n + c.items.length, 0);
+
 const trust = [
-  "34 questions answered",
-  "Last updated recently",
+  `${questionCount} questions answered`,
+  "Plain answers",
   "No questions left behind",
-  "Chat support ready",
+  "Email support ready",
 ];
 </script>

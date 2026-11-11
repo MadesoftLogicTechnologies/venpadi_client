@@ -1,4 +1,7 @@
 <template>
+  <!-- Marketplace figures from GET /public/stats (zero/missing tiles hide);
+       the "190+ countries", "48 hrs" and "4.8 / 5 owner satisfaction" it
+       replaced were invented. -->
   <section class="bg-brand-gradient-soft text-white py-10 md2:py-12">
     <div
       class="max-w-[1100px] mx-auto px-4 sm:px-6 md2:px-8 grid grid-cols-2 md2:grid-cols-4 gap-6 md2:gap-4"
@@ -12,10 +15,16 @@
 </template>
 
 <script setup>
-const stats = [
-  { value: "34", label: "questions answered" },
-  { value: "190+", label: "countries where clients search" },
-  { value: "48 hrs", label: "avg. time to first booking" },
-  { value: "4.8 / 5", label: "owner satisfaction score" },
-];
+import { faqCategories } from "./data.js";
+
+const questionCount = faqCategories.reduce((n, c) => n + c.items.length, 0);
+const { stats: live } = usePublicStats();
+const stats = computed(() => [
+  { key: "questions", value: String(questionCount), label: "questions answered" },
+  ...statTiles(live.value, ["liveVenues", "cities", "averageRating"], {
+    liveVenues: "venues live on Venpadi",
+    cities: "cities with live venues",
+    averageRating: "average planner rating",
+  }),
+]);
 </script>

@@ -14,7 +14,10 @@
             class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white border border-border text-[12px] font-semibold text-header shadow-sm"
           >
             <i class="pi pi-building text-primary text-xs"></i>
-            Join 5,000+ venues already earning on Venpadi
+            <template v-if="hasFigure(stats?.liveVenues)">
+              Join {{ statCount(stats.liveVenues) }} venues already live on Venpadi
+            </template>
+            <template v-else>List your venue on Venpadi</template>
           </span>
 
           <h1
@@ -75,27 +78,14 @@
             </a>
           </div>
 
-          <div class="mt-8 flex items-center gap-3">
-            <div class="flex -space-x-2.5">
-              <img
-                v-for="(src, i) in avatars"
-                :key="i"
-                :src="src"
-                alt=""
-                class="w-9 h-9 rounded-full border-2 border-white object-cover"
-              />
-              <span
-                class="w-9 h-9 rounded-full border-2 border-white bg-header text-white text-[10px] font-bold flex items-center justify-center"
-              >
-                +5k
-              </span>
-            </div>
-            <p class="text-xs sm:text-sm text-bodytext max-w-sm leading-snug">
-              <span class="font-semibold text-header">★ 4.9 / 5</span>
-              · 5,000+ venue hosts. Operating across Lagos, Abuja, Port Harcourt &amp; 50+
-              cities
-            </p>
-          </div>
+          <!-- Real marketplace figures only (GET /public/stats); the stock
+               avatars, "+5k" and "4.9 / 5" they replaced were invented. -->
+          <ul v-if="tiles.length" class="mt-8 flex flex-wrap gap-x-6 gap-y-2 text-xs sm:text-sm text-bodytext">
+            <li v-for="t in tiles" :key="t.key">
+              <span class="font-semibold text-header">{{ t.value }}</span>
+              {{ t.label.toLowerCase() }}
+            </li>
+          </ul>
         </div>
 
         <div class="relative flex items-center justify-center md2:justify-end">
@@ -130,17 +120,6 @@
       </div>
     </div>
 
-    <div class="bg-white border-b border-border">
-      <div class="max-w-[1280px] mx-auto px-4 sm:px-6 md2:px-8 py-6 flex items-center justify-center">
-        <img
-          src="/images/venue-partner-logos.svg"
-          alt="Partner venues and brands"
-          class="w-full max-w-[1100px] h-auto opacity-80"
-          width="1280"
-          height="58"
-        />
-      </div>
-    </div>
   </section>
 </template>
 
@@ -150,40 +129,28 @@
 const heroImage = "/" + "images/for-vendors-hero.svg";
 
 const bullets = [
-  "100% Free Listing",
+  "Free to list",
   "Total Calendar Control",
-  "Direct Payout in 24 hrs",
+  "Escrow-protected payouts",
 ];
 
-const avatars = [
-  "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=80&h=80&fit=crop",
-  "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&h=80&fit=crop",
-  "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=80&h=80&fit=crop",
-  "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=80&h=80&fit=crop",
-];
-
+// What a venue gets — capabilities, not an invented feed of other venues'
+// bookings and payouts.
 const ticker = [
-  { icon: "pi-flag", text: "Grandeur Hall, Lagos just booked ₦1.2M event" },
-  { icon: "pi-calendar", text: "The Skyview, Abuja secured 3 dates this week" },
-  { icon: "pi-star", text: "Pearl Gardens, Lekki hit 94% occupancy" },
-  { icon: "pi-wallet", text: "Azure Ballroom paid out ₦840k in 24 hrs" },
-  { icon: "pi-users", text: "Harbour View Hall hosted 220 corporate guests" },
-  { icon: "pi-check-circle", text: "Eden Courtyard confirmed a Saturday wedding" },
-  { icon: "pi-bolt", text: "Crystal Dome, PH filled 5 empty weekdays" },
-  { icon: "pi-map-marker", text: "Golden Palm, Ikeja listed & got 12 inquiries" },
-  { icon: "pi-chart-line", text: "Riviera Terrace climbed to 88% occupancy" },
-  { icon: "pi-clock", text: "Summit Hall booked a same-week conference" },
-  { icon: "pi-heart", text: "Bloom Pavilion locked a ₦2.1M engagement party" },
-  { icon: "pi-briefcase", text: "Atlas Centre closed 4 midweek corporate slots" },
-  { icon: "pi-bookmark", text: "Oasis Gardens got 9 new wishlist saves today" },
-  { icon: "pi-verified", text: "Crestview Arena verified & went live in 1 day" },
-  { icon: "pi-send", text: "Lumina Hall received a ₦650k deposit" },
-  { icon: "pi-building", text: "Metro Loft turned Friday into a sold-out night" },
-  { icon: "pi-calendar-plus", text: "Sapphire Court added 7 peak-season dates" },
-  { icon: "pi-money-bill", text: "Nova Event Space earned ₦3.4M this month" },
-  { icon: "pi-thumbs-up", text: "Palm & Pine got a 5★ review after first booking" },
-  { icon: "pi-megaphone", text: "Velvet Room featured in Venpadi Top Picks" },
+  { icon: "pi-calendar", text: "Live availability calendar" },
+  { icon: "pi-shield", text: "Escrow-protected payments" },
+  { icon: "pi-inbox", text: "Booking requests in one inbox" },
+  { icon: "pi-comments", text: "Message planners directly" },
+  { icon: "pi-file", text: "Invoices for every booking" },
+  { icon: "pi-users", text: "Staff accounts with roles" },
+  { icon: "pi-star", text: "Reviews from real bookings" },
+  { icon: "pi-wallet", text: "Payouts to your bank" },
 ];
+
+const { stats } = usePublicStats();
+const tiles = computed(() =>
+  statTiles(stats.value, ["averageRating", "hosts", "cities"], { hosts: "Venue hosts", cities: "Cities" })
+);
 </script>
 
 <style>

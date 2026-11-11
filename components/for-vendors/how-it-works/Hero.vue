@@ -23,7 +23,7 @@
 
       <p class="mt-5 text-sm sm:text-base text-white/60 leading-relaxed max-w-2xl mx-auto">
         A step-by-step blueprint designed for hotel ballrooms, exclusive private estates,
-        and flagship conference hubs to maximize occupancy on autopilot.
+        and flagship conference hubs to fill more of the calendar.
       </p>
 
       <div
@@ -31,14 +31,12 @@
       >
         <span>7 Steps</span>
         <span class="text-white/30">·</span>
-        <span>~20 Minutes to List</span>
-        <span class="text-white/30">·</span>
-        <span>48 Hrs Avg. to First Booking</span>
+        <span>Free to List</span>
       </div>
 
       <div class="mt-8 flex flex-wrap items-center justify-center gap-3">
         <a
-          href="#step-01"
+          href="#step-1"
           class="inline-flex items-center justify-center gap-1.5 px-6 py-3.5 rounded-full bg-brand-gradient-soft text-white text-sm font-semibold shadow-[0_12px_40px_rgba(255,77,23,0.35)] hover:opacity-95 transition-opacity"
         >
           Skip to Step 1
@@ -53,7 +51,7 @@
       </div>
 
       <a
-        href="#step-01"
+        href="#step-1"
         class="mt-10 inline-flex flex-col items-center gap-1 text-[10px] font-bold tracking-[0.18em] uppercase text-white/40 hover:text-white/70 transition-colors"
       >
         Scroll to begin

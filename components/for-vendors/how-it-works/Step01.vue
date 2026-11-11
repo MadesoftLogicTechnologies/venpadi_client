@@ -16,7 +16,7 @@
           <h2
             class="relative mt-5 text-2xl sm:text-3xl md2:text-[2.45rem] font-extrabold text-header tracking-tight leading-[1.15]"
           >
-            Start in under two minutes.
+            Start today.
             <span class="text-primary">No card required.</span>
           </h2>
           <p class="relative mt-4 text-sm sm:text-base text-bodytext leading-relaxed max-w-md">
@@ -44,10 +44,10 @@
             <span
               class="w-7 h-7 rounded-full bg-primary/10 text-primary flex items-center justify-center"
             >
-              <i class="pi pi-clock text-xs"></i>
+              <i class="pi pi-check text-xs"></i>
             </span>
             <span class="text-xs font-semibold text-header">
-              Takes 2 minutes to complete initial registration
+              Free to register — no setup fee
             </span>
           </div>
         </div>
@@ -73,37 +73,8 @@
             </p>
             <p class="mt-1.5 text-lg font-extrabold text-header">Claim your venue workspace</p>
 
-            <button
-              type="button"
-              class="mt-5 w-full inline-flex items-center justify-center gap-2.5 py-3 rounded-xl border border-border bg-white text-sm font-semibold text-header"
-            >
-              <svg width="16" height="16" viewBox="0 0 18 18" aria-hidden="true">
-                <path
-                  fill="#4285F4"
-                  d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844a4.14 4.14 0 0 1-1.796 2.716v2.259h2.908c1.702-1.567 2.684-3.875 2.684-6.615Z"
-                />
-                <path
-                  fill="#34A853"
-                  d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18Z"
-                />
-                <path
-                  fill="#FBBC05"
-                  d="M3.964 10.71A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.042l3.007-2.332Z"
-                />
-                <path
-                  fill="#EA4335"
-                  d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58Z"
-                />
-              </svg>
-              Continue with Google Workspace
-            </button>
-
-            <div class="my-4 flex items-center gap-3 text-[10px] font-bold tracking-[0.12em] uppercase text-bodytext">
-              <span class="flex-1 h-px bg-border"></span>
-              Or register with email
-              <span class="flex-1 h-px bg-border"></span>
-            </div>
-
+            <!-- No Google sign-in exists (DECISIONS §6), so the mock shows email only. -->
+            <div class="mt-5"></div>
             <label class="block text-xs font-semibold text-header mb-1.5">Venue Name</label>
             <div
               class="rounded-xl border border-primary/50 bg-white px-3 py-2.5 text-sm text-header flex items-center justify-between gap-2"
@@ -161,9 +132,9 @@
 
 <script setup>
 const bullets = [
-  "Single-click signup with Google Workspace or corporate email.",
-  "Claim your custom Venpadi venue vanity URL (e.g., venpadi.com/v/your-hall).",
-  "Multi-currency setup configured instantly (NGN, USD, AED, GBP).",
-  "Automated 60-second legal verification check.",
+  "Sign up with your business email.",
+  "Get a public Venpadi page for your venue once it goes live.",
+  "Prices and payouts in Naira (NGN).",
+  "Submit your business documents for verification.",
 ];
 </script>

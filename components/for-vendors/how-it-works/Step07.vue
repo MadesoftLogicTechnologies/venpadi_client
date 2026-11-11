@@ -13,8 +13,8 @@
         <span class="text-transparent bg-clip-text bg-brand-gradient-soft">Zero chasing.</span>
       </h2>
       <p class="mt-4 text-sm sm:text-base text-bodytext leading-relaxed max-w-2xl mx-auto">
-        Eliminate post-event invoice delinquency. Venpadi manages institutional escrow
-        deposits with automated settlements straight to your designated corporate accounts.
+        No more chasing balances after the event. Planners pay through Venpadi into
+        escrow, and your earnings are paid out to your bank account.
       </p>
 
       <div class="relative mt-12">
@@ -53,11 +53,10 @@
           >
             <i class="pi pi-shield text-sm"></i>
           </span>
-          <p class="text-sm font-extrabold text-header">Institutional Escrow Protocol</p>
+          <p class="text-sm font-extrabold text-header">Escrow Protection</p>
           <p class="mt-2 text-sm text-bodytext leading-relaxed">
-            Every transaction is safeguarded by licensed Tier-1 fiduciary banking rails.
-            Never suffer cancellations without receiving your contracted non-refundable
-            forfeit payments.
+            Payments are held by Venpadi until after the event, and cancellations follow
+            the cancellation policy the planner agreed to when booking.
           </p>
         </div>
         <div class="rounded-2xl border border-border bg-white p-5 sm:p-6">
@@ -66,11 +65,11 @@
           >
             <i class="pi pi-building text-sm"></i>
           </span>
-          <p class="text-sm font-extrabold text-header">Global &amp; Local Settlement Channels</p>
+          <p class="text-sm font-extrabold text-header">Payment &amp; Payout Channels</p>
           <p class="mt-2 text-sm text-bodytext leading-relaxed">
-            Directly routed via
-            <span class="font-semibold text-header">Paystack, Flutterwave, Stripe, Nigerian Banks,</span>
-            and cross-border SWIFT in 40+ currencies.
+            Planners pay by card or bank transfer through
+            <span class="font-semibold text-header">Paystack;</span>
+            payouts go to your Nigerian bank account in Naira.
           </p>
           <div class="mt-3 flex flex-wrap gap-2">
             <span
@@ -91,29 +90,29 @@
 const flow = [
   {
     title: "Booking Confirmed",
-    status: "40%—50% Deposit",
+    status: "Deposit in escrow",
     statusClass: "text-primary",
-    text: "Secured immediately in protected escrow vault upon client agreement.",
+    text: "The planner pays the deposit through Venpadi and it is held in escrow.",
   },
   {
     title: "Event Approaches",
-    status: "T-minus 7 Days",
+    status: "Balance due",
     statusClass: "text-header",
-    text: "Remaining balance automatically debited from organizer without manual invoicing.",
-  },
-  {
-    title: "You're Paid",
-    status: "24hr Direct Payout",
-    statusClass: "text-primary",
-    text: "Direct net disbursement to local commercial banks or international treasury.",
+    text: "The planner is invoiced for the balance and pays it through Venpadi before the event.",
   },
   {
     title: "Event Happens",
-    status: "Hall Clearance",
+    status: "Booking completed",
     statusClass: "text-emerald-600",
-    text: "Successful completion confirmed with caution deposit releases handled systematically.",
+    text: "The event takes place; refundable caution deposits are settled afterwards.",
+  },
+  {
+    title: "You're Paid",
+    status: "After 48-hour window",
+    statusClass: "text-primary",
+    text: "Once the 48-hour window after completion passes, the funds are available for payout to your bank.",
   },
 ];
 
-const channels = ["NGN Bank Wire", "USD / EUR Wire", "MTN MoMo", "M-Pesa"];
+const channels = ["Card payments", "Bank transfer", "Payout to Nigerian banks"];
 </script>

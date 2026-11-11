@@ -10,8 +10,14 @@
         </span>
       </h2>
       <p class="mt-4 text-sm sm:text-base text-bodytext leading-relaxed">
-        Join over 1,400 premier estates, conference hotels, and independent venues already
-        filling calendars on Venpadi.
+        <template v-if="hasFigure(stats?.liveVenues)">
+          Join {{ statCount(stats.liveVenues) }} estates, conference hotels, and independent
+          venues already live on Venpadi.
+        </template>
+        <template v-else>
+          Join the estates, conference hotels, and independent venues filling calendars on
+          Venpadi.
+        </template>
       </p>
       <NuxtLink
         to="/auth/signup/venue"
@@ -20,7 +26,7 @@
         List My Venue — It’s Free
       </NuxtLink>
       <p class="mt-4 text-[11px] text-bodytext2">
-        No credit card required · Cancel anytime ·
+        No credit card required · No setup fee ·
         <a href="mailto:owners@venpadi.com" class="text-primary font-semibold hover:underline">
           Talk to a specialist
         </a>
@@ -28,3 +34,8 @@
     </div>
   </section>
 </template>
+
+<script setup>
+// Venue count from GET /public/stats; the "1,400" it replaced was invented.
+const { stats } = usePublicStats();
+</script>

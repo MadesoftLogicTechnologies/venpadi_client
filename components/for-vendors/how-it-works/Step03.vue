@@ -53,9 +53,8 @@
           </div>
 
           <p class="relative mt-5 flex items-start gap-2 text-[11px] sm:text-xs text-white/50 leading-relaxed max-w-md">
-            <i class="pi pi-sync text-primary text-xs mt-0.5"></i>
-            Venpadi automatically recalculates dynamic currency conversions for global
-            overseas event producers.
+            <i class="pi pi-calculator text-primary text-xs mt-0.5"></i>
+            Planners see the full price — your rates, add-ons and fees — before they pay.
           </p>
         </div>
 
@@ -65,7 +64,7 @@
           <div class="flex items-start justify-between gap-3 mb-5">
             <div>
               <p class="text-sm font-extrabold">Active Venue Ecosystem</p>
-              <p class="text-[11px] text-white/45">3 Spaces Listed · Real-time Occupancy</p>
+              <p class="text-[11px] text-white/45">Example · 3 spaces listed</p>
             </div>
             <span
               class="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-full border border-white/15 bg-white/[0.04] text-[11px] font-semibold text-white/80"
@@ -111,45 +110,47 @@
 </template>
 
 <script setup>
+// Illustrative spaces: rate types and statuses, no invented naira prices or
+// occupancy percentages.
 const spaces = [
   {
     title: "Hourly Rate",
-    price: "₦45,000/hr",
+    price: "Your rate / hr",
     text: "Ideal for corporate workshops, board meetings & photo sessions.",
   },
   {
     title: "Daily Rate",
-    price: "₦600,000/day",
-    text: "Full 12-hour exclusive access with backstage setup grace periods.",
+    price: "Your rate / day",
+    text: "Full-day exclusive access for weddings, galas and conferences.",
   },
   {
-    title: "Package Bundle",
-    price: "₦1,400,000",
-    text: "Main Hall + VIP Suite + Rooftop Terrace weekend buyout bundle.",
+    title: "Half-Day Rate",
+    price: "Your rate / half day",
+    text: "Morning or evening slots that fill the gaps around bigger events.",
   },
 ];
 
 const rows = [
   {
     name: "The Grand Ballroom",
-    meta: "Max Cap: 850 guests · 1,200 m²",
-    price: "₦1,200,000 /day",
-    status: "78% Occupied this month",
-    bar: "78%",
+    meta: "Banquet · Theatre · Cocktail",
+    price: "Per day",
+    status: "Booked this Saturday",
+    bar: "70%",
   },
   {
     name: "Sunset Terrace & Garden",
-    meta: "Max Cap: 250 guests · Open Air",
-    price: "₦480,000 /day",
-    status: "62% Occupied",
-    bar: "62%",
+    meta: "Open air",
+    price: "Per day",
+    status: "Request pending",
+    bar: "45%",
   },
   {
     name: "Executive Boardroom Suite",
-    meta: "Max Cap: 30 guests · A/V Synced",
-    price: "₦75,000 /hr",
+    meta: "A/V ready",
+    price: "Per hour",
     status: "Available for Instant Booking",
-    bar: "40%",
+    bar: "25%",
     available: true,
   },
 ];

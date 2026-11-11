@@ -15,7 +15,7 @@
                   2 New
                 </span>
               </div>
-              <span class="text-[11px] text-white/45">Response Time: &lt; 15 mins</span>
+              <span class="text-[11px] text-white/45">Example</span>
             </div>
 
             <div class="space-y-2.5">
@@ -60,12 +60,12 @@
               </span>
               <div>
                 <p class="text-sm font-extrabold">Kemi Adeleke (Lead Producer)</p>
-                <p class="text-[11px] text-bodytext">Verified Buyer · 12 Venpadi bookings</p>
+                <p class="text-[11px] text-bodytext">Planner · Booking request</p>
               </div>
             </div>
             <p class="text-sm text-bodytext leading-relaxed">
-              “Good day, we require load-in access starting 6:00 AM on the 14th for bespoke
-              floral installations. Can we sign off on this addendum?”
+              “Good day, we need early load-in access on the 14th for floral
+              installations. Can you include that in the quote?”
             </p>
             <div class="mt-4 flex items-center gap-2">
               <div
@@ -102,8 +102,8 @@
             </span>
           </h2>
           <p class="relative mt-4 text-sm sm:text-base text-white/60 leading-relaxed max-w-md">
-            No endless spam. Every request arrives pre-vetted with verified credentials,
-            guest counts, and event fit — so you only work real leads.
+            No endless back-and-forth. Every request arrives with the date, space,
+            guest count and event type — so you can judge the fit before you reply.
           </p>
 
           <div class="relative mt-7 space-y-3">
@@ -135,17 +135,17 @@
 const inbox = [
   {
     name: "Fintech Summit 2026 Product Launch",
-    meta: "Oct 24, 2025 · 450 Guests · The Grand Ballroom",
-    right: "₦1,500,000",
+    meta: "Product launch · The Grand Ballroom",
+    right: "New request",
   },
   {
     name: "Kemi & Tunde Luxury Wedding",
-    meta: "Nov 14, 2025 · 600 Guests · Terrace + Ballroom",
-    right: "₦900,000",
+    meta: "Wedding · Terrace + Ballroom",
+    right: "Quote sent",
   },
   {
     name: "Diplomatic Gala Dinner",
-    meta: "Dec 02, 2025 · 200 Guests · Penthouse Suite",
+    meta: "Gala dinner · Penthouse Suite",
     right: "✓ Confirmed",
     confirmed: true,
   },
@@ -153,16 +153,16 @@ const inbox = [
 
 const points = [
   {
-    title: "Pre-vetted Enquiry Received",
-    text: "Review exact event format, guest count, and budget before you engage.",
+    title: "Enquiry Received",
+    text: "Review the event format, date, space and guest count before you engage.",
   },
   {
     title: "Direct Messaging & Dynamic Quotes",
     text: "Send itemized custom quotes and negotiate extras in one thread.",
   },
   {
-    title: "Single-Click Contract Execution",
-    text: "Client accepts digitally, signs standard terms, and locks the date.",
+    title: "Accept & Lock the Date",
+    text: "The planner accepts your quote and pays through Venpadi, and the date is blocked on your calendar.",
   },
 ];
 </script>

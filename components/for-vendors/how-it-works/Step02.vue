@@ -15,9 +15,9 @@
                 </span>
                 <p class="text-sm font-extrabold text-header">High-Resolution Media Gallery</p>
               </div>
-              <span class="text-[11px] font-bold text-primary shrink-0">24% Completed</span>
+              <span class="text-[11px] font-bold text-primary shrink-0">In progress</span>
             </div>
-            <p class="text-xs text-bodytext mb-3">Photo 1 of 12 uploaded · 38 remaining.</p>
+            <p class="text-xs text-bodytext mb-3">Upload photos of every space.</p>
             <div class="h-2 rounded-full bg-greybg overflow-hidden mb-3.5">
               <div class="h-full w-[24%] rounded-full bg-brand-gradient-soft"></div>
             </div>
@@ -26,7 +26,7 @@
                 class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border border-emerald-200 bg-emerald-50 text-[11px] font-semibold text-emerald-700"
               >
                 <i class="pi pi-check text-[9px]"></i>
-                Event Hall 4K
+                Event Hall
               </span>
               <span
                 class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border border-emerald-200 bg-emerald-50 text-[11px] font-semibold text-emerald-700"
@@ -37,7 +37,7 @@
               <span
                 class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border border-border text-[11px] font-semibold text-bodytext"
               >
-                + Add Floorplans (.DWG, .PDF)
+                + Add more photos
               </span>
             </div>
           </div>
@@ -58,7 +58,7 @@
                 class="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-emerald-50 text-emerald-700 text-[10px] font-bold"
               >
                 <i class="pi pi-check text-[9px]"></i>
-                94 words · Recommended: 150–300 words
+                Description added
               </span>
             </div>
             <div class="rounded-xl bg-[#F7F5F2] px-3.5 py-3 text-sm italic text-bodytext leading-relaxed">
@@ -68,10 +68,8 @@
             </div>
             <div class="mt-3 flex flex-wrap items-center justify-between gap-2 text-[11px]">
               <p class="text-header">
-                Search Engine Optimization:
-                <span class="font-bold">Optimal</span>
+                Shown on your public venue page
               </p>
-              <p class="font-semibold text-primary">Auto-translated to 6 languages</p>
             </div>
           </div>
         </div>
@@ -96,9 +94,9 @@
             </span>
           </h2>
           <p class="relative mt-4 text-sm sm:text-base text-bodytext leading-relaxed max-w-md">
-            Global corporate bookers and elite wedding architects demand exhaustive
-            precision. Venpadi’s structured intake turns your space specifications into
-            high-converting architectural presentations.
+            Corporate bookers and wedding planners want the details up front.
+            Venpadi’s structured listing turns your space specifications into a clear,
+            comparable venue page.
           </p>
 
           <div class="relative mt-6 rounded-2xl border border-border bg-[#F7F5F2] p-3.5 sm:p-4">
@@ -118,8 +116,8 @@
             </div>
             <div class="border-t border-border pt-3">
               <p class="text-xs sm:text-sm text-bodytext leading-relaxed">
-                Configure primary capacity (theater, banquet, cocktail), square footage,
-                valet parking, and load-in bays.
+                Configure capacity by layout (theatre, banquet, cocktail), floor area,
+                amenities and add-ons for each space.
               </p>
             </div>
           </div>
@@ -134,14 +132,12 @@
             </span>
             <div>
               <p class="text-[11px] font-bold tracking-[0.1em] uppercase text-primary mb-1">
-                Venpadi Intelligence Note
+                Listing tip
               </p>
               <p class="text-xs sm:text-sm text-header leading-relaxed">
-                Listings featuring
-                <span class="font-bold text-primary">20+ high-definition photos</span>
-                and interactive floorplans receive
-                <span class="font-bold text-primary">4.2x more confirmed inquiries</span>
-                within their initial 30 days.
+                Planners compare venues side by side. Clear photos of every space,
+                accurate capacities and your full pricing help them choose you with
+                confidence.
               </p>
             </div>
           </div>
