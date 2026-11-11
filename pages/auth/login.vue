@@ -20,6 +20,7 @@
           Sign in to book and manage your events.
         </p>
 
+        <template v-if="googleSignIn">
         <button
           type="button"
           class="mt-8 w-full h-12 inline-flex items-center justify-center rounded-xl border border-border bg-white hover:bg-greybg transition-colors"
@@ -56,8 +57,9 @@
             </span>
           </div>
         </div>
+        </template>
 
-        <form class="space-y-4" @submit.prevent="signIn">
+        <form class="space-y-4" :class="{ 'mt-8': !googleSignIn }" @submit.prevent="signIn">
           <InputField
             v-model="form.email"
             label="Email address"
@@ -116,13 +118,13 @@
 
         <p class="mt-8 text-xs text-bodytext2 leading-relaxed">
           By signing in, you agree to our
-          <a href="#" class="underline text-bodytext hover:text-primary">
+          <NuxtLink to="/for-venue-owners/terms" class="underline text-bodytext hover:text-primary">
             Terms of Service
-          </a>
+          </NuxtLink>
           and
-          <a href="#" class="underline text-bodytext hover:text-primary">
+          <NuxtLink to="/for-venue-owners/privacy" class="underline text-bodytext hover:text-primary">
             Privacy Policy
-          </a>
+          </NuxtLink>
           .
         </p>
       </div>
@@ -200,7 +202,9 @@ async function signIn() {
   }
 }
 
+// Hidden until the API has an OAuth flow (features.googleSignIn).
+const googleSignIn = useFeature("googleSignIn");
 function continueWithGoogle() {
-  window.alert("Google sign-in is coming soon.");
+  window.location.href = `${useRuntimeConfig().public.API_URL}/auth/google`;
 }
 </script>

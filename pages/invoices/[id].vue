@@ -37,6 +37,7 @@
             Print
           </button>
           <button
+            v-if="invoicePdf"
             type="button"
             class="h-10 px-4 rounded-full bg-header text-white text-[13px] font-semibold inline-flex items-center gap-1.5"
             @click="downloadPdf"
@@ -422,13 +423,12 @@ const timeline = computed(() => {
 function printInvoice() {
   window.print();
 }
+// The API has no invoice PDF yet; Print (browser "Save as PDF") covers it.
+// The button stays hidden behind features.invoicePdf until it does.
+const invoicePdf = useFeature("invoicePdf");
 function downloadPdf() {
-  const url = invoice.value?.pdfUrl || invoice.value?.receiptUrl || invoice.value?.invoiceUrl;
-  if (url) {
-    window.open(url, "_blank", "noopener");
-    return;
-  }
-  useToastStore().setMessage({ text: "PDF download is coming soon.", type: "info" });
+  const url = invoice.value?.pdfUrl;
+  if (url) window.open(url, "_blank", "noopener");
 }
 function disputeInvoice() {
   useToastStore().setMessage({ text: "Invoice disputes are coming soon.", type: "info" });

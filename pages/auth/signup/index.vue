@@ -18,6 +18,7 @@
               event details in one place.
             </p>
 
+            <template v-if="googleSignIn">
             <button
               type="button"
               class="mt-8 w-full inline-flex items-center justify-center gap-3 px-4 py-3.5 rounded-xl border border-border bg-white text-sm font-semibold text-header hover:bg-whitebg transition-colors shadow-sm"
@@ -54,8 +55,9 @@
                 </span>
               </div>
             </div>
+            </template>
 
-            <form class="space-y-4" @submit.prevent="createAccount">
+            <form class="space-y-4" :class="{ 'mt-8': !googleSignIn }" @submit.prevent="createAccount">
               <InputField
                 v-model="form.fullName"
                 label="Full Name"
@@ -88,13 +90,13 @@
 
             <p class="mt-5 text-xs text-bodytext leading-relaxed">
               By creating an account, you agree to our
-              <a href="#" class="underline text-header hover:text-primary">
+              <NuxtLink to="/for-venue-owners/terms" class="underline text-header hover:text-primary">
                 Terms of Service
-              </a>
+              </NuxtLink>
               and
-              <a href="#" class="underline text-header hover:text-primary">
+              <NuxtLink to="/for-venue-owners/privacy" class="underline text-header hover:text-primary">
                 Privacy Policy
-              </a>
+              </NuxtLink>
               .
             </p>
 
@@ -114,10 +116,18 @@
               class="relative rounded-2xl overflow-hidden aspect-[4/3] shadow-md"
             >
               <img
+                v-if="venue.image"
                 :src="venue.image"
                 :alt="venue.name"
                 class="absolute inset-0 w-full h-full object-cover"
               />
+              <div
+                v-else
+                class="absolute inset-0 bg-gradient-to-br from-[#1F2937] to-[#111827] flex items-center justify-center"
+                aria-hidden="true"
+              >
+                <span class="text-5xl font-extrabold text-white/25 tracking-wide">{{ initials(venue.name === "—" ? "Venpadi" : venue.name) }}</span>
+              </div>
               <div
                 class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"
               ></div>
@@ -191,7 +201,9 @@ const venue = computed(() => {
   return {
     name: v?.name || "—",
     location: v?.location?.label || "—",
-    image: v?.gallery?.[0]?.url || v?.spaces?.[0]?.imageUrl || "/images/grand-atrium.jpg",
+    // No venue photo -> a neutral initials tile (C18). Another venue's stock
+    // photo here would show the planner a place they are not booking.
+    image: v?.gallery?.[0]?.url || v?.spaces?.[0]?.imageUrl || "",
   };
 });
 
@@ -225,8 +237,9 @@ async function createAccount() {
   }
 }
 
+// Hidden until the API has an OAuth flow (features.googleSignIn).
+const googleSignIn = useFeature("googleSignIn");
 function continueWithGoogle() {
-  // No toast outlet on the plain layout.
-  window.alert("Google sign-up is coming soon.");
+  window.location.href = `${useRuntimeConfig().public.API_URL}/auth/google`;
 }
 </script>

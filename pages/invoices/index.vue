@@ -157,6 +157,7 @@
                         <i class="pi pi-eye text-[13px]"></i>
                       </NuxtLink>
                       <button
+                        v-if="invoicePdf && row.pdfUrl"
                         type="button"
                         class="w-8 h-8 rounded-lg hover:bg-greybg hover:text-header"
                         aria-label="Download"
@@ -307,7 +308,6 @@
 </template>
 
 <script setup>
-import { useToastStore } from "~/store/toast";
 
 useHead({ title: "Invoices" });
 
@@ -366,17 +366,11 @@ function openRow(row) {
   if (row.bookingReference) navigateTo(`/bookings/${row.bookingReference}`);
 }
 
-function comingSoon() {
-  useToastStore().setMessage({ text: "PDF download is coming soon.", type: "info" });
-}
-
+// No invoice PDFs on the API yet: the download control is hidden behind
+// features.invoicePdf (and needs a pdfUrl on the row) instead of toasting.
+const invoicePdf = useFeature("invoicePdf");
 function downloadRow(row) {
-  const url = row.pdfUrl || row.receiptUrl || row.invoiceUrl;
-  if (url) {
-    window.open(url, "_blank", "noopener");
-    return;
-  }
-  comingSoon();
+  if (row.pdfUrl) window.open(row.pdfUrl, "_blank", "noopener");
 }
 
 function yearOf(iso) {
