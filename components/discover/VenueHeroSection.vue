@@ -108,12 +108,15 @@
         </div>
 
         <div class="mt-6 md2:mt-8 flex items-center gap-3">
-          <span class="w-11 h-11 rounded-full overflow-hidden shrink-0 bg-greybg">
+          <!-- C19: no host logo -> the host's initials, never another venue's photo. -->
+          <span class="w-11 h-11 rounded-full overflow-hidden shrink-0 bg-greybg flex items-center justify-center">
             <img
-              :src="venue.host?.logoUrl || '/images/meridian-ballroom.jpg'"
+              v-if="venue.host?.logoUrl"
+              :src="venue.host.logoUrl"
               alt=""
               class="w-full h-full object-cover"
             />
+            <span v-else class="text-[13px] font-bold text-bodytext" aria-hidden="true">{{ initials(venue.host?.displayName) }}</span>
           </span>
           <div class="min-w-0 flex-1">
             <p class="text-[14px] font-semibold text-header">

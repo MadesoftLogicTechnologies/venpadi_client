@@ -47,8 +47,10 @@
           class="bg-white rounded-2xl p-5"
         >
           <div class="flex items-center gap-3">
-            <span class="w-10 h-10 rounded-full overflow-hidden shrink-0 bg-greybg">
-              <img :src="review.avatarUrl || '/images/cat-wedding.jpg'" alt="" class="w-full h-full object-cover" />
+            <!-- C19: a reviewer without a photo gets their initials, not a stock image. -->
+            <span class="w-10 h-10 rounded-full overflow-hidden shrink-0 bg-greybg flex items-center justify-center">
+              <img v-if="review.avatarUrl" :src="review.avatarUrl" alt="" class="w-full h-full object-cover" />
+              <span v-else class="text-[12px] font-bold text-bodytext" aria-hidden="true">{{ initials(review.name) }}</span>
             </span>
             <div>
               <p class="text-[14px] font-semibold text-header">{{ review.name }}</p>
