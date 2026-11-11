@@ -43,7 +43,6 @@
         class="mt-8 flex flex-wrap items-center gap-x-5 gap-y-2 text-[11px] sm:text-xs text-white/45"
       >
         <span>Last updated February 14, 2024 (v1.2.0)</span>
-        <span>Available in: English, Hausa, Igbo, Yoruba</span>
         <button
           type="button"
           class="inline-flex items-center gap-1.5 text-white/70 hover:text-white transition-colors"

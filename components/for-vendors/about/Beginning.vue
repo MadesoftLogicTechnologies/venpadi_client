@@ -17,10 +17,10 @@
         The problem was hiding in plain sight.
       </h2>
       <p class="mt-5 text-sm sm:text-base text-bodytext leading-relaxed">
-        In late 2022, our founding team was consulting for event centers across West
-        Africa and Europe. The venues were beautiful. The ops were chaos — billion-naira
-        assets managed through flimsy social listing pages or bloated generic ERPs that
-        treated a banquet hall like a warehouse SKU.
+        Before Venpadi, our team worked alongside event centres in Lagos. The venues
+        were beautiful. The ops were chaos — valuable spaces run through chat threads,
+        social listing pages or generic software that treated a banquet hall like a
+        warehouse SKU.
       </p>
 
       <ul class="mt-8 space-y-4">
@@ -42,7 +42,7 @@
           to build the sovereign digital infrastructure for physical spaces.”
         </p>
         <p class="mt-3 text-xs font-bold tracking-wide uppercase text-bodytext2">
-          Venpadi Founding Principle · Lagos, March 2023
+          Venpadi founding principle
         </p>
       </blockquote>
     </div>
@@ -52,8 +52,7 @@
 <script setup>
 const quotes = [
   "Bookings come through WhatsApp. I’m terrified of double-booking the grand hall.",
-  "International clients want to pay in GBP or USD — our gateways drop the transactions.",
-  "Listing sites take 20% commission and sit on payouts for weeks.",
+  "Listing sites take a big cut and sit on payouts for weeks.",
   "My floor team can’t check live availability without calling the front desk.",
 ];
 </script>

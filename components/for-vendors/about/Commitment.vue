@@ -30,17 +30,7 @@
         >
           “Built with you in mind. Kept honest by your trust.”
         </p>
-        <div class="flex items-center gap-3 shrink-0">
-          <div
-            class="w-11 h-11 rounded-full bg-primary text-white flex items-center justify-center text-sm font-bold"
-          >
-            FI
-          </div>
-          <div>
-            <p class="text-sm font-bold text-header">Faith Imade</p>
-            <p class="text-xs text-bodytext">Founder & CEO</p>
-          </div>
-        </div>
+        <p class="text-sm font-bold text-header shrink-0">— The Venpadi team</p>
       </div>
     </div>
   </section>
@@ -51,7 +41,7 @@ const commitments = [
   {
     num: "01",
     title: "We will never charge you to list.",
-    body: "Every physical venue owner can publish an unlimited number of halls, gardens, or suites without subscription fees or setup expenses — we earn only when you earn.",
+    body: "Publishing your halls, gardens or suites costs nothing — our fee applies to completed bookings. Optional visibility campaigns are always priced up front.",
   },
   {
     num: "02",
@@ -60,8 +50,8 @@ const commitments = [
   },
   {
     num: "03",
-    title: "We will pay you on time, every time.",
-    body: "Automated financial corridors settle funds within 24 hours of successful event check-in — so cash flow matches the tempo of your calendar.",
+    title: "We will be clear about when you get paid.",
+    body: "Guest payments are held in escrow and become available for payout once the event is completed and the 48-hour window has passed — the timing is shown in your dashboard.",
   },
   {
     num: "04",

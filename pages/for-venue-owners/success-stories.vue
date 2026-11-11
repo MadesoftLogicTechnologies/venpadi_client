@@ -3,14 +3,8 @@
     <ForVendorsNav />
     <main>
       <ForVendorsSuccessStoriesHero />
-      <ForVendorsSuccessStoriesFeatured />
       <ForVendorsSuccessStoriesGrid />
-      <ForVendorsSuccessStoriesSpotlight />
       <ForVendorsSuccessStoriesStatsBar />
-      <ForVendorsSuccessStoriesDeepDive />
-      <ForVendorsSuccessStoriesQuote />
-      <ForVendorsSuccessStoriesByTheNumbers />
-      <ForVendorsSuccessStoriesGallery />
       <ForVendorsSuccessStoriesPageCta />
     </main>
     <ForVendorsFooter />
@@ -28,7 +22,7 @@ useHead({
     {
       name: "description",
       content:
-        "Real venues. Real numbers. Explore how Nigerian venue owners filled calendars, cut no-shows, and grew revenue on Venpadi.",
+        "What venue owners say about running their bookings on Venpadi, with the marketplace's live figures.",
     },
   ],
 });

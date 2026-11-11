@@ -73,7 +73,6 @@
             class="mt-7 pt-5 border-t border-white/10 flex flex-wrap justify-between gap-2 text-[11px] text-white/45"
           >
             <span>Engineering hub: Lagos, Nigeria</span>
-            <span>Est. 2022</span>
           </div>
         </div>
       </div>
@@ -88,7 +87,7 @@ const products = [
     badge: "Active flagship",
     badgeClass: "bg-emerald-500/15 text-emerald-400",
     icon: "pi-building",
-    body: "Operating system for venues — automated custody, discovery, and payout infrastructure.",
+    body: "Operating system for venues — discovery, bookings, escrow payments and payouts.",
   },
   {
     name: "Glead 360",

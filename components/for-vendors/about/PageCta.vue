@@ -17,8 +17,13 @@
         You’ve read the story. Now start yours.
       </h2>
       <p class="mt-4 text-sm sm:text-base text-white/55 leading-relaxed">
-        Join over 1,200 ambitious venue owners unlocking frictionless bookings and
-        escrow payouts on Venpadi.
+        <template v-if="hasFigure(stats?.hosts)">
+          Join {{ statCount(stats.hosts) }} venue {{ stats.hosts === 1 ? "host" : "hosts" }} running bookings and
+          escrow payouts on Venpadi.
+        </template>
+        <template v-else>
+          List your venue and run bookings and escrow payouts on Venpadi.
+        </template>
       </p>
 
       <NuxtLink
@@ -42,3 +47,7 @@
     </div>
   </section>
 </template>
+
+<script setup>
+const { stats } = usePublicStats();
+</script>

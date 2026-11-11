@@ -20,15 +20,6 @@
         “We are not building a listing site. We are building the infrastructure of a
         global events economy.”
       </p>
-      <p class="mt-10 text-[11px] font-bold tracking-[0.14em] uppercase text-primary">
-        Company index v1.0.8a
-      </p>
-      <div
-        class="mt-4 mx-auto max-w-sm flex items-center gap-2 rounded-full border border-white/20 bg-black/40 px-4 py-2.5 text-sm text-white/50"
-      >
-        <i class="pi pi-search text-xs"></i>
-        <span>Search</span>
-      </div>
     </div>
   </section>
 </template>

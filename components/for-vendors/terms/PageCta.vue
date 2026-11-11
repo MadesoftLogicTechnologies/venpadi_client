@@ -14,8 +14,8 @@
         Terms you can agree to because you understand them.
       </h2>
       <p class="mt-4 text-sm sm:text-base text-white/55 leading-relaxed">
-        Join Nigeria’s premier ballrooms, hotels, and creative spaces operating with clear
-        rules, secure revenue, and structured dispute support.
+        List your ballroom, hotel or creative space with clear rules, escrow-protected
+        payments, and structured dispute support.
       </p>
 
       <div class="mt-8 flex flex-wrap items-center justify-center gap-3">
@@ -35,7 +35,7 @@
         </a>
       </div>
       <p class="mt-4 text-[11px] text-white/40">
-        No credit card required. Cancel anytime. Listing is free.
+        Listing is free.
       </p>
     </div>
   </section>

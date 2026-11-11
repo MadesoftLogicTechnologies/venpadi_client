@@ -52,8 +52,8 @@ const items = [
   },
   {
     num: "05",
-    title: "Capped Platform Fee",
-    body: "Transparent commission on successful bookings — no hidden monthly retainers.",
+    title: "Published Platform Fee",
+    body: "A published fee on successful bookings — no hidden monthly retainers.",
   },
   {
     num: "06",

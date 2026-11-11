@@ -11,7 +11,7 @@
       </h2>
       <p class="mt-4 text-sm sm:text-base text-white/55 leading-relaxed max-w-2xl">
         When we design code, draft commercial agreements, or deploy customer support,
-        these five non-negotiables steer every trade-off.
+        these non-negotiables steer every trade-off.
       </p>
 
       <div class="mt-10 space-y-4">
@@ -25,7 +25,7 @@
               Belief {{ String(i + 1).padStart(2, "0") }}
             </p>
             <p class="text-[11px] font-semibold text-white/35 tabular-nums">
-              {{ String(i + 1).padStart(2, "0") }} / 05
+              {{ String(i + 1).padStart(2, "0") }} / {{ String(beliefs.length).padStart(2, "0") }}
             </p>
           </div>
           <h3 class="mt-3 text-lg sm:text-xl font-extrabold tracking-tight">
@@ -52,15 +52,15 @@ const beliefs = [
   },
   {
     title: "Speed is a form of respect.",
-    body: "Sub-second calendar syncs, mobile push alerts, and direct bank rails honor the tempo of real-world celebrations — not the cadence of a ticket queue.",
+    body: "Live availability, instant booking where you allow it, and email and in-app alerts honor the tempo of real-world celebrations — not the cadence of a ticket queue.",
   },
   {
     title: "Global ambition, local intelligence.",
-    body: "A worldwide hospitality OS still has to reflect fuel surcharges, multi-tier wedding timetables, and local bank rails in Lagos, Nairobi, London, and Dubai.",
+    body: "Venue software has to reflect how events really run here — multi-day wedding timetables, caution deposits, and naira payments through local rails.",
   },
   {
     title: "Trust is the product nobody lists on their features page.",
-    body: "Dedicated Venue Success Managers, biometric host verification, and secure automated escrow are how we earn the right to run your bookings.",
+    body: "Venue verification, reviews from real bookings, and escrow that releases funds only after the event are how we earn the right to run your bookings.",
   },
 ];
 </script>

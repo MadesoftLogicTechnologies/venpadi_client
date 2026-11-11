@@ -11,12 +11,12 @@
       <h2
         class="text-2xl sm:text-3xl md2:text-[2.5rem] font-extrabold tracking-tight leading-tight"
       >
-        Tobi's story starts the same place yours does:
+        Every venue's story starts the same place:
         <span class="text-primary">the listing page.</span>
       </h2>
       <p class="mt-4 text-sm sm:text-base text-white/60 leading-relaxed">
-        Join over 1,000 venue owners who took back control of their workflow. List your
-        space in minutes and start building the calendar your venue deserves.
+        List your space, set your pricing and calendar, and start building the
+        bookings your venue deserves.
       </p>
 
       <div class="mt-8 flex flex-wrap items-center justify-center gap-3">
@@ -35,7 +35,7 @@
       </div>
 
       <p class="mt-4 text-[11px] text-white/40">
-        No credit card required. Cancel anytime. Terms of service apply.
+        Listing is free. Terms of service apply.
       </p>
     </div>
   </section>

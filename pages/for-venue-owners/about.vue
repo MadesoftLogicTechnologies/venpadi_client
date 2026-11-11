@@ -6,13 +6,11 @@
       <ForVendorsAboutBeginning />
       <ForVendorsAboutBeliefs />
       <ForVendorsAboutConviction />
-      <ForVendorsAboutPeople />
       <ForVendorsAboutMission />
-      <ForVendorsAboutJourney />
       <ForVendorsAboutNumbers />
       <ForVendorsAboutCommitment />
-      <ForVendorsAboutPress />
       <ForVendorsAboutCareers />
+      <ForVendorsAboutPress />
       <ForVendorsAboutPageCta />
     </main>
     <ForVendorsFooter />
