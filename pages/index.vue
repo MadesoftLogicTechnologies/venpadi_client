@@ -15,7 +15,6 @@
       :planners="landing?.stats?.planners ?? null"
     />
     <LandingDestinations :destinations="landing?.destinations ?? []" />
-    <LandingVendorsCta />
     <LandingOwners />
     <LandingFooter />
   </div>

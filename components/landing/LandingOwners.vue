@@ -10,8 +10,8 @@
             Own a venue? Start earning with Venpadi.
           </h2>
           <p class="mt-4 text-bodytext text-sm sm:text-base leading-relaxed max-w-lg">
-            List your space once and unlock automated bookings, digital
-            contracts, and payout tools built for venue operators — without the
+            List your space once and manage bookings, invoices, your calendar
+            and payouts in one place — built for venue operators, without the
             ops overhead.
           </p>
 
@@ -38,7 +38,7 @@
               Get Started — It's Free
             </NuxtLink>
             <a
-              href="#"
+              href="mailto:owners@venpadi.com?subject=Demo"
               class="inline-flex items-center px-5 py-3 rounded-full border border-border bg-white text-header text-sm font-semibold hover:bg-greybg"
             >
               Schedule Platform Demo
@@ -51,7 +51,9 @@
         >
           <div class="flex items-center justify-between mb-5">
             <p class="text-sm font-semibold text-header">Venue activity</p>
-            <span class="text-xs text-bodytext">Live</span>
+            <!-- C3: an illustration of the owner dashboard, not a live feed —
+                 labelled as such and carrying no invented amounts. -->
+            <span class="text-xs text-bodytext">Example</span>
           </div>
 
           <ul class="space-y-3">
@@ -89,33 +91,33 @@
 <script setup>
 const features = [
   "Zero upfront listing fees",
-  "Instant payout security",
+  "Escrow-protected payouts",
   "Unlimited planner bookings",
   "Full calendar control",
 ];
 
 const activity = [
   {
-    title: "Survey Deposit Received",
-    time: "2 min ago",
-    badge: "+₦890,200",
+    title: "Booking deposit received",
+    time: "Paid into escrow",
+    badge: "Paid",
     badgeClass: "bg-success/10 text-success",
     icon: "pi-wallet",
     iconBg: "bg-success/10",
     iconColor: "text-success",
   },
   {
-    title: "Calendar Auto-Updated",
-    time: "18 min ago",
-    badge: "Success",
+    title: "Calendar updated",
+    time: "Date blocked on approval",
+    badge: "Synced",
     badgeClass: "bg-primary/10 text-primary",
     icon: "pi-calendar",
     iconBg: "bg-primary/10",
     iconColor: "text-primary",
   },
   {
-    title: "New Site Tour Request",
-    time: "1 hr ago",
+    title: "New enquiry",
+    time: "Awaiting your reply",
     badge: "Pending",
     badgeClass: "bg-orange-50 text-[#C66A00]",
     icon: "pi-map-marker",

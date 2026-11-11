@@ -110,19 +110,23 @@
         <div class="relative">
           <div class="relative rounded-[1.5rem] overflow-hidden aspect-[4/5] sm:aspect-[5/6] md2:aspect-[4/5] shadow-lg">
             <img
+              v-if="v.imageUrl"
               :src="v.imageUrl"
               :alt="v.name"
               class="absolute inset-0 w-full h-full object-cover"
             />
+            <div v-else class="absolute inset-0 bg-gradient-to-br from-[#1F2937] to-[#111827]" aria-hidden="true"></div>
             <div
               class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent"
             ></div>
 
+            <!-- C17: only a venue the API marks verified wears the badge. -->
             <div
+              v-if="v.verified"
               class="absolute top-4 left-4 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/95 text-xs font-semibold text-header shadow-sm"
             >
               <i class="pi pi-verified text-primary text-[11px]"></i>
-              Verified Landmark
+              Verified venue
             </div>
 
             <div
@@ -133,7 +137,7 @@
                 {{ ratingText }}
                 <span class="font-normal text-bodytext">({{ v.reviewCount ?? 0 }} reviews)</span>
               </div>
-              <p class="text-[10px] text-bodytext mt-0.5">{{ v.badge?.label || "—" }}</p>
+              <p v-if="v.badge?.label" class="text-[10px] text-bodytext mt-0.5">{{ v.badge.label }}</p>
             </div>
 
             <div class="absolute bottom-5 left-5 right-5 text-white">

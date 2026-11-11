@@ -1,12 +1,12 @@
 <template>
-  <section class="bg-greybg py-16 md2:py-20">
+  <section v-if="testimonials.length" class="bg-greybg py-16 md2:py-20">
     <div class="max-w-[1280px] mx-auto px-4 sm:px-6 md2:px-8">
       <div class="mb-10">
         <p class="text-xs font-bold tracking-[0.12em] uppercase text-primary mb-2">
           Trusted by professionals
         </p>
         <h2 class="text-2xl sm:text-3xl md2:text-[2.25rem] font-extrabold text-header tracking-tight max-w-xl">
-          Loved by{{ planners !== null ? ` ${Number(planners).toLocaleString("en-US")}` : "" }} planners and event hosts
+          Loved by{{ planners ? ` ${Number(planners).toLocaleString("en-US")}` : "" }} planners and event hosts
         </h2>
       </div>
 
@@ -16,9 +16,11 @@
           :key="item.id"
           class="bg-white rounded-2xl border border-border p-6 shadow-sm"
         >
-          <div class="flex gap-0.5 mb-4">
+          <!-- C16: stars only for a testimonial that carries a rating, and
+               exactly that many — never a default five. -->
+          <div v-if="starCount(item)" class="flex gap-0.5 mb-4" :aria-label="`${starCount(item)} out of 5 stars`">
             <i
-              v-for="n in 5"
+              v-for="n in starCount(item)"
               :key="n"
               class="pi pi-star-fill text-primary text-sm"
             ></i>
@@ -47,4 +49,9 @@ defineProps({
   testimonials: { type: Array, default: () => [] },
   planners: { type: Number, default: null },
 });
+
+const starCount = (t) => {
+  const r = Number(t?.rating);
+  return t?.rating === null || t?.rating === undefined || !Number.isFinite(r) ? 0 : Math.max(0, Math.min(5, Math.round(r)));
+};
 </script>

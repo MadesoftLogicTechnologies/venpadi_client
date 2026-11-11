@@ -63,21 +63,21 @@ const steps = [
     icon: "pi-search",
     title: "Search & Discover",
     description:
-      "Filter by verified guest capacities, acoustic space, AV capabilities, and real-time dates. Inspect 360° virtual venue walkthroughs.",
+      "Filter by location, event type, guest capacity, budget and live availability. Compare spaces, layouts, photos and reviews from real bookings.",
   },
   {
     number: "02",
     icon: "pi-calendar",
     title: "Check & Reserve",
     description:
-      "Lock in live dates with transparent pricing tiers. Review vendor policies, generate automated digital contracts, and pay securely via escrow.",
+      "Pick your date and space and see the full price before you pay. Review the venue's cancellation policy, then pay securely — your money is held in escrow, not paid straight to the venue.",
   },
   {
     number: "03",
     icon: "pi-flag",
     title: "Host Your Event",
     description:
-      "Coordinate seamless day-of logistics using the Venpadi Venue-OS with on-site staff access check-ins and dedicated event concierge.",
+      "Message the venue, keep your booking, invoices and receipts in one place. Funds are released to the venue only after your event, once a 48-hour window has passed.",
   },
 ];
 </script>
