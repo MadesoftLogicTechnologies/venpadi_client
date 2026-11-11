@@ -129,17 +129,19 @@
 
             <div
               v-if="viewMode === 'map'"
-              class="hidden md2:block rounded-2xl border border-border bg-greybg min-h-[640px] sticky top-[88px] overflow-hidden"
+              class="hidden md2:block rounded-2xl border border-border bg-white sticky top-[88px] overflow-hidden"
+              :class="mapsKey ? 'min-h-[640px]' : ''"
             >
-              <div
-                class="h-full min-h-[640px] flex flex-col items-center justify-center text-center p-6 text-bodytext"
-              >
-                <i class="pi pi-map text-3xl text-primary mb-3"></i>
-                <p class="text-sm font-semibold text-header">Split map view</p>
-                <p class="text-xs mt-1 max-w-xs">
-                  Map preview placeholder — wire your map provider here.
-                </p>
+              <!-- WP4: markers from the cards' lat/lng (null ones skipped).
+                   Without a Maps key there is no widget, only each venue's
+                   "Open in Google Maps" link. -->
+              <div v-if="mapMarkers.length" :class="mapsKey ? '' : 'px-5 py-2'">
+                <p v-if="!mapsKey" class="pt-2 text-sm font-semibold text-header">Venue locations</p>
+                <VenueMap :markers="mapMarkers" map-class="min-h-[640px]" />
               </div>
+              <p v-else class="p-6 text-sm text-bodytext">
+                None of the venues on this page has a map location yet.
+              </p>
             </div>
           </div>
 
@@ -289,6 +291,19 @@ const viewMode = ref("grid");
 const firstPage = ref(Math.max(1, Number(str(route.query.page)) || 1));
 const page = ref(firstPage.value);
 const rows = ref([]);
+const mapsKey = !!useRuntimeConfig().public.GOOGLE_MAPS_API_KEY;
+const mapMarkers = computed(() =>
+  rows.value
+    .filter((v) => v && v.lat !== null && v.lat !== undefined && v.lng !== null && v.lng !== undefined)
+    .map((v) => ({
+      id: v.id,
+      lat: v.lat,
+      lng: v.lng,
+      title: v.name,
+      subtitle: v.location,
+      to: v.slug ? `/discover/${v.slug}` : null,
+    }))
+);
 const loading = ref(false);
 const result = reactive({ total: 0, categoryCounts: [] });
 

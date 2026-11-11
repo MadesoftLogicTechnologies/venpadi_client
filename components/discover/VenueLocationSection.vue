@@ -29,32 +29,14 @@
 
     <div>
       <h2 class="text-[20px] font-bold text-header">Location</h2>
+      <!-- WP4: a real map when there is a Maps key and the venue has
+           coordinates; otherwise no widget — the address and the links below
+           carry it (the drawn SVG "map" showed no real place). -->
       <div
-        class="mt-4 relative h-[200px] md2:h-[240px] rounded-2xl overflow-hidden bg-[#C5CDD3]"
+        v-if="showMap"
+        class="mt-4 h-[200px] md2:h-[240px] rounded-2xl overflow-hidden bg-greybg"
       >
-        <svg
-          class="absolute inset-0 w-full h-full"
-          viewBox="0 0 800 240"
-          preserveAspectRatio="xMidYMid slice"
-          aria-hidden="true"
-        >
-          <rect width="800" height="240" fill="#C5CDD3" />
-          <path
-            d="M0 40C80 30 140 70 210 90C290 112 340 70 410 86C490 104 540 160 620 150C700 140 760 90 800 80V240H0V40Z"
-            fill="#9AA3AB"
-          />
-          <path
-            d="M0 120C90 110 150 150 230 168C310 186 370 140 450 154C540 170 610 210 690 198C740 190 780 160 800 150V240H0V120Z"
-            fill="#8B949C"
-          />
-        </svg>
-        <div class="absolute inset-0 flex items-center justify-center">
-          <span
-            class="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center shadow-lg ring-4 ring-white/70"
-          >
-            <i class="pi pi-map-marker text-xs"></i>
-          </span>
-        </div>
+        <VenueMap :markers="mapMarkers" :fallback="false" map-class="h-[200px] md2:h-[240px]" />
       </div>
       <p class="mt-3 text-[13px] text-bodytext">
         {{ addressLine }}
@@ -117,8 +99,20 @@ const addressLine = computed(() => {
   return [l.address, l.state && !String(l.address || "").includes(l.state) ? l.state : null].filter(Boolean).join(", ") || l.label || "—";
 });
 
-const mapsUrl = computed(
-  () => loc.value.mapsUrl || `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(addressLine.value)}`,
+const mapsUrl = computed(() => {
+  if (loc.value.mapsUrl) return loc.value.mapsUrl;
+  const l = loc.value;
+  const q = l.lat !== null && l.lat !== undefined && l.lng !== null && l.lng !== undefined ? `${l.lat},${l.lng}` : addressLine.value;
+  return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(q)}`;
+});
+
+const hasCoords = computed(() => {
+  const l = loc.value;
+  return l.lat !== null && l.lat !== undefined && l.lng !== null && l.lng !== undefined;
+});
+const showMap = computed(() => hasCoords.value && !!useRuntimeConfig().public.GOOGLE_MAPS_API_KEY);
+const mapMarkers = computed(() =>
+  hasCoords.value ? [{ id: props.venue.id ?? "venue", lat: loc.value.lat, lng: loc.value.lng, title: props.venue.name, subtitle: addressLine.value }] : []
 );
 
 const directionsUrl = computed(() => {
