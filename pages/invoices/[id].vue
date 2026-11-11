@@ -171,10 +171,31 @@
             <i class="pi pi-arrow-right text-[11px]"></i>
           </NuxtLink>
 
+          <section v-if="dispute" class="mt-8 rounded-2xl bg-white border border-border p-4">
+            <div class="flex items-center justify-between gap-2">
+              <h2 class="text-[13px] font-bold text-header">Dispute</h2>
+              <span class="px-2 py-0.5 rounded-full text-[11px] font-semibold" :class="disputeBadgeClass">
+                {{ dispute.statusLabel || dispute.status }}
+              </span>
+            </div>
+            <p class="mt-2 text-[12px] font-semibold text-header">{{ dispute.reasonLabel || dispute.reason }}</p>
+            <p v-if="dispute.note" class="mt-1 text-[12px] text-bodytext leading-snug whitespace-pre-line">{{ dispute.note }}</p>
+            <p class="mt-2 text-[11px] text-bodytext2">Raised {{ formatDateUS(dispute.createdAt) }}</p>
+            <div v-if="dispute.vendorResponse" class="mt-3 pt-3 border-t border-border">
+              <p class="text-[11px] uppercase tracking-wide font-semibold text-bodytext2">Venue response</p>
+              <p class="mt-1 text-[12px] text-header leading-snug whitespace-pre-line">{{ dispute.vendorResponse }}</p>
+              <p v-if="dispute.resolvedAt" class="mt-1 text-[11px] text-bodytext2">{{ formatDateUS(dispute.resolvedAt) }}</p>
+            </div>
+            <p v-else-if="dispute.status === 'open'" class="mt-3 text-[12px] text-bodytext">
+              The venue has been asked to respond. Funds for this booking are held while the dispute is open.
+            </p>
+          </section>
+
           <button
+            v-if="canDispute"
             type="button"
             class="mt-4 w-full text-center text-[13px] font-medium text-bodytext hover:text-header"
-            @click="disputeInvoice"
+            @click="openDispute"
           >
             Dispute Invoice
           </button>
@@ -185,12 +206,56 @@
         </aside>
       </div>
     </template>
+
+    <Modal v-if="disputeOpen" :max-width="500" @close="disputeOpen = false">
+      <form class="px-6 py-4" @submit.prevent="submitDispute">
+        <h2 class="text-[18px] font-bold text-header">Dispute invoice {{ displayNumber }}</h2>
+        <p class="mt-2 text-[13px] text-bodytext">
+          The venue is notified and asked to respond. While the dispute is open, the money for this booking is
+          not released to the venue.
+        </p>
+        <label class="block mt-4">
+          <span class="text-[13px] font-medium text-header">Reason <span class="text-primary">*</span></span>
+          <select
+            v-model="disputeForm.reason"
+            class="mt-1 w-full h-11 rounded-xl border border-border px-3 text-[13px] outline-none focus:border-primary bg-white"
+          >
+            <option v-for="r in DISPUTE_REASONS" :key="r.key" :value="r.key">{{ r.label }}</option>
+          </select>
+        </label>
+        <label class="block mt-4">
+          <span class="text-[13px] font-medium text-header">What’s wrong? <span class="text-primary">*</span></span>
+          <textarea
+            v-model="disputeForm.note"
+            rows="4"
+            maxlength="2000"
+            class="mt-1 w-full rounded-xl border border-border px-3 py-2 text-[13px] outline-none focus:border-primary"
+            placeholder="Describe the problem so the venue can put it right"
+          ></textarea>
+          <span class="mt-1 flex justify-between text-[11px]" :class="noteTooShort ? 'text-bodytext2' : 'text-bodytext'">
+            <span>At least 10 characters.</span>
+            <span>{{ disputeForm.note.trim().length }}/2000</span>
+          </span>
+        </label>
+        <p v-if="disputeError" class="mt-2 text-[12px] text-[#DC2626]">{{ disputeError }}</p>
+        <div class="mt-5 flex justify-end gap-2">
+          <button type="button" class="h-10 px-4 rounded-full border border-border text-[13px] font-semibold" @click="disputeOpen = false">
+            Cancel
+          </button>
+          <button
+            type="submit"
+            class="h-10 px-4 rounded-full bg-header text-white text-[13px] font-semibold disabled:opacity-60"
+            :disabled="disputing || noteTooShort"
+          >
+            {{ disputing ? "Sending…" : "Raise dispute" }}
+          </button>
+        </div>
+      </form>
+    </Modal>
   </div>
 </template>
 
 <script setup>
-import { useToastStore } from "~/store/toast";
-
 useHead({ title: "Invoice" });
 
 const route = useRoute();
@@ -226,10 +291,16 @@ onMounted(async () => {
     payments.value = passed.payments || [];
     pending.value = false;
     useHead({ title: `Invoice ${passed.invoice.number || id}` });
+    // The list row carries no dispute; only the detail read does.
+    api
+      .get(`/me/invoices/${encodeURIComponent(id)}`, undefined, { toast: false })
+      .then((fresh) => (dispute.value = fresh?.dispute ?? null))
+      .catch(() => {});
     return;
   }
   try {
     invoice.value = await api.get(`/me/invoices/${encodeURIComponent(id)}`);
+    dispute.value = invoice.value?.dispute ?? null;
     schedule.value = null;
     payments.value = [];
   } catch {
@@ -430,8 +501,62 @@ function downloadPdf() {
   const url = invoice.value?.pdfUrl;
   if (url) window.open(url, "_blank", "noopener");
 }
-function disputeInvoice() {
-  useToastStore().setMessage({ text: "Invoice disputes are coming soon.", type: "info" });
+/* ── dispute (C7) ──────────────────────────────────────────────────────────
+ * POST /me/invoices/:id/dispute { reason, note (10–2000) }. The API accepts a
+ * dispute only on a sent or paid invoice (not draft / void) and only one open
+ * dispute at a time, so the button hides in those states rather than
+ * offering a request that will be refused. */
+const DISPUTE_REASONS = [
+  { key: "incorrect_amount", label: "The amount is incorrect" },
+  { key: "service_not_rendered", label: "The service was not provided" },
+  { key: "duplicate_charge", label: "I was charged twice" },
+  { key: "other", label: "Something else" },
+];
+const dispute = ref(null);
+const disputeOpen = ref(false);
+const disputing = ref(false);
+const disputeError = ref("");
+const disputeForm = reactive({ reason: "incorrect_amount", note: "" });
+const noteTooShort = computed(() => disputeForm.note.trim().length < 10);
+
+const canDispute = computed(() => {
+  const s = invoice.value?.status;
+  if (!invoice.value?.id || s === "draft" || s === "void") return false;
+  return dispute.value?.status !== "open";
+});
+const disputeBadgeClass = computed(() => {
+  const s = dispute.value?.status;
+  if (s === "resolved") return "bg-[#EAF8F0] text-[#16A34A]";
+  if (s === "rejected") return "bg-greybg text-header";
+  return "bg-[#FFF1E8] text-[#C2410C]";
+});
+
+function openDispute() {
+  disputeForm.reason = "incorrect_amount";
+  disputeForm.note = "";
+  disputeError.value = "";
+  disputeOpen.value = true;
+}
+
+async function submitDispute() {
+  if (disputing.value || noteTooShort.value) return;
+  disputing.value = true;
+  disputeError.value = "";
+  try {
+    dispute.value = await api.post(
+      `/me/invoices/${encodeURIComponent(invoice.value.id)}/dispute`,
+      { reason: disputeForm.reason, note: disputeForm.note.trim() },
+      { toast: false }
+    );
+    disputeOpen.value = false;
+    notifySuccess("Dispute raised — the venue has been notified");
+  } catch (e) {
+    // The modal covers the toast outlet, so the reason is shown in place.
+    const field = e?.fields ? Object.values(e.fields)[0] : "";
+    disputeError.value = field ? `${e.message}: ${field}` : e?.message || "Could not raise the dispute.";
+  } finally {
+    disputing.value = false;
+  }
 }
 </script>
 
