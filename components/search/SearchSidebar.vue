@@ -82,7 +82,9 @@ const sortOptions = [
   { label: "Top Rated", value: "rating" },
   { label: "Price: Low to High", value: "price-asc" },
   { label: "Price: High to Low", value: "price-desc" },
-  { label: "Distance to Center", value: "distance" },
+  // The API's SEARCH_SORTS. "Distance to Center" was listed but the API has no
+  // distance sort and quietly returned the default order.
+  { label: "Newest", value: "newest" },
 ];
 
 const categoryList = computed(() => props.categoryOptions);
