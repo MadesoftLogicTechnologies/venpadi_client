@@ -186,7 +186,7 @@
         <template v-if="tab === 'security'">
           <h1 class="text-[26px] md2:text-[32px] font-extrabold text-header tracking-tight">Password &amp; Security</h1>
           <p class="mt-1 text-[14px] text-bodytext">
-            Manage your account security, passwords, and two-factor authentication.
+            Manage your password and the devices signed in to your account.
           </p>
 
           <form class="mt-6 bg-white rounded-[20px] border border-border p-5 md2:p-7" @submit.prevent="savePassword">
@@ -286,10 +286,10 @@
           <p class="text-[12px] text-bodytext">
             Account Settings
             <span class="text-bodytext2"> › </span>
-            <span class="text-header font-medium">Payment Methods</span>
+            <span class="text-header font-medium">Payments</span>
           </p>
           <h1 class="mt-1 text-[26px] md2:text-[32px] font-extrabold text-header tracking-tight">
-            Payment Methods &amp; Settings
+            Payments
           </h1>
 
           <div class="mt-5 rounded-[20px] bg-[#111111] text-white px-5 md2:px-8 py-8 md2:py-10 min-h-[168px] md2:min-h-[196px] md2:flex md2:items-center md2:justify-between gap-4 overflow-hidden relative">
@@ -303,16 +303,17 @@
               </p>
               <div class="mt-4 flex gap-8">
                 <div>
-                  <p class="text-[11px] tracking-wide text-white/60 uppercase">Saved cards</p>
-                  <p class="mt-0.5 text-[28px] font-extrabold leading-none">{{ savedMethods.length }}</p>
-                </div>
-                <div>
                   <p class="text-[11px] tracking-wide text-white/60 uppercase">Total spent (YTD)</p>
                   <p class="mt-0.5 text-[28px] font-extrabold leading-none">{{ ytdSpent }}</p>
+                </div>
+                <div v-if="paymentsCount !== null">
+                  <p class="text-[11px] tracking-wide text-white/60 uppercase">Payments (YTD)</p>
+                  <p class="mt-0.5 text-[28px] font-extrabold leading-none">{{ paymentsCount }}</p>
                 </div>
               </div>
             </div>
             <button
+              v-if="savedCards"
               type="button"
               class="relative shrink-0 mt-4 md2:mt-0 h-10 px-4 rounded-lg bg-brand-gradient-soft text-white text-[13px] font-semibold inline-flex items-center gap-1.5"
               @click="addPaymentMethod"
@@ -320,39 +321,6 @@
               <i class="pi pi-plus text-[11px]"></i>
               Add Payment Method
             </button>
-          </div>
-
-          <div class="mt-6">
-            <h2 class="text-[16px] font-bold text-header">Saved Methods</h2>
-            <div v-if="invoicesLoaded && !savedMethods.length" class="mt-3 rounded-[20px] border border-dashed border-border bg-white px-5 py-8 text-center">
-              <p class="text-[14px] font-semibold text-header">No saved cards yet</p>
-              <p class="mt-1 text-[13px] text-bodytext">Cards you pay with can be saved here for faster checkout.</p>
-            </div>
-            <div v-else class="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <article
-                v-for="(card, i) in savedMethods"
-                :key="card.id || card.last4 || i"
-                class="bg-white rounded-[20px] border p-4 min-h-[120px] flex flex-col justify-between"
-                :class="card.primary || card.isDefault ? 'border-header' : 'border-border'"
-              >
-                <div class="flex items-start justify-between gap-2">
-                  <span class="w-9 h-6 rounded-md overflow-hidden flex items-center justify-center text-[10px] font-bold text-white" :class="cardBrandClass(card)">
-                    {{ cardBrandLabel(card) }}
-                  </span>
-                  <span
-                    v-if="card.primary || card.isDefault"
-                    class="px-2 py-0.5 rounded-md bg-header text-white text-[10px] font-bold tracking-wide"
-                  >
-                    Primary
-                  </span>
-                </div>
-                <p class="mt-4 text-[13px] tracking-[0.2em] text-header">**** **** **** {{ card.last4 || "••••" }}</p>
-                <div class="mt-2 flex items-end justify-between gap-2 text-[12px] text-bodytext">
-                  <span>{{ card.name || card.holderName || fullName || "—" }}</span>
-                  <span v-if="cardExpiry(card)">{{ cardExpiry(card) }}</span>
-                </div>
-              </article>
-            </div>
           </div>
 
           <div class="mt-6 bg-white rounded-[20px] border border-border overflow-hidden">
@@ -399,10 +367,10 @@
                         <i class="pi pi-download text-[13px]"></i>
                       </a>
                       <NuxtLink v-else-if="p.bookingReference" :to="`/bookings/${p.bookingReference}`" class="text-bodytext hover:text-header" aria-label="View booking">
-                        <i class="pi pi-download text-[13px]"></i>
+                        <i class="pi pi-eye text-[13px]"></i>
                       </NuxtLink>
                       <NuxtLink v-else to="/invoices" class="text-bodytext hover:text-header" aria-label="Open invoices">
-                        <i class="pi pi-download text-[13px]"></i>
+                        <i class="pi pi-arrow-right text-[13px]"></i>
                       </NuxtLink>
                     </td>
                   </tr>
@@ -472,7 +440,6 @@
 
 <script setup>
 import { useAuthStore } from "~/store/auth";
-import { useToastStore } from "~/store/toast";
 import { changePassword, fetchUser } from "~/services/auth";
 
 useHead({ title: "Settings" });
@@ -700,11 +667,16 @@ watch(invoicesPending, (p) => {
   if (!p && tab.value === "payments") invoicesLoaded.value = true;
 });
 const invoiceSchedule = computed(() => invoices.value?.schedule ?? []);
-const savedMethods = computed(
-  () => invoices.value?.paymentMethods || invoices.value?.cards || invoices.value?.savedMethods || []
-);
 const recentPayments = computed(() => (invoices.value?.payments?.rows ?? []).slice(0, 8));
+// C21: the API sums the year's successful payments (Africa/Lagos calendar year)
+// in `summary`. Summing the first page of payments here undercounted anyone
+// with more payments than fit on one page. The fallback only covers an API
+// that predates the field.
 const ytdSpent = computed(() => {
+  const summary = invoices.value?.summary;
+  if (summary && summary.ytdSpentMinor !== undefined && summary.ytdSpentMinor !== null) {
+    return nairaCompact(summary.ytdSpentMinor);
+  }
   const year = new Date().getFullYear();
   const rows = invoices.value?.payments?.rows ?? [];
   const total = rows.reduce((sum, p) => {
@@ -715,28 +687,13 @@ const ytdSpent = computed(() => {
   }, 0);
   return nairaCompact(total);
 });
+const paymentsCount = computed(() => invoices.value?.summary?.paymentsCount ?? null);
 
-function cardBrandLabel(card) {
-  const b = String(card.brand || card.scheme || "").toLowerCase();
-  if (b.includes("visa")) return "VISA";
-  if (b.includes("master")) return "MC";
-  if (b.includes("verve")) return "VERVE";
-  return (card.brand || "CARD").slice(0, 4).toUpperCase();
-}
-function cardBrandClass(card) {
-  const b = String(card.brand || card.scheme || "").toLowerCase();
-  if (b.includes("visa")) return "bg-[#1A1F71]";
-  if (b.includes("master")) return "bg-gradient-to-r from-[#EB001B] to-[#F79E1B]";
-  return "bg-header";
-}
-function cardExpiry(card) {
-  const m = card.expMonth ?? card.expiryMonth;
-  const y = card.expYear ?? card.expiryYear;
-  if (!m || !y) return card.expiryLabel || "";
-  return `${String(m).padStart(2, "0")}/${String(y).slice(-2)}`;
-}
+// There are no saved payment methods on the API (contract WP5), so the button
+// is hidden behind features.savedCards rather than answering with a toast.
+const savedCards = useFeature("savedCards");
 function addPaymentMethod() {
-  useToastStore().setMessage({ text: "Adding a payment method is coming soon.", type: "info" });
+  /* wired when the API ships saved cards */
 }
 
 /* ── notification preferences (Privacy) ──────────────────────────────────── */
