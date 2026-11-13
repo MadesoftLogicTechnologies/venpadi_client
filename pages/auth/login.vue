@@ -200,7 +200,11 @@ async function signIn() {
   }
 }
 
-function continueWithGoogle() {
-  window.alert("Google sign-in is coming soon.");
+async function continueWithGoogle() {
+  const { alert } = useDialog();
+  await alert({
+    title: "Coming soon",
+    message: "Google sign-in is coming soon.",
+  });
 }
 </script>
