@@ -11,11 +11,13 @@
     </main>
 
     <Toast v-if="showToast" />
+    <ConfirmDialog />
   </div>
 </template>
 
 <script setup>
 import Toast from "~/components/global/Toast.vue";
+import ConfirmDialog from "~/components/global/ConfirmDialog.vue";
 import { useToastStore } from "~/store/toast";
 
 const toastStore = useToastStore();

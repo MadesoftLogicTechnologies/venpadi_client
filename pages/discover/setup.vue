@@ -488,7 +488,17 @@ async function goToAddons() {
     return;
   }
   const clashes = await findClashes();
-  if (clashes.length && !window.confirm(`${clashes.join("\n")}\n\nContinue anyway? The venue may decline.`)) return;
+  if (clashes.length) {
+    const { confirm } = useDialog();
+    const ok = await confirm({
+      title: "Availability conflict",
+      message: `${clashes.join("\n")}\n\nContinue anyway? The venue may decline.`,
+      confirmLabel: "Continue anyway",
+      cancelLabel: "Go back",
+      variant: "danger",
+    });
+    if (!ok) return;
+  }
   return navigateTo({ path: "/discover/addons", query: { slug: slug.value } });
 }
 </script>

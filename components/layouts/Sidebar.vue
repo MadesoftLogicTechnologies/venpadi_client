@@ -102,6 +102,16 @@
         <i class="pi pi-question-circle text-[#6B7280] text-[15px]"></i>
         <span v-if="!collapsed">Help</span>
       </NuxtLink>
+      <button
+        type="button"
+        class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-red-600 hover:bg-red-50 transition-colors"
+        :class="{ 'justify-center px-2': collapsed }"
+        :aria-label="collapsed ? 'Log out' : undefined"
+        @click="logOut"
+      >
+        <i class="pi pi-sign-out text-[15px]"></i>
+        <span v-if="!collapsed">Log out</span>
+      </button>
     </div>
   </aside>
 </template>
@@ -169,5 +179,16 @@ function isActive(item) {
 
 function isExpanded(item) {
   return isActive(item);
+}
+
+async function logOut() {
+  const { confirm } = useDialog();
+  const ok = await confirm({
+    title: "Log out?",
+    message: "Log out of Venpadi on this device?",
+    confirmLabel: "Log out",
+    variant: "danger",
+  });
+  if (ok) authStore.logout();
 }
 </script>

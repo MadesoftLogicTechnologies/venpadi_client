@@ -30,12 +30,14 @@
       </div>
     </div>
     <Toast v-if="showToast" />
+    <ConfirmDialog />
     <Loading />
   </div>
 </template>
 
 <script setup>
 import Toast from "~/components/global/Toast.vue";
+import ConfirmDialog from "~/components/global/ConfirmDialog.vue";
 import Loading from "~/components/global/Loading.vue";
 import { useToastStore } from "~/store/toast";
 import { useSidebarStore } from "~/store/sidebar";

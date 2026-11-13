@@ -611,7 +611,14 @@ async function uploadAvatar(event) {
 }
 
 async function removeAvatar() {
-  if (!window.confirm("Remove your profile photo?")) return;
+  const { confirm } = useDialog();
+  const ok = await confirm({
+    title: "Remove photo?",
+    message: "Remove your profile photo?",
+    confirmLabel: "Remove",
+    variant: "danger",
+  });
+  if (!ok) return;
   avatarBusy.value = true;
   try {
     await api.del("/account/avatar");
@@ -662,7 +669,14 @@ async function refreshSessions() {
 }
 
 async function revoke(s) {
-  if (!window.confirm(`Sign out ${s.device}?`)) return;
+  const { confirm } = useDialog();
+  const ok = await confirm({
+    title: "Sign out device?",
+    message: `Sign out ${s.device}?`,
+    confirmLabel: "Sign out",
+    variant: "danger",
+  });
+  if (!ok) return;
   try {
     await api.del(`/account/sessions/${s.id}`);
     notifySuccess("Session ended");
@@ -674,7 +688,14 @@ async function revoke(s) {
 
 const revokingOthers = ref(false);
 async function revokeOthers() {
-  if (!window.confirm("Sign out every other device?")) return;
+  const { confirm } = useDialog();
+  const ok = await confirm({
+    title: "Sign out other devices?",
+    message: "Sign out every other device?",
+    confirmLabel: "Sign out others",
+    variant: "danger",
+  });
+  if (!ok) return;
   revokingOthers.value = true;
   try {
     await api.post("/account/sessions/revoke-others", { sessionId: auth.sessionId });
@@ -793,8 +814,15 @@ watch(favoriteIds, () => {
   if (tab.value === "saved") refreshSaved();
 });
 
-function logOut() {
-  if (window.confirm("Log out of Venpadi on this device?")) useAuthStore().logout();
+async function logOut() {
+  const { confirm } = useDialog();
+  const ok = await confirm({
+    title: "Log out?",
+    message: "Log out of Venpadi on this device?",
+    confirmLabel: "Log out",
+    variant: "danger",
+  });
+  if (ok) useAuthStore().logout();
 }
 
 usePageLoading(() => {

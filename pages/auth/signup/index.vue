@@ -215,18 +215,25 @@ async function createAccount() {
     notifySuccess("Account created — welcome to Venpadi!");
     await navigateTo(safeRedirect(route.query.redirect));
   } catch (err) {
-    // The plain layout has no toast outlet, so validation problems are shown in an alert.
+    const { alert } = useDialog();
     const lines = err?.fields
       ? Object.entries(err.fields).map(([k, v]) => `${FIELD_LABELS[k] ?? k}: ${v}`)
       : [err?.message || "Could not create your account."];
-    if (import.meta.client) window.alert(lines.join("\n"));
+    await alert({
+      title: "Couldn’t create account",
+      message: lines.join("\n"),
+      variant: "danger",
+    });
   } finally {
     submitting.value = false;
   }
 }
 
-function continueWithGoogle() {
-  // No toast outlet on the plain layout.
-  window.alert("Google sign-up is coming soon.");
+async function continueWithGoogle() {
+  const { alert } = useDialog();
+  await alert({
+    title: "Coming soon",
+    message: "Google sign-up is coming soon.",
+  });
 }
 </script>
